@@ -1,0 +1,57 @@
+{
+  "title": "Orders",
+  "newOrder": "New Order",
+  "searchOrders": "Search orders...",
+  "noOrdersFound": "No orders found",
+  "orderDetails": "Order Details",
+  "orderItems": "Order Items",
+  "customerInformation": "Customer Information",
+  "orderStatus": "Order Status",
+  "updateStatus": "Update Status",
+  "updateOrderStatus": "Update Order Status",
+  "selectNewStatus": "Select the new status for this order",
+  "orderDate": "Order Date",
+  "paymentMethod": "Payment Method",
+  "shippingMethod": "Shipping Method",
+  "shippingAddress": "Shipping Address",
+  "contactInformation": "Contact Information",
+  "notes": "Order Notes",
+  "subtotal": "Subtotal",
+  "shipping": "Shipping",
+  "tax": "Tax",
+  "total": "Total",
+  "moreItems": "more items",
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "refunded": "Refunded",
+    "all": "All Statuses"
+  },
+  "filters": {
+    "applyFilters": "Apply Filters",
+    "clearFilters": "Clear Filters",
+    "selectDateRange": "Select Date Range",
+    "status": "Status"
+  },
+  "actions": {
+    "viewDetails": "View Details",
+    "editOrder": "Edit Order",
+    "printInvoice": "Print Invoice",
+    "cancelOrder": "Cancel Order",
+    "refundOrder": "Issue Refund"
+  },
+  "emptyState": {
+    "title": "No Orders Yet",
+    "description": "When you receive orders, they will appear here.",
+    "cta": "Create Order"
+  },
+  "errors": {
+    "failedToLoadOrders": "Failed to load orders. Please try again.",
+    "failedToLoadOrder": "Failed to load order details. Please try again.",
+    "failedToUpdateOrder": "Failed to update order status. Please try again.",
+    "orderNotFound": "Order not found."
+  }
+}
