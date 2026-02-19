@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
+import 'status_colors.dart';
 
 ThemeData getLightTheme() {
   return ThemeData(
@@ -20,7 +21,8 @@ ThemeData getLightTheme() {
       surfaceContainerHighest: AppColors.lightMintGray,
       surfaceVariant: AppColors.backgroundLight,
       onSurface: AppColors.nearBlackGreen,
-      onSurfaceVariant: AppColors.mutedSageGreen,
+      // Use a warm tan for unselected nav/icons to match the provided design
+      onSurfaceVariant: AppColors.navUnselected,
       primaryContainer: AppColors.backgroundLight,
       secondaryContainer: AppColors.lightMintGray,
       outline: AppColors.outlineLight,
@@ -32,7 +34,7 @@ ThemeData getLightTheme() {
     ),
     // App bar theme
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: AppColors.navBackground,
       foregroundColor: AppColors.nearBlackGreen,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -175,13 +177,13 @@ ThemeData getLightTheme() {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     ),
-    // extensions: [
-    //   StatusColors(
-    //     success: AppColors.success,
-    //     warning: AppColors.warning,
-    //     error: AppColors.error,
-    //     info: AppColors.info,
-    //   ),
-    // ],
+    extensions: [
+      const StatusColors(
+        success: AppColors.success,
+        warning: AppColors.warning,
+        error: AppColors.error,
+        info: AppColors.info,
+      ),
+    ],
   );
 }

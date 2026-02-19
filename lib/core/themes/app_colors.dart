@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Main brand color
-  static const Color primary = Color(0xFF153B38);
+  // Main brand color (warm yellow)
+  static const Color primary = Color(0xFFFFB030); // #FFB030
 
-  // Vibrant teal for dark mode
-  static const Color primaryDark = Color(0xFF004021);
-  static const Color primaryVariant = Color(0xFF004021);
+  // Darker variant for contrast / dark mode
+  static const Color primaryDark = Color(0xFFB36F00);
+  static const Color primaryVariant = Color(
+    0xFF874D14,
+  ); // use secondary as variant
 
   // Lighter grey for secondary text in dark mode
   static const Color brightGrey = Color(0xFFE0E0E0);
@@ -19,8 +22,8 @@ class AppColors {
   static const Color transparent = Colors.transparent;
   static const Color white = Color(0xFFFFFFFF);
 
-  // Very dark green, almost black & for text
-  static const Color nearBlackGreen = Color(0xFF121714);
+  // Primary text color (near black)
+  static const Color nearBlackGreen = Color(0xFF1F1F1F); // #1F1F1F
   static const Color ghostWhite = Color(0xFFF6F7F9);
   static const Color textGreen = Color(0xFF27c08d);
 
@@ -28,8 +31,8 @@ class AppColors {
   static const Color mutedSageGreen = Color(0xFF668275);
   static const Color coolGray = Color(0xFF8A8B8D);
 
-  // Deep teal green & main color in app
-  static const Color deepTealGreen = Color(0xFF153B38);
+  // Legacy name for primary color
+  static const Color deepTealGreen = primary;
 
   // Light mint gray & for container background
   static const Color lightMintGray = Color(0xFFF2F5F2);
@@ -63,10 +66,16 @@ class AppColors {
   // Legacy & Basic colors (needed for existing code)
   static const Color black = Color(0xFF000000);
   static const Color grey = Color(0xFF9E9E9E);
-  static const Color secondary = Color(0xFF4A90A4);
+  static const Color secondary = Color(0xFF874D14); // #874D14 (brownish)
   static const Color textPrimary = nearBlackGreen;
-  static const Color textSecondary = mutedSageGreen;
+  static const Color textSecondary = Color(0xFF6D6D6D);
   static const Color textHint = coolGray;
+  // Navigation unselected color (light tan) used for unselected icons/labels
+  static const Color navUnselected = Color(0xFFB08A5A);
+  // Navigation background (slightly warm off-white)
+  static const Color navBackground = Color(0xFFF8F5F0);
+  // Navigation selected color (used for selected icon/text)
+  static const Color navSelected = Color(0xFF844C12); // #844c12
   static const Color lightBorder = outlineLight;
   static const Color darkBorder = outlineDark;
   static const Color lightBackground = backgroundLight;

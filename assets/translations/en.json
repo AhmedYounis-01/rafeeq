@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Home",
+    "qibla": "Qibla",
+    "quran": "Quran",
+    "tasbih": "Tasbih"
+  },
+
+  "errors": {
+    "pageNotFound": "Page not found: {path}"
+  },
+
+  "common": {
+    "error": "Error",
+    "success": "Success"
+  },
+
+  "auth": {
+    "fieldRequired": "This field is required",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email",
+    "passwordRequired": "Password is required",
+    "passwordTooShort": "Password is too short",
+    "confirmPasswordRequired": "Confirm password is required",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "phoneRequired": "Phone number is required",
+    "firstNameRequired": "First name is required",
+    "firstNameTooShort": "First name is too short",
+    "lastNameRequired": "Last name is required",
+    "lastNameTooShort": "Last name is too short"
+  }
+}

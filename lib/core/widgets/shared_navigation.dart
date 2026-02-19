@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
+import '../routing/app_router.dart';
+import '../themes/app_colors.dart';
 import '../extensions/theme_extension.dart';
 import '../constants/app_constants.dart';
 import 'responsive_layout.dart';
@@ -40,7 +42,7 @@ class SharedNavigation extends StatelessWidget {
           Container(
             width: 280.w,
             decoration: BoxDecoration(
-              color: context.colorScheme.surface,
+              color: AppColors.navBackground,
               border: Border(
                 right: BorderSide(
                   color: context.colorScheme.outlineVariant,
@@ -65,7 +67,7 @@ class SharedNavigation extends StatelessWidget {
           Container(
             width: 80.w,
             decoration: BoxDecoration(
-              color: context.colorScheme.surface,
+              color: AppColors.navBackground,
               border: Border(
                 right: BorderSide(
                   color: context.colorScheme.outlineVariant,
@@ -177,13 +179,11 @@ class SharedNavigation extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             decoration: BoxDecoration(
               color: isSelected
-                  ? context.colorScheme.primary.withValues(alpha: 0.1)
+                  ? AppColors.navSelected.withOpacity(0.08)
                   : null,
               borderRadius: BorderRadius.circular(8.r),
               border: isSelected
-                  ? Border.all(
-                      color: context.colorScheme.primary.withValues(alpha: 0.3),
-                    )
+                  ? Border.all(color: AppColors.navSelected.withOpacity(0.25))
                   : null,
             ),
             child: Row(
@@ -192,8 +192,8 @@ class SharedNavigation extends StatelessWidget {
                   item.icon,
                   size: 24.w,
                   color: isSelected
-                      ? context.colorScheme.primary
-                      : context.colorScheme.onSurfaceVariant,
+                      ? AppColors.navSelected
+                      : AppColors.navUnselected,
                 ),
                 if (isExpanded) ...[
                   SizedBox(width: 16.w),
@@ -206,8 +206,8 @@ class SharedNavigation extends StatelessWidget {
                             ? FontWeight.w600
                             : FontWeight.normal,
                         color: isSelected
-                            ? context.colorScheme.primary
-                            : context.colorScheme.onSurfaceVariant,
+                            ? AppColors.navSelected
+                            : AppColors.navUnselected,
                       ),
                     ),
                   ),
@@ -223,7 +223,7 @@ class SharedNavigation extends StatelessWidget {
   Widget _buildBottomNavigation(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.surface,
+        color: AppColors.navBackground,
         border: Border(
           top: BorderSide(color: context.colorScheme.outlineVariant, width: 1),
         ),
@@ -254,9 +254,8 @@ class SharedNavigation extends StatelessWidget {
                             item.icon,
                             size: 24.w,
                             color: isSelected
-                                ? context.colorScheme.primary
-                                : context.colorScheme.onSurfaceVariant
-                                      .withValues(alpha: 0.6),
+                                ? AppColors.navSelected
+                                : AppColors.navUnselected.withOpacity(0.6),
                           ),
                           SizedBox(height: 4.h),
                           Text(
@@ -267,8 +266,8 @@ class SharedNavigation extends StatelessWidget {
                                   ? FontWeight.w600
                                   : FontWeight.normal,
                               color: isSelected
-                                  ? context.colorScheme.primary
-                                  : context.colorScheme.onSurfaceVariant,
+                                  ? AppColors.navSelected
+                                  : AppColors.navUnselected,
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 1,
@@ -336,29 +335,24 @@ class SharedNavigation extends StatelessWidget {
   List<NavigationItemData> _getNavigationItems() {
     return [
       NavigationItemData(
-        icon: Icons.dashboard_outlined,
-        label: 'nav.dashboard',
-        route: '/dashboard',
+        icon: Icons.home_outlined,
+        label: 'nav.home',
+        route: AppRouter.home,
       ),
       NavigationItemData(
-        icon: Icons.shopping_bag_outlined,
-        label: 'nav.orders',
-        route: '/orders',
+        icon: Icons.explore_outlined,
+        label: 'nav.qibla',
+        route: AppRouter.qibla,
       ),
       NavigationItemData(
-        icon: Icons.inventory_2_outlined,
-        label: 'nav.products',
-        route: '/products',
+        icon: Icons.menu_book_outlined,
+        label: 'nav.quran',
+        route: AppRouter.quran,
       ),
       NavigationItemData(
-        icon: Icons.people_outline,
-        label: 'nav.customers',
-        route: '/customers',
-      ),
-      NavigationItemData(
-        icon: Icons.settings_outlined,
-        label: 'nav.settings',
-        route: '/settings',
+        icon: Icons.auto_awesome_outlined,
+        label: 'nav.tasbih',
+        route: AppRouter.tasbih,
       ),
     ];
   }

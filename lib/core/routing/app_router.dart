@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:rafeeq/core/widgets/main_layout.dart';
+import 'package:rafeeq/features/home/ui/home_screen.dart';
+import 'package:rafeeq/features/qibla/ui/qibla_screen.dart';
+import 'package:rafeeq/features/quran/ui/quran_screen.dart';
+import 'package:rafeeq/features/tasbih/ui/tasbih_screen.dart';
 // import '../../features/dashboard/data/models/dashboard_models.dart'
 //     as dashboardModels;
- 
+
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
@@ -11,15 +16,48 @@ class AppRouter {
   static const String splash = '/';
   static const String signIn = '/signIn';
   static const String signUp = '/signUp';
-  static const String dashboard = '/dashboard';
- 
 
-  static const String orderSearch = 'order-search';
+  // Navigation screens
+  static const String home = '/home';
+  static const String qibla = '/qibla';
+  static const String quran = '/quran';
+  static const String tasbih = '/tasbih';
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: splash,
+    initialLocation: home,
     routes: [
+      // Top-level shell route that provides the shared MainLayout/navigation
+      ShellRoute(
+        builder: (context, state, child) {
+          return MainLayout(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: home,
+            name: 'home',
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: qibla,
+            name: 'qibla',
+            builder: (context, state) => const QiblaScreen(),
+          ),
+          GoRoute(
+            path: quran,
+            name: 'quran',
+            builder: (context, state) => const QuranScreen(),
+          ),
+          GoRoute(
+            path: tasbih,
+            name: 'tasbih',
+            builder: (context, state) => const TasbihScreen(),
+          ),
+        ],
+      ),
+
+      // Uncomment and add additional routes (auth, dashboard subroutes, etc.) as needed
+
       // GoRoute(
       //   path: splash,
       //   name: 'splash',
@@ -211,7 +249,6 @@ class AppRouter {
       //     ),
       //   ],
       // ),
-   
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(

@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "qibla": "القبلة",
+    "quran": "القرآن",
+    "tasbih": "تسابيح"
+  },
+
+  "errors": {
+    "pageNotFound": "الصفحة غير موجودة: {path}"
+  },
+
+  "common": {
+    "error": "خطأ",
+    "success": "نجاح"
+  },
+
+  "auth": {
+    "fieldRequired": "الحقل مطلوب",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "invalidEmail": "البريد الإلكتروني غير صالح",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordTooShort": "كلمة المرور قصيرة جداً",
+    "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+    "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+    "phoneRequired": "رقم الهاتف مطلوب",
+    "firstNameRequired": "الاسم الأول مطلوب",
+    "firstNameTooShort": "الاسم الأول قصير جداً",
+    "lastNameRequired": "اسم العائلة مطلوب",
+    "lastNameTooShort": "اسم العائلة قصير جداً"
+  }
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
+import 'status_colors.dart';
 
 ThemeData getDarkTheme() {
   return ThemeData(
@@ -161,13 +162,13 @@ ThemeData getDarkTheme() {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     ),
-    // extensions: [
-    //   StatusColors(
-    //     success: AppColors.success,
-    //     warning: AppColors.warning,
-    //     error: AppColors.error,
-    //     info: AppColors.info,
-    //   ),
-    // ],
+    extensions: [
+      const StatusColors(
+        success: AppColors.success,
+        warning: AppColors.warning,
+        error: AppColors.error,
+        info: AppColors.info,
+      ),
+    ],
   );
 }
