@@ -19,8 +19,8 @@ class MainLayout extends StatelessWidget {
   int _getCurrentIndex(String route) {
     // Match by prefix to keep the correct tab selected on nested routes
     if (route.startsWith(AppRouter.home)) return 0;
-    if (route.startsWith(AppRouter.qibla)) return 1;
-    if (route.startsWith(AppRouter.quran)) return 2;
+    if (route.startsWith(AppRouter.quran)) return 1;
+    if (route.startsWith(AppRouter.qibla)) return 2;
     if (route.startsWith(AppRouter.tasbih)) return 3;
     return 0;
   }

@@ -15,33 +15,29 @@ ThemeData getLightTheme() {
     // Color scheme
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: AppColors.backgroundLight,
-      surfaceContainer: AppColors.backgroundLight,
-      surfaceContainerHighest: AppColors.lightMintGray,
-      surfaceVariant: AppColors.backgroundLight,
-      onSurface: AppColors.nearBlackGreen,
-      // Use a warm tan for unselected nav/icons to match the provided design
-      onSurfaceVariant: AppColors.navUnselected,
-      primaryContainer: AppColors.backgroundLight,
-      secondaryContainer: AppColors.lightMintGray,
-      outline: AppColors.outlineLight,
-      outlineVariant: AppColors.outlineLight,
-      error: AppColors.error,
       onPrimary: AppColors.white,
+      secondary: AppColors.secondary,
       onSecondary: AppColors.white,
+      surface: AppColors.backgroundLight,
+      onSurface: AppColors.textPrimary,
+      surfaceContainer: AppColors.backgroundCard,
+      surfaceContainerHighest: AppColors.primaryLight3,
+      onSurfaceVariant: AppColors.textSecondary,
+      outline: AppColors.outlineLight,
+      error: AppColors.error,
       onError: AppColors.white,
     ),
+
     // App bar theme
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.navBackground,
-      foregroundColor: AppColors.nearBlackGreen,
+      backgroundColor: AppColors.backgroundLight,
+      foregroundColor: AppColors.textPrimary,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
-      iconTheme: IconThemeData(color: AppColors.nearBlackGreen),
-      actionsIconTheme: IconThemeData(color: AppColors.nearBlackGreen),
+      iconTheme: IconThemeData(color: AppColors.textPrimary),
+      actionsIconTheme: IconThemeData(color: AppColors.textPrimary),
     ),
 
     // Text theme
@@ -49,99 +45,78 @@ ThemeData getLightTheme() {
       displayLarge: TextStyle(
         fontSize: 32.sp,
         fontWeight: FontWeight.bold,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       displayMedium: TextStyle(
         fontSize: 28.sp,
         fontWeight: FontWeight.bold,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       displaySmall: TextStyle(
         fontSize: 24.sp,
         fontWeight: FontWeight.bold,
-        color: AppColors.mutedSageGreen,
+        color: AppColors.textPrimary,
       ),
       headlineLarge: TextStyle(
         fontSize: 22.sp,
         fontWeight: FontWeight.w600,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       headlineMedium: TextStyle(
         fontSize: 20.sp,
         fontWeight: FontWeight.w600,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       headlineSmall: TextStyle(
         fontSize: 18.sp,
         fontWeight: FontWeight.w600,
-        color: AppColors.mutedSageGreen,
+        color: AppColors.textSecondary,
       ),
       titleLarge: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       titleMedium: TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       titleSmall: TextStyle(
         fontSize: 12.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.mutedSageGreen,
+        color: AppColors.textSecondary,
       ),
       bodyLarge: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.normal,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       bodyMedium: TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.normal,
-        color: AppColors.nearBlackGreen,
+        color: AppColors.textPrimary,
       ),
       bodySmall: TextStyle(
         fontSize: 12.sp,
         fontWeight: FontWeight.normal,
-        color: AppColors.mutedSageGreen,
-      ),
-      labelLarge: TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.nearBlackGreen,
-      ),
-      labelMedium: TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.mutedSageGreen,
-      ),
-      labelSmall: TextStyle(
-        fontSize: 10.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.mutedSageGreen,
+        color: AppColors.textSecondary,
       ),
     ),
 
+    // Buttons
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: AppColors.nearBlackGreen,
-        padding: EdgeInsets.zero,
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
+      style: TextButton.styleFrom(foregroundColor: AppColors.primary),
     ),
-    // Outlined button theme
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.primary,
         side: const BorderSide(color: AppColors.primary),
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       ),
     ),
 
-    // Input decoration theme
+    // Input Decoration
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.containerLight,
@@ -149,34 +124,19 @@ ThemeData getLightTheme() {
         borderRadius: BorderRadius.circular(12.r),
         borderSide: const BorderSide(color: AppColors.outlineLight),
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: AppColors.outlineLight),
-      ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
         borderSide: BorderSide(color: AppColors.primary, width: 2.w),
       ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.r),
-        borderSide: const BorderSide(color: AppColors.error),
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
     ),
 
-    // Text selection theme
-    textSelectionTheme: TextSelectionThemeData(
-      cursorColor: AppColors.primary,
-      selectionColor: AppColors.primary.withValues(alpha: 0.3),
-      selectionHandleColor: AppColors.primary,
-    ),
-
-    // Card theme
+    // Card Theme
     cardTheme: CardThemeData(
-      color: AppColors.backgroundLight,
-      elevation: 2,
+      color: AppColors.backgroundCard,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     ),
+
     extensions: [
       const StatusColors(
         success: AppColors.success,

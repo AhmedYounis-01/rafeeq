@@ -16,152 +16,118 @@ ThemeData getDarkTheme() {
     // Color scheme
     colorScheme: const ColorScheme.dark(
       primary: AppColors.primaryDark,
-      primaryContainer: AppColors.gunmetalGray,
+      onPrimary: AppColors.white,
+      secondary: AppColors.secondaryDark,
+      onSecondary: AppColors.white,
       surface: AppColors.backgroundDark,
-      surfaceContainer: AppColors.backgroundDark,
-      surfaceContainerLow: AppColors.backgroundDark,
-      surfaceContainerHigh: AppColors.gunmetalGray,
+      onSurface: AppColors.textPrimaryDark,
+      surfaceContainer: AppColors.backgroundCardDark,
       outline: AppColors.outlineDark,
       error: AppColors.error,
-      onPrimary: AppColors.white,
-      onSurface: AppColors.white,
-      onSurfaceVariant: AppColors.brightGrey,
-      onError: AppColors.error,
+      onError: AppColors.white,
     ),
 
     // App bar theme
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.backgroundDark,
-      foregroundColor: AppColors.white,
+      foregroundColor: AppColors.textPrimaryDark,
       elevation: 0,
-      centerTitle: true,
+      centerTitle: false,
       systemOverlayStyle: SystemUiOverlayStyle.light,
+      iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
+      actionsIconTheme: IconThemeData(color: AppColors.textPrimaryDark),
     ),
 
-    // Text theme (similar to light but with white colors)
+    // Text theme
     textTheme: TextTheme(
       displayLarge: TextStyle(
         fontSize: 32.sp,
         fontWeight: FontWeight.bold,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       displayMedium: TextStyle(
         fontSize: 28.sp,
         fontWeight: FontWeight.bold,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       displaySmall: TextStyle(
         fontSize: 24.sp,
         fontWeight: FontWeight.bold,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       headlineLarge: TextStyle(
         fontSize: 22.sp,
         fontWeight: FontWeight.w600,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       headlineMedium: TextStyle(
         fontSize: 20.sp,
         fontWeight: FontWeight.w600,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       headlineSmall: TextStyle(
         fontSize: 18.sp,
         fontWeight: FontWeight.w600,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       titleLarge: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       titleMedium: TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       titleSmall: TextStyle(
         fontSize: 12.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.brightGrey,
+        color: AppColors.textSecondaryDark,
       ),
       bodyLarge: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.normal,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       bodyMedium: TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.normal,
-        color: AppColors.ghostWhite,
+        color: AppColors.textPrimaryDark,
       ),
       bodySmall: TextStyle(
         fontSize: 12.sp,
         fontWeight: FontWeight.normal,
-        color: AppColors.brightGrey,
-      ),
-      labelLarge: TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.brightGrey,
-      ),
-      labelMedium: TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.ghostWhite,
-      ),
-      labelSmall: TextStyle(
-        fontSize: 10.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.brightGrey,
+        color: AppColors.textSecondaryDark,
       ),
     ),
 
+    // Buttons
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: AppColors.ghostWhite,
-        padding: EdgeInsets.zero,
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
+      style: TextButton.styleFrom(foregroundColor: AppColors.primaryDark),
     ),
 
-    // Input decoration theme
+    // Input Decoration
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.containerDark,
+      fillColor: AppColors.backgroundCardDark,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: AppColors.outlineDark),
-      ),
-      enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
         borderSide: const BorderSide(color: AppColors.outlineDark),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: AppColors.containerDark, width: 2),
+        borderSide: BorderSide(color: AppColors.primaryDark, width: 2.w),
       ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.r),
-        borderSide: const BorderSide(color: AppColors.error),
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
     ),
 
-    // Text selection theme
-    textSelectionTheme: TextSelectionThemeData(
-      cursorColor: AppColors.ghostWhite,
-      selectionColor: AppColors.ghostWhite.withValues(alpha: 0.3),
-      selectionHandleColor: AppColors.ghostWhite,
-    ),
-
-    // Card theme
+    // Card Theme
     cardTheme: CardThemeData(
-      color: AppColors.gunmetalGray,
-      elevation: 2,
+      color: AppColors.backgroundCardDark,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     ),
+
     extensions: [
       const StatusColors(
         success: AppColors.success,

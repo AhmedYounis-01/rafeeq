@@ -36,9 +36,9 @@ class LayoutScreen extends StatelessWidget {
       case 0:
         return const HomeScreen();
       case 1:
-        return const QiblaScreen();
-      case 2:
         return const QuranScreen();
+      case 2:
+        return const QiblaScreen();
       case 3:
         return const TasbihScreen();
       default:

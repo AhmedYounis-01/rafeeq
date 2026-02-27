@@ -7,6 +7,7 @@ import '../themes/app_colors.dart';
 import '../extensions/theme_extension.dart';
 import '../constants/app_constants.dart';
 import 'responsive_layout.dart';
+import 'custom_drawer.dart';
 
 class SharedNavigation extends StatelessWidget {
   final Widget child;
@@ -86,6 +87,7 @@ class SharedNavigation extends StatelessWidget {
 
   Widget _buildMobileLayout(BuildContext context) {
     return Scaffold(
+      drawer: const CustomDrawer(),
       body: child,
       bottomNavigationBar: _buildBottomNavigation(context),
     );
@@ -178,12 +180,10 @@ class SharedNavigation extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.navSelected.withOpacity(0.08)
-                  : null,
+              color: isSelected ? AppColors.navSelected.withValues(alpha:0.08) : null,
               borderRadius: BorderRadius.circular(8.r),
               border: isSelected
-                  ? Border.all(color: AppColors.navSelected.withOpacity(0.25))
+                  ? Border.all(color: AppColors.navSelected.withValues(alpha:0.25))
                   : null,
             ),
             child: Row(
@@ -221,9 +221,10 @@ class SharedNavigation extends StatelessWidget {
   }
 
   Widget _buildBottomNavigation(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.navBackground,
+        color: context.colorScheme.surface,
         border: Border(
           top: BorderSide(color: context.colorScheme.outlineVariant, width: 1),
         ),
@@ -255,7 +256,7 @@ class SharedNavigation extends StatelessWidget {
                             size: 24.w,
                             color: isSelected
                                 ? AppColors.navSelected
-                                : AppColors.navUnselected.withOpacity(0.6),
+                                : AppColors.navUnselected.withValues(alpha:0.6),
                           ),
                           SizedBox(height: 4.h),
                           Text(
@@ -340,14 +341,14 @@ class SharedNavigation extends StatelessWidget {
         route: AppRouter.home,
       ),
       NavigationItemData(
-        icon: Icons.explore_outlined,
-        label: 'nav.qibla',
-        route: AppRouter.qibla,
-      ),
-      NavigationItemData(
         icon: Icons.menu_book_outlined,
         label: 'nav.quran',
         route: AppRouter.quran,
+      ),
+      NavigationItemData(
+        icon: Icons.explore_outlined,
+        label: 'nav.qibla',
+        route: AppRouter.qibla,
       ),
       NavigationItemData(
         icon: Icons.auto_awesome_outlined,

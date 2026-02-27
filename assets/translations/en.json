@@ -5,16 +5,59 @@
     "quran": "Quran",
     "tasbih": "Tasbih"
   },
-
   "errors": {
-    "pageNotFound": "Page not found: {path}"
+    "pageNotFound": "Page not found: {path}",
+    "locationNotEnabled": "Location services are disabled",
+    "locationDenied": "Location permission denied",
+    "locationPermanentlyDenied": "Location permission permanently denied",
+    "geocodingError": "Failed to get address",
+    "unknownCity": "Unknown"
   },
-
   "common": {
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "retry": "Retry",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "loading": "Loading..."
   },
-
+  "home": {
+    "app_name": "Rafeeq",
+    "next_prayer": "Next",
+    "next_prayer_after": "Next prayer after",
+    "current_time": "Current time",
+    "loading_location": "Detecting location...",
+    "select_location": "Select Location",
+    "select_from_map": "Select from Map",
+    "unknown_location": "Location unknown",
+    "saved_location": "Saved location",
+    "search_city_hint": "Search city (Free)...",
+    "chosen_location": "Chosen location",
+    "click_map_hint": "Click on map to pick location",
+    "confirm_choice": "Confirm Choice",
+    "prayer_names": {
+      "fajr": "El-Fajr",
+      "sunrise": "El-Shrouq",
+      "dhuhr": "El-Duhr",
+      "asr": "El-Asr",
+      "maghrib": "El-Maghrib",
+      "isha": "El-Isha"
+    },
+    "quick_parts": {
+      "azkar": "Azkar",
+      "ruqiah": "Ruqiah",
+      "dua": "Dua",
+      "seerah": "Seerah"
+    },
+    "greetings": {
+      "morning": "Good Morning, Rafeeq",
+      "afternoon": "Good Afternoon, Rafeeq",
+      "evening": "Good Evening, Rafeeq",
+      "night": "Peaceful Night, Rafeeq"
+    },
+    "calendar_title": "Calendar & Times",
+    "prayer_schedule_hint": "Prayer times for this day will be available soon..."
+  },
   "auth": {
     "fieldRequired": "This field is required",
     "emailRequired": "Email is required",
@@ -28,5 +71,16 @@
     "firstNameTooShort": "First name is too short",
     "lastNameRequired": "Last name is required",
     "lastNameTooShort": "Last name is too short"
+  },
+  "drawer": {
+    "title": "Rafeeq",
+    "about": "Your spiritual companion throughout the day. Providing prayer times, Quran, Qibla and more.",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "location": "Update Location",
+    "english": "English",
+    "arabic": "العربية"
   }
 }

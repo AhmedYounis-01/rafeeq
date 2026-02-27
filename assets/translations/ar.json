@@ -5,16 +5,59 @@
     "quran": "القرآن",
     "tasbih": "تسابيح"
   },
-
   "errors": {
-    "pageNotFound": "الصفحة غير موجودة: {path}"
+    "pageNotFound": "الصفحة غير موجودة: {path}",
+    "locationNotEnabled": "خدمة الموقع غير مفعّلة على جهازك",
+    "locationDenied": "تم رفض إذن الوصول إلى الموقع",
+    "locationPermanentlyDenied": "تم رفض إذن الموقع نهائياً",
+    "geocodingError": "تعذر جلب العنوان",
+    "unknownCity": "مجهول"
   },
-
   "common": {
     "error": "خطأ",
-    "success": "نجاح"
+    "success": "نجاح",
+    "retry": "محاولة مرة أخرى",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "loading": "جاري التحميل..."
   },
-
+  "home": {
+    "app_name": "رفيق",
+    "next_prayer": "القادمة",
+    "next_prayer_after": "موعد الصلاة القادمة بعد",
+    "current_time": "الوقت الحالي",
+    "loading_location": "جاري تحديد الموقع...",
+    "select_location": "تحديد الموقع",
+    "select_from_map": "تحديد من الخريطة",
+    "unknown_location": "الموقع غير محدد",
+    "saved_location": "موقع محفوظ",
+    "search_city_hint": "ابحث عن المدينة (مجاني)...",
+    "chosen_location": "الموقع الذي اخترته",
+    "click_map_hint": "انقر على الخريطة لتحديد مكانك",
+    "confirm_choice": "تأكيد الاختيار",
+    "prayer_names": {
+      "fajr": "الفجر",
+      "sunrise": "الشروق",
+      "dhuhr": "الظهر",
+      "asr": "العصر",
+      "maghrib": "المغرب",
+      "isha": "العشاء"
+    },
+    "quick_parts": {
+      "azkar": "أذكار",
+      "ruqiah": "رقية",
+      "dua": "دعاء",
+      "seerah": "سيرة"
+    },
+    "greetings": {
+      "morning": "صباح الخير، يا رفيق",
+      "afternoon": "طاب يومك، يا رفيق",
+      "evening": "مساء الخير، يا رفيق",
+      "night": "ليلة هادئة، يا رفيق"
+    },
+    "calendar_title": "التقويم والمواقيت",
+    "prayer_schedule_hint": "سيتم عرض مواعيد الصلاة لهذا اليوم قريباً..."
+  },
   "auth": {
     "fieldRequired": "الحقل مطلوب",
     "emailRequired": "البريد الإلكتروني مطلوب",
@@ -28,5 +71,16 @@
     "firstNameTooShort": "الاسم الأول قصير جداً",
     "lastNameRequired": "اسم العائلة مطلوب",
     "lastNameTooShort": "اسم العائلة قصير جداً"
+  },
+  "drawer": {
+    "title": "رفيق",
+    "about": "رفيقك الروحي خلال يومك. يوفر مواقيت الصلاة، القرآن الكريم، القبلة والمزيد.",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "location": "تغيير الموقع",
+    "english": "English",
+    "arabic": "العربية"
   }
 }

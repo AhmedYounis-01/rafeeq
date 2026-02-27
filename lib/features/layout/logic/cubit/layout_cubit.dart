@@ -15,9 +15,9 @@ class LayoutCubit extends Cubit<LayoutState> {
     int idx = 0;
     if (route.startsWith(AppRouter.home)) {
       idx = 0;
-    } else if (route.startsWith(AppRouter.qibla)) {
+    } else if (route.startsWith(AppRouter.quran )) {
       idx = 1;
-    } else if (route.startsWith(AppRouter.quran)) {
+    } else if (route.startsWith(AppRouter.qibla)) {
       idx = 2;
     } else if (route.startsWith(AppRouter.tasbih)) {
       idx = 3;
