@@ -27,20 +27,20 @@ class HomePrayerHeader extends StatelessWidget {
         String greeting;
         int hour = now.hour;
         if (hour >= 4 && hour < 11) {
-          greeting = "home.greetings.morning".tr();
+          greeting = "home.greetings.morning".tr(context: context);
         } else if (hour >= 11 && hour < 16) {
-          greeting = "home.greetings.afternoon".tr();
+          greeting = "home.greetings.afternoon".tr(context: context);
         } else if (hour >= 16 && hour < 21) {
-          greeting = "home.greetings.evening".tr();
+          greeting = "home.greetings.evening".tr(context: context);
         } else {
-          greeting = "home.greetings.night".tr();
+          greeting = "home.greetings.night".tr(context: context);
         }
 
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 600),
-            height: 280.h,
+            constraints: BoxConstraints(minHeight: 280.h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40.r),
               gradient: LinearGradient(
@@ -94,6 +94,7 @@ class HomePrayerHeader extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(24.w),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // Header Navigation Row
                       Row(
@@ -103,7 +104,7 @@ class HomePrayerHeader extends StatelessWidget {
                           _buildCalendarButton(context),
                         ],
                       ),
-                      const Spacer(),
+                      SizedBox(height: 20.h),
                       // Central Clock Area
                       Column(
                         children: [
@@ -119,50 +120,56 @@ class HomePrayerHeader extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 12.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(
-                                currentTime,
-                                style: context.textTheme.displayLarge?.copyWith(
-                                  color: Colors.white,
-                                  fontSize: 82.sp,
-                                  fontWeight: FontWeight.w200,
-                                  height: 1,
-                                  letterSpacing: -3,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(
+                                  currentTime,
+                                  style: context.textTheme.displayLarge
+                                      ?.copyWith(
+                                        color: Colors.white,
+                                        fontSize: 82.sp,
+                                        fontWeight: FontWeight.w200,
+                                        height: 1,
+                                        letterSpacing: -3,
+                                      ),
                                 ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    amPm.toUpperCase(),
-                                    style: context.textTheme.titleLarge
-                                        ?.copyWith(
-                                          color: AppColors.secondary,
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 22.sp,
-                                        ),
-                                  ),
-                                  Container(
-                                    height: 3.5.h,
-                                    width: 14.w,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.secondary,
-                                      borderRadius: BorderRadius.circular(2.r),
+                                SizedBox(width: 12.w),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      amPm.toUpperCase(),
+                                      style: context.textTheme.titleLarge
+                                          ?.copyWith(
+                                            color: AppColors.secondary,
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 22.sp,
+                                          ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                    Container(
+                                      height: 3.5.h,
+                                      width: 14.w,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.secondary,
+                                        borderRadius: BorderRadius.circular(
+                                          2.r,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      const Spacer(),
+                      SizedBox(height: 20.h),
                       // Next Prayer Interactive Card
                       _buildPrayerCard(context, now),
                     ],
@@ -180,7 +187,7 @@ class HomePrayerHeader extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
-        String location = "home.loading_location".tr();
+        String location = "home.loading_location".tr(context: context);
         if (state is PrayerTimeLoaded) {
           location = "${state.cityName}, ${state.countryName}";
         }
@@ -287,7 +294,7 @@ class HomePrayerHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "home.next_prayer".tr(),
+                      "home.next_prayer".tr(context: context),
                       style: context.textTheme.labelMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
@@ -409,7 +416,7 @@ class _CalendarModalState extends State<_CalendarModal> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "home.calendar_title".tr(),
+                      "home.calendar_title".tr(context: context),
                       style: context.textTheme.headlineSmall?.copyWith(
                         color: isDark ? Colors.white : AppColors.textPrimary,
                         fontWeight: FontWeight.w900,
@@ -571,7 +578,7 @@ class _CalendarModalState extends State<_CalendarModal> {
           ),
           SizedBox(height: 16.h),
           Text(
-            "home.prayer_schedule_hint".tr(),
+            "home.prayer_schedule_hint".tr(context: context),
             style: context.textTheme.bodySmall?.copyWith(
               color: isDark ? Colors.white38 : Colors.black38,
             ),

@@ -58,9 +58,9 @@ class PrayerTimesItem extends StatelessWidget {
                 padding: EdgeInsets.all(4.w),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isNext
-                      ? AppColors.getPrimary(context).withValues(alpha: 0.1)
-                      : Colors.transparent,
+                  // color: isNext
+                  //     ? AppColors.getPrimary(context).withValues(alpha: 0.1)
+                  //     : Colors.transparent,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),

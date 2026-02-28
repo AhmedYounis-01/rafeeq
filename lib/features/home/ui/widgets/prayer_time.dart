@@ -44,7 +44,7 @@ class PrayerTime extends StatelessWidget {
     if (state is PrayerTimeError) {
       return _buildErrorState(
         context,
-        "errors.geocodingError".tr(),
+        "errors.geocodingError".tr(context: context),
         true,
         key: const ValueKey('error'),
       );
@@ -53,37 +53,37 @@ class PrayerTime extends StatelessWidget {
     if (state is PrayerTimeLoaded) {
       final prayers = [
         (
-          name: "home.prayer_names.fajr".tr(),
+          name: "home.prayer_names.fajr".tr(context: context),
           time: state.prayerTimes.fajr,
           prayer: Prayer.fajr,
           image: Assets.images.fajr,
         ),
         (
-          name: "home.prayer_names.sunrise".tr(),
+          name: "home.prayer_names.sunrise".tr(context: context),
           time: state.prayerTimes.sunrise,
           prayer: Prayer.sunrise,
           image: Assets.images.shrouq,
         ),
         (
-          name: "home.prayer_names.dhuhr".tr(),
+          name: "home.prayer_names.dhuhr".tr(context: context),
           time: state.prayerTimes.dhuhr,
           prayer: Prayer.dhuhr,
           image: Assets.images.duhr,
         ),
         (
-          name: "home.prayer_names.asr".tr(),
+          name: "home.prayer_names.asr".tr(context: context),
           time: state.prayerTimes.asr,
           prayer: Prayer.asr,
           image: Assets.images.asr,
         ),
         (
-          name: "home.prayer_names.maghrib".tr(),
+          name: "home.prayer_names.maghrib".tr(context: context),
           time: state.prayerTimes.maghrib,
           prayer: Prayer.maghrib,
           image: Assets.images.maghrb,
         ),
         (
-          name: "home.prayer_names.isha".tr(),
+          name: "home.prayer_names.isha".tr(context: context),
           time: state.prayerTimes.isha,
           prayer: Prayer.isha,
           image: Assets.images.isha,
@@ -92,7 +92,7 @@ class PrayerTime extends StatelessWidget {
 
       return SizedBox(
         key: const ValueKey('loaded'),
-        height: 170.h,
+        height: 185.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -126,7 +126,7 @@ class PrayerTime extends StatelessWidget {
 
     return SizedBox(
       key: key,
-      height: 170.h,
+      height: 185.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -238,7 +238,7 @@ class PrayerTime extends StatelessWidget {
                   }
                 },
                 icon: const Icon(Icons.map),
-                label: Text("home.select_from_map".tr()),
+                label: Text("home.select_from_map".tr(context: context)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.colorScheme.primary,
                   foregroundColor: Colors.white,
@@ -249,7 +249,7 @@ class PrayerTime extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () =>
                       context.read<PrayerTimeCubit>().loadPrayerTimes(),
-                  child: Text("common.retry".tr()),
+                  child: Text("common.retry".tr(context: context)),
                 ),
               ],
             ],

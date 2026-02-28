@@ -7,6 +7,7 @@ import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
 import 'widgets/home_header.dart';
 import 'widgets/prayer_time.dart';
 import 'widgets/quick_parts.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,7 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SafeArea(child: CustomAppBar(title: "رفيق")),
+         SafeArea(child: CustomAppBar(title: "home.app_name".tr())),
         Expanded(
           child: Builder(
             builder: (context) {

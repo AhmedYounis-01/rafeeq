@@ -17,12 +17,12 @@ class QuickParts extends StatelessWidget {
           Row(
             children: [
               QuickPartsItem(
-                title: "home.quick_parts.azkar".tr(),
+                title: "home.quick_parts.azkar".tr(context: context),
                 image: Assets.images.azkar.path,
               ),
               SizedBox(width: 12.w),
               QuickPartsItem(
-                title: "home.quick_parts.ruqiah".tr(),
+                title: "home.quick_parts.ruqiah".tr(context: context),
                 image: Assets.images.ruqiah.path,
               ),
             ],
@@ -32,12 +32,12 @@ class QuickParts extends StatelessWidget {
           Row(
             children: [
               QuickPartsItem(
-                title: "home.quick_parts.dua".tr(),
+                title: "home.quick_parts.dua".tr(context: context),
                 image: Assets.images.dua.path,
               ),
               SizedBox(width: 12.w),
               QuickPartsItem(
-                title: "home.quick_parts.seerah".tr(),
+                title: "home.quick_parts.seerah".tr(context: context),
                 image: Assets.images.seerah.path,
               ),
             ],
