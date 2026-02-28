@@ -21,19 +21,29 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       final savedCity = prefs.getString('location_city');
       final savedCountry = prefs.getString('location_country');
 
+      final isManualLocation = prefs.getBool('is_manual_location') ?? false;
+
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       final permission = await LocationService.checkPermission();
       final isAuthorized =
           permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse;
 
-      // Logic: If we have saved data, use it unless we are doing a manual refresh AND GPS is actually ON/Authorized.
+      // Logic: If we have saved data and it's manual, use it.
+      // If it's NOT manual, try to get GPS IF authorized.
       bool shouldTryAutomatic =
-          (isAuthorized || !hasAskedBefore || isManual) && serviceEnabled;
+          !isManualLocation && isAuthorized && serviceEnabled;
+
+      // If manual refresh, we might want to try automatic IF we aren't pinned to a manual location,
+      // OR if we were never asked before.
+      if (isManual && !isManualLocation) {
+        shouldTryAutomatic = true;
+      }
 
       if (shouldTryAutomatic) {
-        if (!isAuthorized && !hasAskedBefore)
+        if (!isAuthorized && !hasAskedBefore) {
           await prefs.setBool('has_asked_location', true);
+        }
 
         try {
           await _fetchWithPermission(isManual: isManual);
@@ -90,6 +100,10 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     await prefs.setDouble('location_lon', result.longitude);
     await prefs.setString('location_city', result.cityName);
     await prefs.setString('location_country', result.countryName);
+    await prefs.setBool(
+      'is_manual_location',
+      false,
+    ); // This was an automatic fetch
 
     await _emitFromCoordinates(
       latitude: result.latitude,
@@ -113,6 +127,10 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       await prefs.setDouble('location_lon', longitude);
       await prefs.setString('location_city', cityName);
       await prefs.setString('location_country', countryName);
+      await prefs.setBool(
+        'is_manual_location',
+        true,
+      ); // User manually picked this one
 
       await _emitFromCoordinates(
         latitude: latitude,

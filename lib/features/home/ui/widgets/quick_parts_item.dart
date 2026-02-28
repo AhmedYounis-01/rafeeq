@@ -16,7 +16,7 @@ class QuickPartsItem extends StatelessWidget {
       child: GestureDetector(
         onTap: () {},
         child: Container(
-          constraints: BoxConstraints(minHeight: 140.h),
+          height: 140.h,
           decoration: BoxDecoration(
             color: AppColors.cardBackground(context),
             borderRadius: BorderRadius.circular(16.r),
@@ -30,28 +30,29 @@ class QuickPartsItem extends StatelessWidget {
           ),
           clipBehavior: Clip.antiAlias,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               // Upper area - icon
-              SizedBox(
-                height: 90.h,
+              Expanded(
                 child: Center(child: Image.asset(image, fit: BoxFit.contain)),
               ),
               // Lower area - green label
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10.h),
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
                 decoration: BoxDecoration(
                   gradient: AppColors.getGreenGradient(context),
                 ),
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
+                    ),
                   ),
                 ),
               ),
