@@ -82,5 +82,18 @@
     "location": "Update Location",
     "english": "English",
     "arabic": "العربية"
+  },
+  "qibla": {
+    "title": "Prayer Qiblah",
+    "compass": "Compass",
+    "map": "Map",
+    "instructions": "Instructions",
+    "instruction_details": "Please place your device in a horizontal position to determine the correct Qibla direction",
+    "activate_location": "Please enable location services to use the Qibla compass",
+    "permission_denied_forever": "Location permission is permanently denied. Please enable it from app settings.",
+    "activate": "Enable",
+    "back": "Back",
+    "no_sensor": "Compass not supported",
+    "no_sensor_details": "This device does not have a compass sensor. Please use a real device to determine the Qibla direction."
   }
 }

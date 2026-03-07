@@ -17,15 +17,100 @@ class HomePrayerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TimerCubit, TimerState>(
-      builder: (context, timerState) {
-        final now = timerState.now;
-        String currentTime = timerState.currentTime;
-        String amPm = timerState.amPm;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 600),
+        constraints: BoxConstraints(minHeight: 280.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40.r),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? [const Color(0xFF061F14), const Color(0xFF0B3D26)]
+                : [
+                    const Color(0xFF028544).withValues(alpha: 0.9),
+                    const Color(0xFF016D38).withValues(alpha: 0.9),
+                  ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Premium Pattern Overlay with soft shadow/overlay
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40.r),
+                child: Stack(
+                  children: [
+                    Opacity(
+                      opacity: 0.15,
+                      child: Image.asset(
+                        Assets.images.best.path,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header Navigation Row (static — no timer dependency)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildLocationInfo(context),
+                      _buildCalendarButton(context),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  // Central Clock Area
+                  Column(
+                    children: [
+                      // Greeting — only rebuilds when timer ticks
+                      _buildGreeting(context),
+                      SizedBox(height: 12.h),
+                      // Clock — only rebuilds when timer ticks
+                      _buildClock(context),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  // Next Prayer Interactive Card
+                  _buildPrayerCard(context),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-        // Determine Greeting
+  // ────────────────────────────────────────────
+  // Greeting widget — rebuilds only on TimerCubit
+  // ────────────────────────────────────────────
+  Widget _buildGreeting(BuildContext context) {
+    return BlocBuilder<TimerCubit, TimerState>(
+      buildWhen: (prev, curr) => prev.now.hour != curr.now.hour,
+      builder: (context, timerState) {
         String greeting;
-        int hour = now.hour;
+        int hour = timerState.now.hour;
         if (hour >= 4 && hour < 11) {
           greeting = "home.greetings.morning".tr(context: context);
         } else if (hour >= 11 && hour < 16) {
@@ -35,147 +120,14 @@ class HomePrayerHeader extends StatelessWidget {
         } else {
           greeting = "home.greetings.night".tr(context: context);
         }
-
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 600),
-            constraints: BoxConstraints(minHeight: 280.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40.r),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: Theme.of(context).brightness == Brightness.dark
-                    ? [
-                        const Color(0xFF061F14), // Darker, softer forest green
-                        const Color(0xFF0B3D26),
-                      ]
-                    : [
-                        const Color(
-                          0xFF028544,
-                        ).withValues(alpha: 0.9), // Muted primary
-                        const Color(0xFF016D38).withValues(alpha: 0.9),
-                      ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                // Premium Pattern Overlay with soft shadow/overlay
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40.r),
-                    child: Stack(
-                      children: [
-                        Opacity(
-                          opacity: 0.15, // Subtle pattern
-                          child: Image.asset(
-                            Assets.images.best.path,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        // Soft shadow overlay to make content readable
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(24.w),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Header Navigation Row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildLocationInfo(context),
-                          _buildCalendarButton(context),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                      // Central Clock Area
-                      Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 4.h),
-                            child: Text(
-                              greeting,
-                              style: context.textTheme.labelMedium?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.8),
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.8,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 12.h),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(
-                                  currentTime,
-                                  style: context.textTheme.displayLarge
-                                      ?.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 82.sp,
-                                        fontWeight: FontWeight.w200,
-                                        height: 1,
-                                        letterSpacing: -3,
-                                      ),
-                                ),
-                                SizedBox(width: 12.w),
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      amPm.toUpperCase(),
-                                      style: context.textTheme.titleLarge
-                                          ?.copyWith(
-                                            color: AppColors.secondary,
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 22.sp,
-                                          ),
-                                    ),
-                                    Container(
-                                      height: 3.5.h,
-                                      width: 14.w,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.secondary,
-                                        borderRadius: BorderRadius.circular(
-                                          2.r,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                      // Next Prayer Interactive Card
-                      _buildPrayerCard(context, now),
-                    ],
-                  ),
-                ),
-              ],
+          padding: EdgeInsets.symmetric(vertical: 4.h),
+          child: Text(
+            greeting,
+            style: context.textTheme.labelMedium?.copyWith(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.8,
             ),
           ),
         );
@@ -183,8 +135,61 @@ class HomePrayerHeader extends StatelessWidget {
     );
   }
 
+  // ────────────────────────────────────────────
+  // Clock widget — rebuilds only on TimerCubit
+  // ────────────────────────────────────────────
+  Widget _buildClock(BuildContext context) {
+    return BlocBuilder<TimerCubit, TimerState>(
+      builder: (context, timerState) {
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                timerState.currentTime,
+                style: context.textTheme.displayLarge?.copyWith(
+                  color: Colors.white,
+                  fontSize: 82.sp,
+                  fontWeight: FontWeight.w200,
+                  height: 1,
+                  letterSpacing: -3,
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    timerState.amPm.toUpperCase(),
+                    style: context.textTheme.titleLarge?.copyWith(
+                      color: AppColors.secondary,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 22.sp,
+                    ),
+                  ),
+                  Container(
+                    height: 3.5.h,
+                    width: 14.w,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary,
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildLocationInfo(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
         String location = "home.loading_location".tr(context: context);
@@ -253,7 +258,10 @@ class HomePrayerHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildPrayerCard(BuildContext context, DateTime now) {
+  // ────────────────────────────────────────────
+  // Prayer Card — static layout, only countdown rebuilds
+  // ────────────────────────────────────────────
+  Widget _buildPrayerCard(BuildContext context) {
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
         if (state is! PrayerTimeLoaded) return const SizedBox.shrink();
@@ -263,17 +271,6 @@ class HomePrayerHeader extends StatelessWidget {
         final prayerTimeStr = intl.DateFormat.jm(
           context.locale.languageCode,
         ).format(nextTime);
-
-        // Countdown
-        String countdown = "--:--:--";
-        final diff = nextTime.difference(now);
-        if (!diff.isNegative) {
-          final hours = diff.inHours;
-          final minutes = diff.inMinutes % 60;
-          final seconds = diff.inSeconds % 60;
-          countdown =
-              "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-        }
 
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
@@ -312,22 +309,43 @@ class HomePrayerHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  countdown,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'monospace',
-                  ),
-                ),
-              ),
+              // Countdown — only this part rebuilds every second
+              _buildCountdown(context, nextTime),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ────────────────────────────────────────────
+  // Countdown widget — rebuilds only on TimerCubit
+  // ────────────────────────────────────────────
+  Widget _buildCountdown(BuildContext context, DateTime nextTime) {
+    return BlocBuilder<TimerCubit, TimerState>(
+      builder: (context, timerState) {
+        String countdown = "--:--:--";
+        final diff = nextTime.difference(timerState.now);
+        if (!diff.isNegative) {
+          final hours = diff.inHours;
+          final minutes = diff.inMinutes % 60;
+          final seconds = diff.inSeconds % 60;
+          countdown =
+              "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+        }
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+          decoration: BoxDecoration(
+            color: AppColors.secondary.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Text(
+            countdown,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: AppColors.secondary,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'monospace',
+            ),
           ),
         );
       },
