@@ -78,6 +78,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/shrouq.png
   AssetGenImage get shrouq => const AssetGenImage('assets/images/shrouq.png');
 
+  /// File path: assets/images/kaaba.png
+  AssetGenImage get kaaba => const AssetGenImage('assets/images/kaaba.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
     duhr,
@@ -97,6 +100,7 @@ class $AssetsImagesGen {
     ruqiah,
     seerah,
     shrouq,
+    kaaba,
   ];
 }
 

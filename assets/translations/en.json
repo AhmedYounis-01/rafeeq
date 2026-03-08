@@ -88,12 +88,27 @@
     "compass": "Compass",
     "map": "Map",
     "instructions": "Instructions",
+    "instructions_title": "How to Use",
     "instruction_details": "Please place your device in a horizontal position to determine the correct Qibla direction",
     "activate_location": "Please enable location services to use the Qibla compass",
+    "activate_location_message": "Place your device horizontally and away from metals and electronics for accurate results",
     "permission_denied_forever": "Location permission is permanently denied. Please enable it from app settings.",
     "activate": "Enable",
+    "understand": "Got it",
     "back": "Back",
     "no_sensor": "Compass not supported",
-    "no_sensor_details": "This device does not have a compass sensor. Please use a real device to determine the Qibla direction."
+    "no_sensor_details": "This device does not have a compass sensor. Please use a real device to determine the Qibla direction.",
+    "calibration_hint": "Move your phone in a figure-8 pattern to calibrate",
+    "qibla_direction": "Qibla Direction",
+    "accuracy_far": "Far",
+    "accuracy_close": "Close",
+    "accuracy_accurate": "Accurate",
+    "accuracy_locked": "Locked ✓",
+    "qibla_locked": "Qibla Found",
+    "pull_to_refresh": "Pull to refresh",
+    "location_error_title": "Location Required",
+    "enable_location_desc": "To accurately determine the Qibla direction, please enable location services",
+    "sensor_error_title": "Compass Unavailable",
+    "sensor_error_desc": "Your device does not have a compass sensor. Please use a device that supports this feature."
   }
 }
