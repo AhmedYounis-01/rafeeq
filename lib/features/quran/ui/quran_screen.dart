@@ -12,12 +12,14 @@ import 'package:google_fonts/google_fonts.dart';
 const List<Map<String, String>> kReciters = [
   {'id': 'Alafasy_128kbps', 'name': 'مشاري العفاسي'},
   {'id': 'Abdurrahmaan_As-Sudais_192kbps', 'name': 'عبد الرحمن السديس'},
-  {'id': 'Hudhaify_128kbps', 'name': 'علي الحذيفي'},
-  {'id': 'Minshawy_Murattal_128kbps', 'name': 'محمد صديق المنشاوي'},
-  {'id': 'Muhammad_Ayyoub_128kbps', 'name': 'محمد أيوب'},
-  {'id': 'Abu_Bakr_Ash-Shaatree_128kbps', 'name': 'أبو بكر الشاطري'},
   {'id': 'MaherAlMuaiqly128kbps', 'name': 'ماهر المعيقلي'},
   {'id': 'Saood_ash-Shuraym_128kbps', 'name': 'سعود الشريم'},
+  {'id': 'Hudhaify_128kbps', 'name': 'علي الحذيفي'},
+  {'id': 'Minshawy_Murattal_128kbps', 'name': 'محمد صديق المنشاوي'},
+  {'id': 'Husary_128kbps', 'name': 'محمود خليل الحصري'},
+  {'id': 'Ahmed_ibn_Ali_al-Ajamy_128kbps', 'name': 'أحمد العجمي'},
+  {'id': 'Muhammad_Jibreel_128kbps', 'name': 'محمد جبريل'},
+  {'id': 'Muhammad_Ayyoub_128kbps', 'name': 'محمد أيوب'},
 ];
 
 // ─── Mushaf Responsive Config ─────────────────────────────────────────────────
