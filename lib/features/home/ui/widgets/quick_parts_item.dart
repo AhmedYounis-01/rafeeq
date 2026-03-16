@@ -1,22 +1,33 @@
+// ─── QuickPartsItem ───────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
-
+ 
 class QuickPartsItem extends StatelessWidget {
-  const QuickPartsItem({super.key, required this.title, required this.image});
-
+  const QuickPartsItem({
+    super.key,
+    required this.title,
+    required this.image,
+    // ارتفاع بيتمرر من QuickParts عشان يتحسب بشكل مركزي
+    this.height,
+  });
+ 
   final String title;
   final String image;
-
+  final double? height;
+ 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final isDark  = Theme.of(context).brightness == Brightness.dark;
+    final screenH = MediaQuery.of(context).size.height;
+    // لو ما اتمررش ارتفاع، استخدم قيمة افتراضية
+    final itemH = height ?? 140.h;
+ 
     return Expanded(
       child: GestureDetector(
         onTap: () {},
         child: Container(
-          height: 140.h,
+          height: itemH,
           decoration: BoxDecoration(
             color: AppColors.cardBackground(context),
             borderRadius: BorderRadius.circular(16.r),
@@ -31,14 +42,21 @@ class QuickPartsItem extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
-              // Upper area - icon
+              // الأيقونة تاخد الجزء الأكبر
               Expanded(
-                child: Center(child: Image.asset(image, fit: BoxFit.contain)),
+                flex: 3,
+                child: Padding(
+                  padding: EdgeInsets.all(screenH * 0.015),
+                  child: Image.asset(image, fit: BoxFit.contain),
+                ),
               ),
-              // Lower area - green label
+              // الـ label الأخضر
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
+                padding: EdgeInsets.symmetric(
+                  vertical: screenH * 0.012,
+                  horizontal: 4,
+                ),
                 decoration: BoxDecoration(
                   gradient: AppColors.getGreenGradient(context),
                 ),
@@ -49,7 +67,8 @@ class QuickPartsItem extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 15.sp,
+                      // حجم الخط نسبة من عرض الشاشة
+                      fontSize: MediaQuery.of(context).size.width * 0.038,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.3,
                     ),

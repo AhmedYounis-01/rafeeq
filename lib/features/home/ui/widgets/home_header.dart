@@ -1,3 +1,6 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// FILE: features/home/ui/widgets/home_header.dart
+// ═══════════════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
@@ -11,19 +14,29 @@ import 'package:adhan/adhan.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+ 
 class HomePrayerHeader extends StatelessWidget {
   const HomePrayerHeader({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    final screenW  = MediaQuery.of(context).size.width;
+    final screenH  = MediaQuery.of(context).size.height;
+ 
+    // على التابلت: padding أصغر من الجانب عشان الـ ListView عنده padding خارجي
+    final hPad = isTablet ? screenW * 0.02 : 16.w.toDouble();
+ 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: hPad),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 600),
-        constraints: BoxConstraints(minHeight: 280.h),
+        // الهيدر يأخذ نسبة من ارتفاع الشاشة
+        constraints: BoxConstraints(
+          minHeight: isTablet ? screenH * 0.32 : 280.h,
+        ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40.r),
+          borderRadius: BorderRadius.circular(isTablet ? 36 : 40.r),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -37,62 +50,41 @@ class HomePrayerHeader extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 20,
+              blurRadius: 24,
               offset: const Offset(0, 10),
             ),
           ],
         ),
         child: Stack(
           children: [
-            // Premium Pattern Overlay with soft shadow/overlay
             Positioned.fill(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(40.r),
-                child: Stack(
-                  children: [
-                    Opacity(
-                      opacity: 0.15,
-                      child: Image.asset(
-                        Assets.images.best.path,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.1),
-                      ),
-                    ),
-                  ],
+                borderRadius: BorderRadius.circular(isTablet ? 36 : 40.r),
+                child: Opacity(
+                  opacity: 0.15,
+                  child: Image.asset(Assets.images.best.path, fit: BoxFit.cover),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(24.w),
+              // padding داخلي أكبر على التابلت
+              padding: EdgeInsets.all(isTablet ? screenW * 0.04 : 24.w),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Header Navigation Row (static — no timer dependency)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildLocationInfo(context),
-                      _buildCalendarButton(context),
+                      _LocationInfo(isTablet: isTablet),
+                      _CalendarBtn(isTablet: isTablet),
                     ],
                   ),
-                  SizedBox(height: 20.h),
-                  // Central Clock Area
-                  Column(
-                    children: [
-                      // Greeting — only rebuilds when timer ticks
-                      _buildGreeting(context),
-                      SizedBox(height: 12.h),
-                      // Clock — only rebuilds when timer ticks
-                      _buildClock(context),
-                    ],
-                  ),
-                  SizedBox(height: 20.h),
-                  // Next Prayer Interactive Card
-                  _buildPrayerCard(context),
+                  SizedBox(height: isTablet ? screenH * 0.025 : 20.h),
+                  _Greeting(isTablet: isTablet),
+                  SizedBox(height: isTablet ? 8 : 12.h),
+                  _Clock(isTablet: isTablet, screenW: screenW),
+                  SizedBox(height: isTablet ? screenH * 0.025 : 20.h),
+                  _NextPrayerCard(isTablet: isTablet),
                 ],
               ),
             ),
@@ -101,258 +93,232 @@ class HomePrayerHeader extends StatelessWidget {
       ),
     );
   }
-
-  // ────────────────────────────────────────────
-  // Greeting widget — rebuilds only on TimerCubit
-  // ────────────────────────────────────────────
-  Widget _buildGreeting(BuildContext context) {
+}
+ 
+class _Greeting extends StatelessWidget {
+  final bool isTablet;
+  const _Greeting({required this.isTablet});
+ 
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<TimerCubit, TimerState>(
-      buildWhen: (prev, curr) => prev.now.hour != curr.now.hour,
-      builder: (context, timerState) {
-        String greeting;
-        int hour = timerState.now.hour;
-        if (hour >= 4 && hour < 11) {
-          greeting = "home.greetings.morning".tr(context: context);
-        } else if (hour >= 11 && hour < 16) {
-          greeting = "home.greetings.afternoon".tr(context: context);
-        } else if (hour >= 16 && hour < 21) {
-          greeting = "home.greetings.evening".tr(context: context);
-        } else {
-          greeting = "home.greetings.night".tr(context: context);
-        }
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.h),
-          child: Text(
-            greeting,
-            style: context.textTheme.labelMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.8),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.8,
+      buildWhen: (p, c) => p.now.hour != c.now.hour,
+      builder: (context, s) {
+        final h = s.now.hour;
+        final greeting = h >= 4 && h < 11
+            ? "home.greetings.morning".tr()
+            : h >= 11 && h < 16
+                ? "home.greetings.afternoon".tr()
+                : h >= 16 && h < 21
+                    ? "home.greetings.evening".tr()
+                    : "home.greetings.night".tr();
+        return Text(
+          greeting,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.85),
+            fontWeight: FontWeight.w600,
+            // حجم الخط يتحسب من عرض الشاشة
+            fontSize: MediaQuery.of(context).size.width * (isTablet ? 0.022 : 0.034),
+            letterSpacing: 0.6,
+          ),
+        );
+      },
+    );
+  }
+}
+ 
+class _Clock extends StatelessWidget {
+  final bool isTablet;
+  final double screenW;
+  const _Clock({required this.isTablet, required this.screenW});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TimerCubit, TimerState>(
+      builder: (context, s) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              s.currentTime,
+              style: TextStyle(
+                color: Colors.white,
+                // الساعة تاخد نسبة من عرض الشاشة — تبقى كبيرة على التابلت
+                fontSize: screenW * (isTablet ? 0.14 : 0.18),
+                fontWeight: FontWeight.w200,
+                height: 1,
+                letterSpacing: -2,
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  // ────────────────────────────────────────────
-  // Clock widget — rebuilds only on TimerCubit
-  // ────────────────────────────────────────────
-  Widget _buildClock(BuildContext context) {
-    return BlocBuilder<TimerCubit, TimerState>(
-      builder: (context, timerState) {
-        return FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                timerState.currentTime,
-                style: context.textTheme.displayLarge?.copyWith(
-                  color: Colors.white,
-                  fontSize: 82.sp,
-                  fontWeight: FontWeight.w200,
-                  height: 1,
-                  letterSpacing: -3,
+            SizedBox(width: screenW * 0.025),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  s.amPm.toUpperCase(),
+                  style: TextStyle(
+                    color: AppColors.secondary,
+                    fontWeight: FontWeight.w900,
+                    fontSize: screenW * (isTablet ? 0.038 : 0.055),
+                  ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    timerState.amPm.toUpperCase(),
-                    style: context.textTheme.titleLarge?.copyWith(
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 22.sp,
-                    ),
+                Container(
+                  height: 3,
+                  width: screenW * 0.03,
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  Container(
-                    height: 3.5.h,
-                    width: 14.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(2.r),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         );
       },
     );
   }
-
-  Widget _buildLocationInfo(BuildContext context) {
-    // final isDark = Theme.of(context).brightness == Brightness.dark;
+}
+ 
+class _LocationInfo extends StatelessWidget {
+  final bool isTablet;
+  const _LocationInfo({required this.isTablet});
+ 
+  @override
+  Widget build(BuildContext context) {
+    final fontSize = MediaQuery.of(context).size.width * (isTablet ? 0.019 : 0.031);
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
-        String location = "home.loading_location".tr(context: context);
-        if (state is PrayerTimeLoaded) {
-          location = "${state.cityName}, ${state.countryName}";
-        }
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.location_on_rounded,
-                color: AppColors.secondary,
-                size: 16.sp,
-              ),
-              SizedBox(width: 8.w),
-              Flexible(
-                child: Text(
-                  location,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textTheme.labelMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontWeight: FontWeight.w600,
-                  ),
+        final loc = state is PrayerTimeLoaded
+            ? "${state.cityName}, ${state.countryName}"
+            : "home.loading_location".tr();
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.location_on_rounded, color: AppColors.secondary,
+                size: MediaQuery.of(context).size.width * (isTablet ? 0.025 : 0.04)),
+            SizedBox(width: 6),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * (isTablet ? 0.28 : 0.38)),
+              child: Text(
+                loc,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.w600,
+                  fontSize: fontSize,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
   }
-
-  Widget _buildCalendarButton(BuildContext context) {
+}
+ 
+class _CalendarBtn extends StatelessWidget {
+  final bool isTablet;
+  const _CalendarBtn({required this.isTablet});
+ 
+  @override
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconSize = MediaQuery.of(context).size.width * (isTablet ? 0.032 : 0.05);
     return Material(
       color: Colors.white.withValues(alpha: isDark ? 0.12 : 0.2),
-      borderRadius: BorderRadius.circular(14.r),
+      borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () => _showPremiumCalendar(context),
-        borderRadius: BorderRadius.circular(14.r),
+        onTap: () => _show(context),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: EdgeInsets.all(10.w),
-          child: Icon(
-            Icons.calendar_month_rounded,
-            color: Colors.white,
-            size: 20.sp,
-          ),
+          padding: EdgeInsets.all(isTablet ? 11 : 10),
+          child: Icon(Icons.calendar_month_rounded, color: Colors.white, size: iconSize),
         ),
       ),
     );
   }
-
-  void _showPremiumCalendar(BuildContext context) {
+ 
+  void _show(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     showModalBottomSheet(
       context: context,
-      backgroundColor: context.colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       showDragHandle: true,
-      isDismissible: true,
       isScrollControlled: true,
-      builder: (context) => _CalendarModal(),
+      constraints: BoxConstraints(maxWidth: isTablet ? 600 : double.infinity),
+      builder: (_) => _CalendarModal(),
     );
   }
-
-  // ────────────────────────────────────────────
-  // Prayer Card — static layout, only countdown rebuilds
-  // ────────────────────────────────────────────
-  Widget _buildPrayerCard(BuildContext context) {
+}
+ 
+class _NextPrayerCard extends StatelessWidget {
+  final bool isTablet;
+  const _NextPrayerCard({required this.isTablet});
+ 
+  @override
+  Widget build(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
+    final fontSize = screenW * (isTablet ? 0.022 : 0.038);
+ 
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
         if (state is! PrayerTimeLoaded) return const SizedBox.shrink();
-        final next = state.nextPrayer;
-        final prayerName = _getPrayerNameLocalized(next);
         final nextTime = state.nextPrayerTime;
-        final prayerTimeStr = intl.DateFormat.jm(
-          context.locale.languageCode,
-        ).format(nextTime);
-
+        final timeStr = intl.DateFormat.jm(context.locale.languageCode).format(nextTime);
+        final name = _prayerName(state.nextPrayer);
+ 
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenW * (isTablet ? 0.03 : 0.045),
+            vertical: isTablet ? 16 : 14,
+          ),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.15),
-              width: 1.5,
-            ),
+            borderRadius: BorderRadius.circular(isTablet ? 22 : 24.r),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
           ),
           child: Row(
             children: [
-              _buildPrayerIcon(next),
-              SizedBox(width: 14.w),
+              _prayerIcon(state.nextPrayer, screenW, isTablet),
+              SizedBox(width: screenW * 0.025),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "home.next_prayer".tr(context: context),
-                      style: context.textTheme.labelMedium?.copyWith(
+                      "home.next_prayer".tr(),
+                      style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.7),
+                        fontSize: fontSize * 0.8,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 2.h),
+                    const SizedBox(height: 2),
                     Text(
-                      "$prayerName - $prayerTimeStr",
-                      style: context.textTheme.titleMedium?.copyWith(
+                      "$name - $timeStr",
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
-                        fontSize: 16.sp,
+                        fontSize: fontSize,
                       ),
                     ),
                   ],
                 ),
               ),
-              // Countdown — only this part rebuilds every second
-              _buildCountdown(context, nextTime),
+              _Countdown(nextTime: nextTime, isTablet: isTablet),
             ],
           ),
         );
       },
     );
   }
-
-  // ────────────────────────────────────────────
-  // Countdown widget — rebuilds only on TimerCubit
-  // ────────────────────────────────────────────
-  Widget _buildCountdown(BuildContext context, DateTime nextTime) {
-    return BlocBuilder<TimerCubit, TimerState>(
-      builder: (context, timerState) {
-        String countdown = "--:--:--";
-        final diff = nextTime.difference(timerState.now);
-        if (!diff.isNegative) {
-          final hours = diff.inHours;
-          final minutes = diff.inMinutes % 60;
-          final seconds = diff.inSeconds % 60;
-          countdown =
-              "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-        }
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: AppColors.secondary.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Text(
-            countdown,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: AppColors.secondary,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'monospace',
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildPrayerIcon(Prayer prayer) {
+ 
+  Widget _prayerIcon(Prayer prayer, double screenW, bool isTablet) {
     IconData icon;
     if (prayer == Prayer.fajr || prayer == Prayer.isha) {
       icon = Icons.nights_stay_rounded;
@@ -362,247 +328,129 @@ class HomePrayerHeader extends StatelessWidget {
       icon = Icons.wb_sunny_rounded;
     }
     return Container(
-      padding: EdgeInsets.all(8.w),
+      padding: EdgeInsets.all(screenW * (isTablet ? 0.018 : 0.022)),
       decoration: BoxDecoration(
         color: AppColors.secondary.withValues(alpha: 0.2),
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, color: AppColors.secondary, size: 20.sp),
+      child: Icon(icon, color: AppColors.secondary,
+          size: screenW * (isTablet ? 0.032 : 0.05)),
     );
   }
-
-  String _getPrayerNameLocalized(Prayer prayer) {
+ 
+  String _prayerName(Prayer prayer) {
     switch (prayer) {
-      case Prayer.fajr:
-        return "home.prayer_names.fajr".tr();
-      case Prayer.sunrise:
-        return "home.prayer_names.sunrise".tr();
-      case Prayer.dhuhr:
-        return "home.prayer_names.dhuhr".tr();
-      case Prayer.asr:
-        return "home.prayer_names.asr".tr();
-      case Prayer.maghrib:
-        return "home.prayer_names.maghrib".tr();
-      case Prayer.isha:
-        return "home.prayer_names.isha".tr();
-      default:
-        return "---";
+      case Prayer.fajr:    return "home.prayer_names.fajr".tr();
+      case Prayer.sunrise: return "home.prayer_names.sunrise".tr();
+      case Prayer.dhuhr:   return "home.prayer_names.dhuhr".tr();
+      case Prayer.asr:     return "home.prayer_names.asr".tr();
+      case Prayer.maghrib: return "home.prayer_names.maghrib".tr();
+      case Prayer.isha:    return "home.prayer_names.isha".tr();
+      default:             return "---";
     }
   }
 }
-
+ 
+class _Countdown extends StatelessWidget {
+  final DateTime nextTime;
+  final bool isTablet;
+  const _Countdown({required this.nextTime, required this.isTablet});
+ 
+  @override
+  Widget build(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
+    return BlocBuilder<TimerCubit, TimerState>(
+      builder: (context, s) {
+        final diff = nextTime.difference(s.now);
+        final text = diff.isNegative
+            ? "--:--:--"
+            : "${diff.inHours.toString().padLeft(2,'0')}:"
+              "${(diff.inMinutes%60).toString().padLeft(2,'0')}:"
+              "${(diff.inSeconds%60).toString().padLeft(2,'0')}";
+        return Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: screenW * (isTablet ? 0.022 : 0.025),
+            vertical: isTablet ? 8 : 6,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.secondary.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: AppColors.secondary,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'monospace',
+              fontSize: screenW * (isTablet ? 0.02 : 0.028),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+ 
+// Calendar Modal بدون تغيير
 class _CalendarModal extends StatefulWidget {
   @override
   State<_CalendarModal> createState() => _CalendarModalState();
 }
-
+ 
 class _CalendarModalState extends State<_CalendarModal> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
+ 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.75,
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF141C18) : Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
-      ),
-      child: Stack(
-        children: [
-          // Background Decorative elements
-          Positioned(
-            top: -20,
-            left: -20,
-            child: Container(
-              width: 150.w,
-              height: 150.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withValues(alpha: 0.05),
-              ),
-            ),
-          ),
-          Column(
-            children: [
-              // SizedBox(height: 12.h),
-              Padding(
-                padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 10.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "home.calendar_title".tr(context: context),
-                      style: context.textTheme.headlineSmall?.copyWith(
-                        color: isDark ? Colors.white : AppColors.textPrimary,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22.sp,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.close_rounded,
-                        color: isDark ? Colors.white60 : Colors.black45,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: TableCalendar(
-                          firstDay: DateTime.now().subtract(
-                            const Duration(days: 365 * 5),
-                          ),
-                          lastDay: DateTime.now().add(
-                            const Duration(days: 365 * 5),
-                          ),
-                          focusedDay: _focusedDay,
-                          locale: context.locale.languageCode,
-                          selectedDayPredicate: (day) =>
-                              isSameDay(_selectedDay, day),
-                          onDaySelected: (selectedDay, focusedDay) {
-                            setState(() {
-                              _selectedDay = selectedDay;
-                              _focusedDay = focusedDay;
-                            });
-                          },
-                          calendarStyle: CalendarStyle(
-                            todayDecoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            todayTextStyle: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.sp,
-                            ),
-                            selectedDecoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            selectedTextStyle: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.sp,
-                            ),
-                            defaultTextStyle: TextStyle(
-                              color: isDark
-                                  ? Colors.white70
-                                  : AppColors.textPrimary,
-                              fontSize: 15.sp,
-                            ),
-                            weekendTextStyle: TextStyle(
-                              color: AppColors.error.withValues(alpha: 0.7),
-                              fontSize: 15.sp,
-                            ),
-                            outsideDaysVisible: false,
-                          ),
-                          headerStyle: HeaderStyle(
-                            formatButtonVisible: false,
-                            titleCentered: true,
-                            titleTextStyle: context.textTheme.titleMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? Colors.white
-                                      : AppColors.textPrimary,
-                                ),
-                            leftChevronIcon: Icon(
-                              Icons.chevron_left_rounded,
-                              color: AppColors.primary,
-                            ),
-                            rightChevronIcon: Icon(
-                              Icons.chevron_right_rounded,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                          daysOfWeekStyle: DaysOfWeekStyle(
-                            weekdayStyle: TextStyle(
-                              color: isDark ? Colors.white38 : Colors.black38,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.sp,
-                            ),
-                            weekendStyle: TextStyle(
-                              color: AppColors.error.withValues(alpha: 0.4),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 24.h),
-                      if (_selectedDay != null)
-                        _buildPrayerSchedule(context, _selectedDay!),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPrayerSchedule(BuildContext context, DateTime date) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dateStr = intl.DateFormat(
-      'EEEE, d MMMM',
-      context.locale.languageCode,
-    ).format(date);
-
-    return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.03)
-            : AppColors.primary.withValues(alpha: 0.03),
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(
-          color: isDark
-              ? Colors.white10
-              : AppColors.primary.withValues(alpha: 0.05),
-        ),
-      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.event_note_rounded,
-                color: AppColors.secondary,
-                size: 20.sp,
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                dateStr,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : AppColors.textPrimary,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 8, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("home.calendar_title".tr(),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : AppColors.textPrimary,
+                      fontWeight: FontWeight.w900, fontSize: 20)),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.close_rounded,
+                      color: isDark ? Colors.white60 : Colors.black45),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            "home.prayer_schedule_hint".tr(context: context),
-            style: context.textTheme.bodySmall?.copyWith(
-              color: isDark ? Colors.white38 : Colors.black38,
+              ],
             ),
           ),
-          // In a real app, you'd calculate prayer times for this specific date here.
-          // For now, this is a beautiful placeholder showing the schedule layout.
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TableCalendar(
+                firstDay: DateTime.now().subtract(const Duration(days: 365 * 5)),
+                lastDay: DateTime.now().add(const Duration(days: 365 * 5)),
+                focusedDay: _focusedDay,
+                locale: context.locale.languageCode,
+                selectedDayPredicate: (d) => isSameDay(_selectedDay, d),
+                onDaySelected: (s, f) => setState(() { _selectedDay = s; _focusedDay = f; }),
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false, titleCentered: true,
+                  leftChevronIcon: const Icon(Icons.chevron_left_rounded, color: AppColors.primary),
+                  rightChevronIcon: const Icon(Icons.chevron_right_rounded, color: AppColors.primary),
+                ),
+                calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.15), shape: BoxShape.circle),
+                  todayTextStyle: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  selectedDecoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                  selectedTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  outsideDaysVisible: false,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
