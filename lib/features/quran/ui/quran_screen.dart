@@ -25,9 +25,61 @@ const List<Map<String, String>> kReciters = [
   {'id': 'Saood_ash-Shuraym_128kbps', 'name': 'سعود الشريم'},
 ];
 
+// ─── Mushaf Responsive Config ─────────────────────────────────────────────────
+// كل الأحجام بتتحسب من shortestSide عشان تبقى consistent بغض النظر عن الـ orientation
+class _MushafConfig {
+  final double shortestSide;
+  _MushafConfig(BuildContext context)
+    : shortestSide = MediaQuery.of(context).size.shortestSide;
+
+  bool get isTablet => shortestSide >= 600;
+
+  // ─── خط القرآن — الأهم ────────────────────────────────────────────────────
+  // shortestSide 360 (phone) → 23px
+  // shortestSide 600 (small tablet) → 28px
+  // shortestSide 800 (large tablet) → 34px
+  double get quranFontSize => (shortestSide * 0.063).clamp(22.0, 36.0);
+
+  double get basmalaFontSize => quranFontSize * 1.05;
+  double get lineHeight => isTablet ? 2.25 : 2.1;
+
+  // ─── UI fonts ─────────────────────────────────────────────────────────────
+  double get surahNameFontSize => (shortestSide * 0.058).clamp(18.0, 32.0);
+  double get pageNumFontSize => (shortestSide * 0.085).clamp(26.0, 46.0);
+  double get overlayLabelSize => (shortestSide * 0.028).clamp(10.0, 16.0);
+  double get overlayJuzSize => (shortestSide * 0.048).clamp(16.0, 26.0);
+  double get overlaySurahSize => (shortestSide * 0.042).clamp(14.0, 24.0);
+
+  // ─── Layout ───────────────────────────────────────────────────────────────
+  // على التابلت: padding أكبر لمحاكاة هوامش المصحف الحقيقي
+  double get hPadding => isTablet ? shortestSide * 0.06 : 16.0;
+  double get vPadding => isTablet ? 20.0 : 12.0;
+  // حد أقصى للعرض على التابلت — مش أكثر من 800px
+  double get maxWidth => isTablet ? shortestSide * 1.1 : double.infinity;
+
+  // ─── Badge (علامة نهاية الآية) ────────────────────────────────────────────
+  double get badgeSize => (shortestSide * 0.075).clamp(28.0, 44.0);
+
+  // ─── Sheets ───────────────────────────────────────────────────────────────
+  double get maxSheetWidth => isTablet ? 580.0 : double.infinity;
+
+  // ─── Audio Player ─────────────────────────────────────────────────────────
+  double get playerLabelSize => (shortestSide * 0.038).clamp(13.0, 20.0);
+  double get playerBtnSize => (shortestSide * 0.1).clamp(36.0, 56.0);
+
+  // ─── Surah header ─────────────────────────────────────────────────────────
+  double get headerBtnSize => (shortestSide * 0.1).clamp(34.0, 54.0);
+  double get headerCircleSize => (shortestSide * 0.09).clamp(30.0, 48.0);
+  double get headerIconSize => (shortestSide * 0.05).clamp(18.0, 28.0);
+  double get headerVerseCount => (shortestSide * 0.028).clamp(10.0, 15.0);
+
+  // ─── Sheet OptionBtns ─────────────────────────────────────────────────────
+  double get optionBtnSize => (shortestSide * 0.155).clamp(54.0, 80.0);
+  double get optionFontSize => (shortestSide * 0.032).clamp(11.0, 16.0);
+}
+
 class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
-
   @override
   State<QuranScreen> createState() => _QuranScreenState();
 }
@@ -39,13 +91,12 @@ class _QuranScreenState extends State<QuranScreen>
 
   final PageController _pageController = PageController();
   final AudioPlayer _player = AudioPlayer();
-
   final Map<String, LongPressGestureRecognizer> _recognizers = {};
+
   late SharedPreferences _prefs;
   StreamSubscription<PlayerState>? _stateSub;
   StreamSubscription<int?>? _indexSub;
   bool _audioBusy = false;
-
   List<Map<String, int>> _sequenceMap = [];
 
   int _currentPage = 1;
@@ -63,20 +114,6 @@ class _QuranScreenState extends State<QuranScreen>
     (r) => r['id'] == _selectedReciterId,
     orElse: () => kReciters.first,
   )['name']!;
-
-  // ─── [R1] helper بسيط بدل استيراد ResponsiveHelper ───────────────────────
-  // بيستخدم shortestSide مش width عشان ما يتأثرش بالـ landscape
-  bool get _isTablet =>
-      MediaQuery.of(context).size.shortestSide >= 600;
-
-  double get _quranFontSize => _isTablet ? 28 : 23;
-  double get _surahNameFontSize => _isTablet ? 28 : 22;
-  double get _pageNumFontSize => _isTablet ? 42 : 32;
-  double get _hPadding => _isTablet ? 32 : 16;
-  // عرض أقصى للمحتوى على التابلت — القرآن مش المفروض يتمدد على شاشة 12 بوصة
-  double get _maxContentWidth => 680;
-  // عرض أقصى للـ bottom sheets
-  double get _maxSheetWidth => _isTablet ? 580 : double.infinity;
 
   Color _bgColor(bool isDark) =>
       isDark ? AppColors.backgroundDark : const Color(0xFFFCF8EE);
@@ -143,9 +180,8 @@ class _QuranScreenState extends State<QuranScreen>
     });
   }
 
-  Future<void> _loadLastPage() async {
-    _currentPage = _prefs.getInt('last_page') ?? 1;
-  }
+  Future<void> _loadLastPage() async =>
+      _currentPage = _prefs.getInt('last_page') ?? 1;
 
   Future<void> _loadPrefs() async {
     _lastBookmarkPage = _prefs.getInt('last_bookmark_page');
@@ -194,79 +230,80 @@ class _QuranScreenState extends State<QuranScreen>
   void _showNoInternetSnack() {
     if (!mounted) return;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        content: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1A1710) : const Color(0xFFFDF8EE),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: Colors.orange.withValues(alpha: 0.6)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.orange.withValues(alpha: 0.12),
-                  border: Border.all(
-                    color: Colors.orange.withValues(alpha: 0.4),
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          content: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1A1710) : const Color(0xFFFDF8EE),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.6)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.orange.withValues(alpha: 0.12),
+                    border: Border.all(
+                      color: Colors.orange.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.wifi_off_rounded,
+                    color: Colors.orange,
+                    size: 18,
                   ),
                 ),
-                child: const Icon(
-                  Icons.wifi_off_rounded,
-                  color: Colors.orange,
-                  size: 18,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'لا يوجد اتصال بالإنترنت',
-                      textDirection: TextDirection.rtl,
-                      style: GoogleFonts.amiri(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? const Color(0xFFE8D5B7)
-                            : const Color(0xFF1A1208),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'لا يوجد اتصال بالإنترنت',
+                        textDirection: TextDirection.rtl,
+                        style: GoogleFonts.amiri(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? const Color(0xFFE8D5B7)
+                              : const Color(0xFF1A1208),
+                        ),
                       ),
-                    ),
-                    Text(
-                      'تحقق من الاتصال وأعد المحاولة',
-                      textDirection: TextDirection.rtl,
-                      style: GoogleFonts.amiri(
-                        fontSize: 11,
-                        color: Colors.orange.withValues(alpha: 0.8),
+                      Text(
+                        'تحقق من الاتصال وأعد المحاولة',
+                        textDirection: TextDirection.rtl,
+                        style: GoogleFonts.amiri(
+                          fontSize: 11,
+                          color: Colors.orange.withValues(alpha: 0.8),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   String _audioUrl(int surah, int ayah) {
@@ -301,8 +338,7 @@ class _QuranScreenState extends State<QuranScreen>
       });
       await _player.setUrl(_audioUrl(surah, ayah));
       await _player.play();
-    } catch (e, st) {
-      debugPrint('Audio error [_playAyah]: $e\n$st');
+    } catch (e) {
       if (mounted) {
         _showNoInternetSnack();
         _resetAudioState();
@@ -323,17 +359,12 @@ class _QuranScreenState extends State<QuranScreen>
       return;
     }
     _audioBusy = true;
-
-    final verseCount = quran.getVerseCount(surah);
-    _sequenceMap = List.generate(
-      verseCount,
-      (i) => {'surah': surah, 'ayah': i + 1},
-    );
+    final count = quran.getVerseCount(surah);
+    _sequenceMap = List.generate(count, (i) => {'surah': surah, 'ayah': i + 1});
     final sources = List.generate(
-      verseCount,
+      count,
       (i) => AudioSource.uri(Uri.parse(_audioUrl(surah, i + 1))),
     );
-
     try {
       await _player.stop();
       if (!mounted) return;
@@ -351,8 +382,7 @@ class _QuranScreenState extends State<QuranScreen>
         preload: false,
       );
       await _player.play();
-    } catch (e, st) {
-      debugPrint('Audio error [_playSurah]: $e\n$st');
+    } catch (e) {
       if (mounted) {
         _showNoInternetSnack();
         _resetAudioState();
@@ -369,21 +399,19 @@ class _QuranScreenState extends State<QuranScreen>
       return;
     }
     _audioBusy = true;
-
     final pageData = quran.getPageData(page);
     final sources = <AudioSource>[];
-    final newSequenceMap = <Map<String, int>>[];
+    final newMap = <Map<String, int>>[];
     for (final item in pageData) {
       final s = item['surah'] as int;
       final start = item['start'] as int;
       final end = item['end'] as int;
       for (int a = start; a <= end; a++) {
         sources.add(AudioSource.uri(Uri.parse(_audioUrl(s, a))));
-        newSequenceMap.add({'surah': s, 'ayah': a});
+        newMap.add({'surah': s, 'ayah': a});
       }
     }
-    _sequenceMap = newSequenceMap;
-
+    _sequenceMap = newMap;
     try {
       await _player.stop();
       if (!mounted) return;
@@ -401,8 +429,7 @@ class _QuranScreenState extends State<QuranScreen>
         preload: false,
       );
       await _player.play();
-    } catch (e, st) {
-      debugPrint('Audio error [_playPage]: $e\n$st');
+    } catch (e) {
       if (mounted) {
         _showNoInternetSnack();
         _resetAudioState();
@@ -437,17 +464,11 @@ class _QuranScreenState extends State<QuranScreen>
     return quran.getJuzNumber(data.first['surah'], data.first['start']);
   }
 
-  int _getQuarter(int page) {
-    final rem = (page - 1) % 10;
-    return (rem / 2.5).floor().clamp(0, 3);
-  }
-
   String _getHizb(int page) {
-    final hizbNum = ((page - 1) / 10).floor() + 1;
-    final clampedHizb = hizbNum.clamp(1, 60);
-    final quarter = _getQuarter(page);
+    final hizbNum = ((page - 1) / 10).floor().clamp(0, 59) + 1;
+    final quarter = (((page - 1) % 10) / 2.5).floor().clamp(0, 3);
     const quarters = ['', ' ½', ' ¾', ''];
-    return 'حزب $clampedHizb${quarters[quarter]}';
+    return 'حزب $hizbNum${quarters[quarter]}';
   }
 
   String _getSurahDisplayName(int page) {
@@ -466,6 +487,7 @@ class _QuranScreenState extends State<QuranScreen>
   }
 
   Future<void> _showPageOptions(bool isDark) {
+    final cfg = _MushafConfig(context);
     final isBookmarked = _isPageBookmarked(_currentPage);
     final isPlayingPage = _isPlaying && _isSurahMode;
     final gold = _goldColor(isDark);
@@ -474,8 +496,7 @@ class _QuranScreenState extends State<QuranScreen>
       context: context,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.2),
-      // ─── [R2] على التابلت: Sheet بعرض محدود في المنتصف ───────────────
-      constraints: BoxConstraints(maxWidth: _maxSheetWidth),
+      constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
       builder: (_) => _PageOptionsSheet(
         page: _currentPage,
         hizb: _getHizb(_currentPage),
@@ -487,6 +508,7 @@ class _QuranScreenState extends State<QuranScreen>
         bgColor: isDark ? const Color(0xFF1A1710) : const Color(0xFFFDF8EE),
         textColor: _textColor(isDark),
         selectedReciterName: _selectedReciterName,
+        cfg: cfg,
         onPlayPage: () {
           Navigator.pop(context);
           isPlayingPage && _isPlaying
@@ -527,10 +549,13 @@ class _QuranScreenState extends State<QuranScreen>
     );
   }
 
+  // ─── Build ────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cfg = _MushafConfig(context);
 
     if (_isLoading) {
       return Scaffold(
@@ -542,8 +567,7 @@ class _QuranScreenState extends State<QuranScreen>
               Text(
                 'بسم الله الرحمن الرحيم',
                 style: GoogleFonts.amiriQuran(
-                  // ─── [R3] font size مرن حتى في شاشة اللودينج ──────────
-                  fontSize: _isTablet ? 30 : 24,
+                  fontSize: cfg.basmalaFontSize,
                   color: _goldColor(isDark),
                 ),
               ),
@@ -568,7 +592,7 @@ class _QuranScreenState extends State<QuranScreen>
               _savePage(_currentPage);
               HapticFeedback.lightImpact();
             },
-            itemBuilder: (_, i) => _buildMushafPage(i + 1, isDark),
+            itemBuilder: (_, i) => _buildMushafPage(i + 1, isDark, cfg),
           ),
           Positioned(
             top: 0,
@@ -579,11 +603,10 @@ class _QuranScreenState extends State<QuranScreen>
               duration: const Duration(milliseconds: 220),
               child: IgnorePointer(
                 ignoring: !_showOverlay,
-                child: _buildTopOverlayContent(isDark),
+                child: _buildTopOverlay(isDark, cfg),
               ),
             ),
           ),
-          // ─── [R4] الـ audio player يتمركز ويأخذ عرض محدود على التابلت ──
           if (_playingSurah != null)
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom + 12,
@@ -591,8 +614,10 @@ class _QuranScreenState extends State<QuranScreen>
               right: 14,
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 640),
-                  child: _buildAudioPlayer(isDark),
+                  constraints: BoxConstraints(
+                    maxWidth: cfg.isTablet ? 660 : double.infinity,
+                  ),
+                  child: _buildAudioPlayer(isDark, cfg),
                 ),
               ),
             ),
@@ -601,7 +626,9 @@ class _QuranScreenState extends State<QuranScreen>
     );
   }
 
-  Widget _buildMushafPage(int page, bool isDark) {
+  // ─── Mushaf Page ──────────────────────────────────────────────────────────
+
+  Widget _buildMushafPage(int page, bool isDark, _MushafConfig cfg) {
     final pageData = quran.getPageData(page);
     final isBookmarked = _isPageBookmarked(page);
 
@@ -613,20 +640,19 @@ class _QuranScreenState extends State<QuranScreen>
           child: Stack(
             children: [
               SafeArea(
-                // ─── [R5] المحتوى يتمركز ولا يتمدد على شاشات الـ tablet ──
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: _maxContentWidth),
+                    // على التابلت: نسمح للمحتوى يكون أعرض — مش نضيّقه
+                    constraints: BoxConstraints(maxWidth: cfg.maxWidth),
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      // ─── [R6] padding أكبر جانبياً على التابلت ───────────
                       padding: EdgeInsets.symmetric(
-                        horizontal: _hPadding,
-                        vertical: 8,
+                        horizontal: cfg.hPadding,
+                        vertical: cfg.vPadding,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: _buildPageVerses(pageData, isDark),
+                        children: _buildPageVerses(pageData, isDark, cfg),
                       ),
                     ),
                   ),
@@ -635,8 +661,12 @@ class _QuranScreenState extends State<QuranScreen>
               if (isBookmarked)
                 Positioned(
                   top: 0,
-                  right: 20,
-                  child: _LastReadRibbon(color: _goldColor(isDark)),
+                  right: cfg.isTablet ? 28 : 20,
+                  child: _LastReadRibbon(
+                    color: _goldColor(isDark),
+                    width: cfg.isTablet ? 28 : 22,
+                    height: cfg.isTablet ? 74 : 60,
+                  ),
                 ),
             ],
           ),
@@ -645,9 +675,10 @@ class _QuranScreenState extends State<QuranScreen>
     );
   }
 
-  Widget _buildTopOverlayContent(bool isDark) {
+  Widget _buildTopOverlay(bool isDark, _MushafConfig cfg) {
     final juz = _getJuz(_currentPage);
     final surahName = _getSurahDisplayName(_currentPage);
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -677,15 +708,14 @@ class _QuranScreenState extends State<QuranScreen>
               Text(
                 'الجزء',
                 style: GoogleFonts.amiri(
-                  fontSize: 11,
+                  fontSize: cfg.overlayLabelSize,
                   color: Colors.white.withValues(alpha: 0.6),
                 ),
               ),
               Text(
                 '$juz',
                 style: GoogleFonts.amiri(
-                  // ─── [R7] font size مرن في الـ overlay ─────────────────
-                  fontSize: _isTablet ? 26 : 20,
+                  fontSize: cfg.overlayJuzSize,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -699,8 +729,7 @@ class _QuranScreenState extends State<QuranScreen>
                 Text(
                   '$_currentPage',
                   style: GoogleFonts.amiri(
-                    // ─── [R8] رقم الصفحة أكبر على التابلت ──────────────
-                    fontSize: _pageNumFontSize,
+                    fontSize: cfg.pageNumFontSize,
                     fontWeight: FontWeight.bold,
                     color: _goldColor(isDark),
                     height: 1,
@@ -722,15 +751,14 @@ class _QuranScreenState extends State<QuranScreen>
               Text(
                 'السورة',
                 style: GoogleFonts.amiri(
-                  fontSize: 11,
+                  fontSize: cfg.overlayLabelSize,
                   color: Colors.white.withValues(alpha: 0.6),
                 ),
               ),
               Text(
                 surahName,
                 style: GoogleFonts.amiri(
-                  // ─── [R9] اسم السورة أكبر على التابلت ──────────────────
-                  fontSize: _isTablet ? 22 : 18,
+                  fontSize: cfg.overlaySurahSize,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -742,24 +770,23 @@ class _QuranScreenState extends State<QuranScreen>
     );
   }
 
-  List<Widget> _buildPageVerses(List pageData, bool isDark) {
+  List<Widget> _buildPageVerses(List pageData, bool isDark, _MushafConfig cfg) {
     final widgets = <Widget>[];
     for (final item in pageData) {
       final surah = item['surah'] as int;
       final start = item['start'] as int;
       final end = item['end'] as int;
       if (start == 1) {
-        widgets.add(_buildSurahHeader(surah, isDark));
-        if (surah != 1 && surah != 9) {
-          widgets.add(_buildBasmalaLine(isDark));
-        }
+        widgets.add(_buildSurahHeader(surah, isDark, cfg));
+        if (surah != 1 && surah != 9)
+          widgets.add(_buildBasmalaLine(isDark, cfg));
       }
-      widgets.add(_buildVerseBlock(surah, start, end, isDark));
+      widgets.add(_buildVerseBlock(surah, start, end, isDark, cfg));
     }
     return widgets;
   }
 
-  Widget _buildBasmalaLine(bool isDark) {
+  Widget _buildBasmalaLine(bool isDark, _MushafConfig cfg) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, top: 2),
       child: Text(
@@ -767,8 +794,7 @@ class _QuranScreenState extends State<QuranScreen>
         textDirection: TextDirection.rtl,
         textAlign: TextAlign.center,
         style: GoogleFonts.amiriQuran(
-          // ─── [R10] البسملة أكبر على التابلت ──────────────────────────
-          fontSize: _isTablet ? 30 : 24,
+          fontSize: cfg.basmalaFontSize,
           color: _textColor(isDark),
           height: 1.8,
         ),
@@ -788,107 +814,116 @@ class _QuranScreenState extends State<QuranScreen>
         const marker = '\u0631\u0651\u064E\u062D\u0650\u064A\u0645\u0650';
         final idx = text.indexOf(marker);
         if (idx != -1) {
-          final afterBasmala = text.substring(idx + marker.length).trimLeft();
-          return afterBasmala.isEmpty ? text : afterBasmala;
+          final after = text.substring(idx + marker.length).trimLeft();
+          return after.isEmpty ? text : after;
         }
       }
     }
     return text;
   }
 
-  Widget _buildSurahHeader(int surah, bool isDark) {
+  Widget _buildSurahHeader(int surah, bool isDark, _MushafConfig cfg) {
     final isPlaying = _playingSurah == surah && _isSurahMode;
     final gold = _goldColor(isDark);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: gold.withValues(alpha: 0.4)),
-          borderRadius: BorderRadius.circular(10),
-          color: isDark
-              ? AppColors.backgroundCardDark.withValues(alpha: 0.5)
-              : gold.withValues(alpha: 0.04),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () => _playSurah(surah),
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isPlaying
-                      ? gold.withValues(alpha: 0.15)
-                      : Colors.transparent,
-                  border: Border.all(color: gold.withValues(alpha: 0.35)),
-                ),
-                child: _isAudioLoading && _playingSurah == surah && _isSurahMode
-                    ? SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: gold,
-                        ),
-                      )
-                    : Icon(
-                        isPlaying && _isPlaying
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
-                        color: gold,
-                        size: 22,
-                      ),
-              ),
-            ),
-            Column(
-              children: [
-                Text(
-                  quran.getSurahNameArabic(surah),
-                  style: GoogleFonts.amiri(
-                    // ─── [R11] اسم السورة في الـ header مرن ────────────────
-                    fontSize: _surahNameFontSize,
-                    color: _textColor(isDark),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '${quran.getVerseCount(surah)} آية',
-                  style: GoogleFonts.amiri(
-                    fontSize: 11,
-                    color: gold.withValues(alpha: 0.7),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              width: 36,
-              height: 36,
+      padding: EdgeInsets.symmetric(
+        horizontal: cfg.isTablet ? 20 : 16,
+        vertical: cfg.isTablet ? 12 : 10,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: gold.withValues(alpha: 0.4)),
+        borderRadius: BorderRadius.circular(cfg.isTablet ? 14 : 10),
+        color: isDark
+            ? AppColors.backgroundCardDark.withValues(alpha: 0.5)
+            : gold.withValues(alpha: 0.04),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // زر تشغيل السورة
+          GestureDetector(
+            onTap: () => _playSurah(surah),
+            child: Container(
+              width: cfg.headerBtnSize,
+              height: cfg.headerBtnSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: gold.withValues(alpha: 0.4)),
-                color: gold.withValues(alpha: 0.05),
+                color: isPlaying
+                    ? gold.withValues(alpha: 0.15)
+                    : Colors.transparent,
+                border: Border.all(color: gold.withValues(alpha: 0.35)),
               ),
-              child: Center(
-                child: Text(
-                  '$surah',
-                  style: GoogleFonts.amiri(
-                    fontSize: 13,
-                    color: gold,
-                    fontWeight: FontWeight.bold,
-                  ),
+              child: _isAudioLoading && _playingSurah == surah && _isSurahMode
+                  ? Padding(
+                      padding: EdgeInsets.all(cfg.headerBtnSize * 0.22),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: gold,
+                      ),
+                    )
+                  : Icon(
+                      isPlaying && _isPlaying
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
+                      color: gold,
+                      size: cfg.headerIconSize,
+                    ),
+            ),
+          ),
+          // اسم السورة وعدد الآيات
+          Column(
+            children: [
+              Text(
+                quran.getSurahNameArabic(surah),
+                style: GoogleFonts.amiri(
+                  fontSize: cfg.surahNameFontSize,
+                  color: _textColor(isDark),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${quran.getVerseCount(surah)} آية',
+                style: GoogleFonts.amiri(
+                  fontSize: cfg.headerVerseCount,
+                  color: gold.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+          // دائرة رقم السورة
+          Container(
+            width: cfg.headerCircleSize,
+            height: cfg.headerCircleSize,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: gold.withValues(alpha: 0.4)),
+              color: gold.withValues(alpha: 0.05),
+            ),
+            child: Center(
+              child: Text(
+                '$surah',
+                style: GoogleFonts.amiri(
+                  fontSize: cfg.headerIconSize * 0.7,
+                  color: gold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildVerseBlock(int surah, int start, int end, bool isDark) {
+  Widget _buildVerseBlock(
+    int surah,
+    int start,
+    int end,
+    bool isDark,
+    _MushafConfig cfg,
+  ) {
     if (start > end) return const SizedBox.shrink();
 
     return Directionality(
@@ -901,8 +936,8 @@ class _QuranScreenState extends State<QuranScreen>
             final isPlayingThis =
                 _playingSurah == surah && _playingAyah == ayah;
             final isSajdah = quran.isSajdahVerse(surah, ayah);
-
             final key = '${surah}_$ayah';
+
             final recognizer =
                 _recognizers.putIfAbsent(
                     key,
@@ -920,10 +955,9 @@ class _QuranScreenState extends State<QuranScreen>
                 TextSpan(
                   text: _verseText(surah, ayah),
                   style: GoogleFonts.amiriQuran(
-                    // ─── [R12] حجم خط القرآن مرن — أكبر على التابلت ──────
-                    fontSize: _quranFontSize,
+                    fontSize: cfg.quranFontSize,
                     color: _textColor(isDark),
-                    height: 2.1,
+                    height: cfg.lineHeight,
                     backgroundColor: isPlayingThis
                         ? _goldColor(isDark).withValues(alpha: 0.18)
                         : null,
@@ -937,7 +971,8 @@ class _QuranScreenState extends State<QuranScreen>
                     isPlaying: isPlayingThis,
                     gold: _goldColor(isDark),
                     isDark: isDark,
-                    onTap: () => _showAyahOptions(surah, ayah, isDark),
+                    size: cfg.badgeSize,
+                    onTap: () => _showAyahOptions(surah, ayah, isDark, cfg),
                   ),
                 ),
                 if (isSajdah)
@@ -947,7 +982,7 @@ class _QuranScreenState extends State<QuranScreen>
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(
                         Icons.south_rounded,
-                        size: 11,
+                        size: cfg.badgeSize * 0.32,
                         color: _goldColor(isDark).withValues(alpha: 0.6),
                       ),
                     ),
@@ -961,7 +996,7 @@ class _QuranScreenState extends State<QuranScreen>
     );
   }
 
-  void _showAyahOptions(int surah, int ayah, bool isDark) {
+  void _showAyahOptions(int surah, int ayah, bool isDark, _MushafConfig cfg) {
     final isPlayingThis =
         _playingSurah == surah && _playingAyah == ayah && !_isSurahMode;
     final gold = _goldColor(isDark);
@@ -969,8 +1004,7 @@ class _QuranScreenState extends State<QuranScreen>
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      // ─── [R13] Sheet الآية بعرض محدود على التابلت ────────────────────
-      constraints: BoxConstraints(maxWidth: _maxSheetWidth),
+      constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
       builder: (_) => Container(
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1C1A14) : const Color(0xFFFDF8EE),
@@ -988,8 +1022,7 @@ class _QuranScreenState extends State<QuranScreen>
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.center,
               style: GoogleFonts.amiriQuran(
-                // ─── [R14] الآية في الـ sheet أكبر على التابلت ───────────
-                fontSize: _isTablet ? 24 : 19,
+                fontSize: cfg.quranFontSize * 0.88,
                 color: isDark
                     ? const Color(0xFFE8D5B7)
                     : const Color(0xFF1A0A00),
@@ -1000,7 +1033,10 @@ class _QuranScreenState extends State<QuranScreen>
             ),
             Text(
               '${quran.getSurahNameArabic(surah)} • الآية $ayah',
-              style: GoogleFonts.amiri(fontSize: 12, color: gold),
+              style: GoogleFonts.amiri(
+                fontSize: cfg.overlayLabelSize + 2,
+                color: gold,
+              ),
             ),
             const SizedBox(height: 20),
             Row(
@@ -1012,6 +1048,7 @@ class _QuranScreenState extends State<QuranScreen>
                       : Icons.play_arrow_rounded,
                   label: isPlayingThis && _isPlaying ? 'إيقاف' : 'تشغيل',
                   color: gold,
+                  cfg: cfg,
                   onTap: () {
                     Navigator.pop(context);
                     _playAyah(surah, ayah);
@@ -1021,6 +1058,7 @@ class _QuranScreenState extends State<QuranScreen>
                   icon: Icons.copy_rounded,
                   label: 'نسخ',
                   color: gold,
+                  cfg: cfg,
                   onTap: () {
                     Navigator.pop(context);
                     Clipboard.setData(
@@ -1048,6 +1086,7 @@ class _QuranScreenState extends State<QuranScreen>
                   icon: Icons.share_rounded,
                   label: 'مشاركة',
                   color: gold,
+                  cfg: cfg,
                   onTap: () => Navigator.pop(context),
                 ),
               ],
@@ -1063,6 +1102,7 @@ class _QuranScreenState extends State<QuranScreen>
     required IconData icon,
     required String label,
     required Color color,
+    required _MushafConfig cfg,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -1071,24 +1111,29 @@ class _QuranScreenState extends State<QuranScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            // ─── [R15] أزرار الـ sheet أكبر شوية على التابلت ─────────────
-            width: _isTablet ? 64 : 54,
-            height: _isTablet ? 64 : 54,
+            width: cfg.optionBtnSize * 0.88,
+            height: cfg.optionBtnSize * 0.88,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: color.withValues(alpha: 0.1),
               border: Border.all(color: color.withValues(alpha: 0.4)),
             ),
-            child: Icon(icon, color: color, size: _isTablet ? 28 : 24),
+            child: Icon(icon, color: color, size: cfg.optionBtnSize * 0.4),
           ),
           const SizedBox(height: 6),
-          Text(label, style: GoogleFonts.amiri(fontSize: 12, color: color)),
+          Text(
+            label,
+            style: GoogleFonts.amiri(
+              fontSize: cfg.optionFontSize,
+              color: color,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildAudioPlayer(bool isDark) {
+  Widget _buildAudioPlayer(bool isDark, _MushafConfig cfg) {
     final gold = _goldColor(isDark);
     final surahName = quran.getSurahNameArabic(_playingSurah!);
     final label = _isSurahMode
@@ -1124,14 +1169,18 @@ class _QuranScreenState extends State<QuranScreen>
             children: [
               _isAudioLoading
                   ? SizedBox(
-                      width: 22,
-                      height: 22,
+                      width: cfg.playerLabelSize + 6,
+                      height: cfg.playerLabelSize + 6,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         color: gold,
                       ),
                     )
-                  : _EqBars(isPlaying: _isPlaying, color: gold),
+                  : _EqBars(
+                      isPlaying: _isPlaying,
+                      color: gold,
+                      size: cfg.playerLabelSize + 6,
+                    ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -1142,8 +1191,7 @@ class _QuranScreenState extends State<QuranScreen>
                       label,
                       textDirection: TextDirection.rtl,
                       style: GoogleFonts.amiri(
-                        // ─── [R16] نص الـ player أكبر على التابلت ──────────
-                        fontSize: _isTablet ? 18 : 15,
+                        fontSize: cfg.playerLabelSize,
                         fontWeight: FontWeight.bold,
                         color: isDark
                             ? const Color(0xFFE8D5B7)
@@ -1154,7 +1202,7 @@ class _QuranScreenState extends State<QuranScreen>
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: _isTablet ? 12 : 10,
+                        fontSize: cfg.playerLabelSize * 0.7,
                         color: gold.withValues(alpha: 0.65),
                       ),
                     ),
@@ -1169,8 +1217,7 @@ class _QuranScreenState extends State<QuranScreen>
                           ? Icons.pause_rounded
                           : Icons.play_arrow_rounded),
                 color: gold,
-                // ─── [R17] أزرار الـ player أكبر على التابلت ───────────
-                size: _isTablet ? 32 : 26,
+                size: cfg.playerBtnSize * 0.58,
                 onTap: _isAudioLoading
                     ? () {}
                     : () => _isPlaying ? _player.pause() : _player.play(),
@@ -1180,7 +1227,7 @@ class _QuranScreenState extends State<QuranScreen>
               _AudioBtn(
                 icon: Icons.stop_rounded,
                 color: gold.withValues(alpha: 0.55),
-                size: _isTablet ? 26 : 20,
+                size: cfg.playerBtnSize * 0.44,
                 onTap: _stopAudio,
                 filled: false,
               ),
@@ -1199,29 +1246,18 @@ class _QuranScreenState extends State<QuranScreen>
                         1.0,
                       )
                     : 0.0;
-
-                String fmt(Duration d) {
-                  final m = d.inMinutes
-                      .remainder(60)
-                      .toString()
-                      .padLeft(2, '0');
-                  final s = d.inSeconds
-                      .remainder(60)
-                      .toString()
-                      .padLeft(2, '0');
-                  return '$m:$s';
-                }
-
+                String fmt(Duration d) =>
+                    '${d.inMinutes.remainder(60).toString().padLeft(2, '0')}:${d.inSeconds.remainder(60).toString().padLeft(2, '0')}';
                 return Column(
                   children: [
                     SliderTheme(
                       data: SliderThemeData(
-                        trackHeight: 3,
-                        thumbShape: const RoundSliderThumbShape(
-                          enabledThumbRadius: 6,
+                        trackHeight: cfg.isTablet ? 4 : 3,
+                        thumbShape: RoundSliderThumbShape(
+                          enabledThumbRadius: cfg.isTablet ? 7 : 6,
                         ),
-                        overlayShape: const RoundSliderOverlayShape(
-                          overlayRadius: 14,
+                        overlayShape: RoundSliderOverlayShape(
+                          overlayRadius: cfg.isTablet ? 16 : 14,
                         ),
                         activeTrackColor: gold,
                         inactiveTrackColor: gold.withValues(alpha: 0.18),
@@ -1275,13 +1311,13 @@ class _QuranScreenState extends State<QuranScreen>
   }
 
   void _openReciterSelector(bool isDark) {
+    final cfg = _MushafConfig(context);
     final gold = _goldColor(isDark);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      // ─── [R18] Sheet القارئ بعرض محدود على التابلت ───────────────────
-      constraints: BoxConstraints(maxWidth: _maxSheetWidth),
+      constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
       builder: (_) => StatefulBuilder(
         builder: (ctx, setSheet) => Container(
           decoration: BoxDecoration(
@@ -1299,7 +1335,7 @@ class _QuranScreenState extends State<QuranScreen>
                 child: Text(
                   'اختر القارئ',
                   style: GoogleFonts.amiri(
-                    fontSize: 20,
+                    fontSize: cfg.surahNameFontSize * 0.8,
                     color: gold,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1328,8 +1364,8 @@ class _QuranScreenState extends State<QuranScreen>
                     vertical: 2,
                   ),
                   leading: Container(
-                    width: 36,
-                    height: 36,
+                    width: cfg.headerCircleSize * 0.85,
+                    height: cfg.headerCircleSize * 0.85,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: isSelected
@@ -1342,14 +1378,14 @@ class _QuranScreenState extends State<QuranScreen>
                     child: Icon(
                       isSelected ? Icons.check_rounded : Icons.person_rounded,
                       color: gold,
-                      size: 18,
+                      size: cfg.headerIconSize * 0.7,
                     ),
                   ),
                   title: Text(
                     r['name']!,
                     textDirection: TextDirection.rtl,
                     style: GoogleFonts.amiri(
-                      fontSize: 17,
+                      fontSize: cfg.surahNameFontSize * 0.72,
                       color: isSelected ? gold : _textColor(isDark),
                       fontWeight: isSelected
                           ? FontWeight.bold
@@ -1357,7 +1393,11 @@ class _QuranScreenState extends State<QuranScreen>
                     ),
                   ),
                   trailing: isSelected
-                      ? Icon(Icons.graphic_eq_rounded, color: gold, size: 20)
+                      ? Icon(
+                          Icons.graphic_eq_rounded,
+                          color: gold,
+                          size: cfg.headerIconSize * 0.8,
+                        )
                       : null,
                 );
               }),
@@ -1369,13 +1409,13 @@ class _QuranScreenState extends State<QuranScreen>
   }
 
   void _openSurahIndex(bool isDark) {
+    final cfg = _MushafConfig(context);
     final gold = _goldColor(isDark);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      // ─── [R19] فهرس السور بعرض محدود على التابلت ─────────────────────
-      constraints: BoxConstraints(maxWidth: _maxSheetWidth),
+      constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
       builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.7,
         maxChildSize: 0.95,
@@ -1394,7 +1434,7 @@ class _QuranScreenState extends State<QuranScreen>
                 child: Text(
                   'فهرس السور',
                   style: GoogleFonts.amiri(
-                    fontSize: 20,
+                    fontSize: cfg.surahNameFontSize * 0.8,
                     color: gold,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1416,8 +1456,8 @@ class _QuranScreenState extends State<QuranScreen>
                         Navigator.pop(context);
                       },
                       leading: Container(
-                        width: 34,
-                        height: 34,
+                        width: cfg.headerCircleSize * 0.85,
+                        height: cfg.headerCircleSize * 0.85,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -1429,7 +1469,7 @@ class _QuranScreenState extends State<QuranScreen>
                           child: Text(
                             '$s',
                             style: GoogleFonts.amiri(
-                              fontSize: 13,
+                              fontSize: cfg.headerIconSize * 0.65,
                               color: gold,
                               fontWeight: FontWeight.bold,
                             ),
@@ -1440,7 +1480,7 @@ class _QuranScreenState extends State<QuranScreen>
                         quran.getSurahNameArabic(s),
                         textDirection: TextDirection.rtl,
                         style: GoogleFonts.amiri(
-                          fontSize: 18,
+                          fontSize: cfg.surahNameFontSize * 0.72,
                           color: _textColor(isDark),
                         ),
                       ),
@@ -1448,7 +1488,7 @@ class _QuranScreenState extends State<QuranScreen>
                         '${quran.getVerseCount(s)} آية',
                         textDirection: TextDirection.rtl,
                         style: GoogleFonts.amiri(
-                          fontSize: 11,
+                          fontSize: cfg.overlayLabelSize,
                           color: gold.withValues(alpha: 0.6),
                         ),
                       ),
@@ -1458,8 +1498,8 @@ class _QuranScreenState extends State<QuranScreen>
                           _playSurah(s);
                         },
                         child: Container(
-                          width: 34,
-                          height: 34,
+                          width: cfg.headerCircleSize * 0.85,
+                          height: cfg.headerCircleSize * 0.85,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: isPlayingThis && _isPlaying
@@ -1474,7 +1514,7 @@ class _QuranScreenState extends State<QuranScreen>
                                 ? Icons.pause_rounded
                                 : Icons.play_arrow_rounded,
                             color: gold,
-                            size: 18,
+                            size: cfg.headerIconSize * 0.65,
                           ),
                         ),
                       ),
@@ -1509,6 +1549,7 @@ class _PageOptionsSheet extends StatelessWidget {
   final bool isBookmarked, isPlayingPage, isPlaying, isDark;
   final Color gold, bgColor, textColor;
   final String selectedReciterName;
+  final _MushafConfig cfg;
   final VoidCallback onPlayPage,
       onBookmark,
       onSelectReciter,
@@ -1527,6 +1568,7 @@ class _PageOptionsSheet extends StatelessWidget {
     required this.bgColor,
     required this.textColor,
     required this.selectedReciterName,
+    required this.cfg,
     required this.onPlayPage,
     required this.onBookmark,
     required this.onSelectReciter,
@@ -1569,7 +1611,7 @@ class _PageOptionsSheet extends StatelessWidget {
               Text(
                 'الصفحة $page',
                 style: GoogleFonts.amiri(
-                  fontSize: 14,
+                  fontSize: cfg.optionFontSize + 2,
                   color: gold,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1586,7 +1628,7 @@ class _PageOptionsSheet extends StatelessWidget {
               Text(
                 hizb,
                 style: GoogleFonts.amiri(
-                  fontSize: 14,
+                  fontSize: cfg.optionFontSize + 2,
                   color: gold,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1603,6 +1645,7 @@ class _PageOptionsSheet extends StatelessWidget {
                     : Icons.play_circle_rounded,
                 label: isPlayingPage && isPlaying ? 'إيقاف' : 'تشغيل الصفحة',
                 gold: gold,
+                cfg: cfg,
                 onTap: onPlayPage,
               ),
               _OptionBtn(
@@ -1611,12 +1654,14 @@ class _PageOptionsSheet extends StatelessWidget {
                     : Icons.bookmark_border_rounded,
                 label: isBookmarked ? 'إزالة الحفظ' : 'علّم الصفحة',
                 gold: isBookmarked ? const Color(0xFFE8A000) : gold,
+                cfg: cfg,
                 onTap: onBookmark,
               ),
               _OptionBtn(
                 icon: Icons.mic_rounded,
                 label: 'اختر القارئ',
                 gold: gold,
+                cfg: cfg,
                 onTap: onSelectReciter,
                 subtitle: selectedReciterName,
               ),
@@ -1630,18 +1675,21 @@ class _PageOptionsSheet extends StatelessWidget {
                 icon: Icons.menu_book_rounded,
                 label: 'فهرس السور',
                 gold: gold,
+                cfg: cfg,
                 onTap: onSurahIndex,
               ),
               _OptionBtn(
                 icon: Icons.bookmark_added_rounded,
                 label: 'آخر حفظ',
                 gold: gold,
+                cfg: cfg,
                 onTap: onLastRead,
               ),
               _OptionBtn(
                 icon: Icons.search_rounded,
                 label: 'بحث',
                 gold: gold,
+                cfg: cfg,
                 onTap: onSearch,
               ),
             ],
@@ -1656,6 +1704,7 @@ class _OptionBtn extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color gold;
+  final _MushafConfig cfg;
   final VoidCallback onTap;
   final String? subtitle;
 
@@ -1663,6 +1712,7 @@ class _OptionBtn extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.gold,
+    required this.cfg,
     required this.onTap,
     this.subtitle,
   });
@@ -1675,8 +1725,8 @@ class _OptionBtn extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 62,
-            height: 62,
+            width: cfg.optionBtnSize,
+            height: cfg.optionBtnSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: gold.withValues(alpha: 0.1),
@@ -1692,21 +1742,21 @@ class _OptionBtn extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(icon, color: gold, size: 28),
+            child: Icon(icon, color: gold, size: cfg.optionBtnSize * 0.44),
           ),
           const SizedBox(height: 7),
           Text(
             label,
-            style: GoogleFonts.amiri(fontSize: 11.5, color: gold),
+            style: GoogleFonts.amiri(fontSize: cfg.optionFontSize, color: gold),
             textAlign: TextAlign.center,
           ),
           if (subtitle != null)
             SizedBox(
-              width: 80,
+              width: cfg.optionBtnSize * 1.4,
               child: Text(
                 subtitle!,
                 style: GoogleFonts.amiri(
-                  fontSize: 9.5,
+                  fontSize: cfg.optionFontSize * 0.82,
                   color: gold.withValues(alpha: 0.55),
                 ),
                 textAlign: TextAlign.center,
@@ -1760,7 +1810,8 @@ class _AudioBtn extends StatelessWidget {
 class _EqBars extends StatefulWidget {
   final bool isPlaying;
   final Color color;
-  const _EqBars({required this.isPlaying, required this.color});
+  final double size;
+  const _EqBars({required this.isPlaying, required this.color, this.size = 22});
 
   @override
   State<_EqBars> createState() => _EqBarsState();
@@ -1800,17 +1851,15 @@ class _EqBarsState extends State<_EqBars> with TickerProviderStateMixin {
   }
 
   void _stop() {
-    for (final c in _ctrls) {
+    for (final c in _ctrls)
       c.animateTo(0.2, duration: const Duration(milliseconds: 200));
-    }
   }
 
   @override
   void didUpdateWidget(_EqBars old) {
     super.didUpdateWidget(old);
-    if (widget.isPlaying != old.isPlaying) {
+    if (widget.isPlaying != old.isPlaying)
       widget.isPlaying ? _start() : _stop();
-    }
   }
 
   @override
@@ -1821,24 +1870,25 @@ class _EqBarsState extends State<_EqBars> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 22,
-    height: 22,
+    width: widget.size,
+    height: widget.size,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.end,
-      children: List.generate(4, (i) {
-        return AnimatedBuilder(
+      children: List.generate(
+        4,
+        (i) => AnimatedBuilder(
           animation: _anims[i],
           builder: (_, __) => Container(
-            width: 3,
-            height: 22 * _anims[i].value,
+            width: widget.size * 0.14,
+            height: widget.size * _anims[i].value,
             decoration: BoxDecoration(
               color: widget.color,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-        );
-      }),
+        ),
+      ),
     ),
   );
 }
@@ -1852,6 +1902,7 @@ class _VerseEndBadge extends StatelessWidget {
   final Color gold;
   final bool isDark;
   final VoidCallback onTap;
+  final double size;
 
   const _VerseEndBadge({
     required this.number,
@@ -1859,6 +1910,7 @@ class _VerseEndBadge extends StatelessWidget {
     required this.gold,
     required this.isDark,
     required this.onTap,
+    this.size = 32,
   });
 
   String _toArabic(int n) {
@@ -1874,19 +1926,19 @@ class _VerseEndBadge extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: SizedBox(
-          width: 32,
-          height: 32,
+          width: size,
+          height: size,
           child: Stack(
             alignment: Alignment.center,
             children: [
               CustomPaint(
-                size: const Size(32, 32),
+                size: Size(size, size),
                 painter: _AyahEndPainter(color: activeColor, filled: isPlaying),
               ),
               Text(
                 _toArabic(number),
                 style: TextStyle(
-                  fontSize: number > 99 ? 8.0 : 9.5,
+                  fontSize: number > 99 ? size * 0.25 : size * 0.3,
                   fontWeight: FontWeight.bold,
                   color: isPlaying
                       ? (isDark ? const Color(0xFF1A1208) : Colors.white)
@@ -1983,11 +2035,18 @@ class _AyahEndPainter extends CustomPainter {
 // ═══════════════════════════════════════════════════════════════════════════
 class _LastReadRibbon extends StatelessWidget {
   final Color color;
-  const _LastReadRibbon({required this.color});
+  final double width;
+  final double height;
+
+  const _LastReadRibbon({
+    required this.color,
+    this.width = 22,
+    this.height = 60,
+  });
 
   @override
   Widget build(BuildContext context) => CustomPaint(
-    size: const Size(22, 60),
+    size: Size(width, height),
     painter: _RibbonPainter(color: color),
   );
 }
