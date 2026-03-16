@@ -110,5 +110,29 @@
     "enable_location_desc": "To accurately determine the Qibla direction, please enable location services",
     "sensor_error_title": "Compass Unavailable",
     "sensor_error_desc": "Your device does not have a compass sensor. Please use a device that supports this feature."
+  },
+  "quran": {
+    "title": "Holy Quran",
+    "aya_count": "Ayah Count",
+    "surahNames": "Surah Names",
+    "aboutSurah": "About Surah",
+    "index": "Index",
+    "bookmarks": "Bookmarks",
+    "search": "Search",
+    "surahs": "Surahs",
+    "juzz": "Juzz",
+    "no_bookmarks_yet": "No bookmarks yet",
+    "greenBookmarks": "Green Bookmarks",
+    "yellowBookmarks": "Yellow Bookmarks",
+    "redBookmarks": "Red Bookmarks",
+    "ayah_copied": "Ayah Copied",
+    "tafsir": "Tafsir",
+    "translate": "Translate",
+    "tafsirIsEmptyNote": "Tafsir is not available currently",
+    "footnotes": "Footnotes",
+    "hizb": "Hizb",
+    "juz": "Juz",
+    "sajda": "Sajda",
+    "readers": "Readers"
   }
 }

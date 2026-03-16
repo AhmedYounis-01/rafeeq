@@ -110,5 +110,29 @@
     "enable_location_desc": "لتحديد اتجاه القبلة بدقة، يرجى تفعيل خدمة الموقع",
     "sensor_error_title": "البوصلة غير متاحة",
     "sensor_error_desc": "جهازك لا يحتوي على مستشعر بوصلة. يرجى استخدام جهاز يدعم هذه الميزة."
+  },
+  "quran": {
+    "title": "القرآن الكريم",
+    "aya_count": "عدد الآيات",
+    "surahNames": "أسماء السور",
+    "aboutSurah": "عن السورة",
+    "index": "الفهرس",
+    "bookmarks": "العلامات",
+    "search": "بحث",
+    "surahs": "السور",
+    "juzz": "الأجزاء",
+    "no_bookmarks_yet": "لا توجد علامات مرجعية بعد",
+    "greenBookmarks": "علامات خضراء",
+    "yellowBookmarks": "علامات صفراء",
+    "redBookmarks": "علامات حمراء",
+    "ayah_copied": "تم نسخ الآية",
+    "tafsir": "التفسير",
+    "translate": "الترجمة",
+    "tafsirIsEmptyNote": "لا يوجد تفسير متاح حالياً",
+    "footnotes": "الهوامش",
+    "hizb": "حزب",
+    "juz": "جزء",
+    "sajda": "سجدة",
+    "readers": "القراء"
   }
 }

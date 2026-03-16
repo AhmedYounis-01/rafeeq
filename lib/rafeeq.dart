@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,7 +8,84 @@ import 'package:rafeeq/core/themes/app_theme.dart';
 import 'package:rafeeq/core/routing/app_router.dart';
 import 'package:rafeeq/core/themes/logic/theme_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
-import 'package:rafeeq/features/home/logic/timer_cubit.dart';
+
+// class Rafeeq extends StatelessWidget {
+//   const Rafeeq({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiBlocProvider(
+//       providers: [
+//         BlocProvider(create: (context) => ThemeCubit()),
+//         BlocProvider(create: (context) => PrayerTimeCubit()..loadPrayerTimes()),
+//         // BlocProvider(create: (context) => TimerCubit()),
+//       ],
+//       child: ScreenUtilInit(
+//         designSize: const Size(375, 812),
+//         minTextAdapt: true,
+//         splitScreenMode: true,
+//         builder: (context, child) {
+//           return BlocBuilder<ThemeCubit, ThemeMode>(
+//             builder: (context, themeMode) {
+//               // return MaterialApp.router(
+//               //   title: AppConstants.appName,
+//               //   debugShowCheckedModeBanner: false,
+
+//               //   // Localization (requires EasyLocalization wrapper in main.dart)
+//               //   localizationsDelegates: context.localizationDelegates,
+//               //   supportedLocales: context.supportedLocales,
+//               //   locale: context.locale,
+
+//               //   // Theme
+//               //   theme: AppTheme.lightTheme,
+//               //   darkTheme: AppTheme.darkTheme,
+//               //   themeMode: themeMode,
+
+//               //   // Routing
+//               //   routerConfig: AppRouter.router,
+
+//               //   // Builder for responsive design and text scaling
+//               //   builder: (context, widget) {
+//               //     return MediaQuery(
+//               //       data: MediaQuery.of(
+//               //         context,
+//               //       ).copyWith(textScaler: const TextScaler.linear(1.0)),
+//               //       child: widget!,
+//               //     );
+//               //   },
+//               // );
+//               return MaterialApp.router(
+//                 title: AppConstants.appName,
+//                 debugShowCheckedModeBanner: false,
+
+//                 localizationsDelegates: context.localizationDelegates,
+//                 supportedLocales: context.supportedLocales,
+//                 locale: DevicePreview.locale(context),
+
+//                 theme: AppTheme.lightTheme,
+//                 darkTheme: AppTheme.darkTheme,
+//                 themeMode: themeMode,
+
+//                 routerConfig: AppRouter.router,
+
+//                 // builder: DevicePreview.appBuilder,
+//                 builder: (context, widget) {
+//                   return MediaQuery(
+//                     data: MediaQuery.of(
+//                       context,
+//                     ).copyWith(textScaler: const TextScaler.linear(1.0)),
+//                     child: widget!,
+//                   );
+//                 },
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+// rafeeq.dart — بس 3 تغييرات
 
 class Rafeeq extends StatelessWidget {
   const Rafeeq({super.key});
@@ -16,41 +94,42 @@ class Rafeeq extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ThemeCubit()),
-        BlocProvider(create: (context) => PrayerTimeCubit()..loadPrayerTimes()),
-        BlocProvider(create: (context) => TimerCubit()),
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => PrayerTimeCubit()..loadPrayerTimes()),
       ],
-      child: ScreenUtilInit(
-        designSize: const Size(375, 812),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return BlocBuilder<ThemeCubit, ThemeMode>(
-            builder: (context, themeMode) {
-              return MaterialApp.router(
-                title: AppConstants.appName,
-                debugShowCheckedModeBanner: false,
-
-                // Localization (requires EasyLocalization wrapper in main.dart)
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-
-                // Theme
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
-                themeMode: themeMode,
-
-                // Routing
-                routerConfig: AppRouter.router,
-
-                // Builder for responsive design and text scaling
-                builder: (context, widget) {
-                  return MediaQuery(
-                    data: MediaQuery.of(
-                      context,
-                    ).copyWith(textScaler: const TextScaler.linear(1.0)),
-                    child: widget!,
+      // ✅ 1. LayoutBuilder عشان ScreenUtil يعرف حجم الشاشة الحقيقي
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return ScreenUtilInit(
+            // ✅ 2. حجم تصميم مختلف للتابلت والموبيل
+            designSize: constraints.maxWidth >= 600
+                ? const Size(768, 1024)
+                : const Size(375, 812),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, themeMode) {
+                  return MaterialApp.router(
+                    title: AppConstants.appName,
+                    debugShowCheckedModeBanner: false,
+                    localizationsDelegates: context.localizationDelegates,
+                    supportedLocales: context.supportedLocales,
+                    locale: DevicePreview.locale(context),
+                    theme: AppTheme.lightTheme,
+                    darkTheme: AppTheme.darkTheme,
+                    themeMode: themeMode,
+                    routerConfig: AppRouter.router,
+                    // ✅ 3. DevicePreview الأول، بعدين نثبت الـ textScaler
+                    builder: (context, widget) {
+                      final child = DevicePreview.appBuilder(context, widget);
+                      return MediaQuery(
+                        data: MediaQuery.of(context).copyWith(
+                          textScaler: const TextScaler.linear(1.0),
+                        ),
+                        child: child,
+                      );
+                    },
                   );
                 },
               );

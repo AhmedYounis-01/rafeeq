@@ -221,7 +221,7 @@ class SharedNavigation extends StatelessWidget {
   }
 
   Widget _buildBottomNavigation(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
+    // final isDark = context.theme.brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
         color: context.colorScheme.surface,

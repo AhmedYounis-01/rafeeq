@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,20 +16,26 @@ void main() async {
 
   Bloc.observer = MyBlocObserver();
 
-  // Set portrait mode only for mobile
   if (Platform.isAndroid || Platform.isIOS) {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    final view = WidgetsBinding.instance.platformDispatcher.views.first;
+    final shortSide = view.physicalSize.shortestSide / view.devicePixelRatio;
+
+    await SystemChrome.setPreferredOrientations(
+      shortSide >= 600
+          ? DeviceOrientation.values
+          : [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+    );
   }
 
   runApp(
-    EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('ar')],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
-      child: const Rafeeq(),
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => EasyLocalization(
+        supportedLocales: const [Locale('en'), Locale('ar')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en'),
+        child: const Rafeeq(),
+      ),
     ),
   );
 }
