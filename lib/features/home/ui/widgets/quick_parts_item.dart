@@ -1,28 +1,33 @@
-// ─── QuickPartsItem ───────────────────────────────────────────────────────────
+// quick_parts_item.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
- 
+
 class QuickPartsItem extends StatelessWidget {
   const QuickPartsItem({
     super.key,
     required this.title,
     required this.image,
-    // ارتفاع بيتمرر من QuickParts عشان يتحسب بشكل مركزي
     this.height,
   });
- 
+
   final String title;
   final String image;
   final double? height;
- 
+
   @override
   Widget build(BuildContext context) {
-    final isDark  = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final side   = MediaQuery.of(context).size.shortestSide;
     final screenH = MediaQuery.of(context).size.height;
-    // لو ما اتمررش ارتفاع، استخدم قيمة افتراضية
-    final itemH = height ?? 140.h;
- 
+    final screenW = MediaQuery.of(context).size.width;
+
+    // ✅ حجم من shortestSide بدل ScreenUtil
+    final itemH   = height ?? (side * 0.38).clamp(120.0, 200.0);
+    final imgPad  = screenH * 0.013;
+    final lblVPad = screenH * 0.010;
+    final fontSize = (screenW * 0.034).clamp(11.0, 16.0);
+    final radius   = (side * 0.042).clamp(12.0, 20.0);
+
     return Expanded(
       child: GestureDetector(
         onTap: () {},
@@ -30,10 +35,10 @@ class QuickPartsItem extends StatelessWidget {
           height: itemH,
           decoration: BoxDecoration(
             color: AppColors.cardBackground(context),
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(radius),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.2),
+                color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.12),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -42,20 +47,20 @@ class QuickPartsItem extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
-              // الأيقونة تاخد الجزء الأكبر
+              // ── Image ──
               Expanded(
                 flex: 3,
                 child: Padding(
-                  padding: EdgeInsets.all(screenH * 0.015),
+                  padding: EdgeInsets.all(imgPad),
                   child: Image.asset(image, fit: BoxFit.contain),
                 ),
               ),
-              // الـ label الأخضر
+              // ── Label ──
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(
-                  vertical: screenH * 0.012,
-                  horizontal: 4,
+                  vertical: lblVPad,
+                  horizontal: 6,
                 ),
                 decoration: BoxDecoration(
                   gradient: AppColors.getGreenGradient(context),
@@ -67,8 +72,7 @@ class QuickPartsItem extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      // حجم الخط نسبة من عرض الشاشة
-                      fontSize: MediaQuery.of(context).size.width * 0.038,
+                      fontSize: fontSize,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.3,
                     ),
