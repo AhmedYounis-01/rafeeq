@@ -45,7 +45,6 @@ class _MushafConfig {
   double get maxWidth => isTablet ? shortestSide * 1.1 : double.infinity;
 
   double get badgeSize => (shortestSide * 0.075).clamp(28.0, 44.0);
-
   double get maxSheetWidth => isTablet ? 580.0 : double.infinity;
 
   double get playerLabelSize => (shortestSide * 0.038).clamp(13.0, 20.0);
@@ -91,30 +90,24 @@ class _QuranScreenState extends State<QuranScreen>
   bool _isSurahMode = false;
   bool _isAudioLoading = false;
 
-  String _selectedReciterId = 'Minshawy_Murattal_128kbps';
+  // ─── القارئ المختار — مهيّأ دائماً بقيمة افتراضية ─────────────────────────
+  // الافتراضي: مشاري العفاسي (أول قارئ في القائمة)
+  String _selectedReciterId = kReciters.first['id']!;
+
   String get _selectedReciterName => kReciters.firstWhere(
     (r) => r['id'] == _selectedReciterId,
     orElse: () => kReciters.first,
   )['name']!;
 
-  // ─── Colors — كلها من AppColors الآن ──────────────────────────────────────
-  /// خلفية الصفحة — بيضاء دافئة للـ light، داكنة للـ dark
+  // ─── Colors ──────────────────────────────────────────────────────────────
   Color _bgColor(bool isDark) =>
       isDark ? AppColors.backgroundDark : AppColors.backgroundCard;
-
-  /// اللون الذهبي — secondary من AppColors
   Color _goldColor(bool isDark) =>
       isDark ? AppColors.secondaryDark : AppColors.secondary;
-
-  /// لون النص الأساسي
   Color _textColor(bool isDark) =>
       isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
-
-  /// خلفية الـ sheets والـ cards
   Color _cardColor(bool isDark) =>
       isDark ? AppColors.backgroundCardDark : AppColors.backgroundCard;
-
-  /// خلفية الـ audio player
   Color _playerBgColor(bool isDark) =>
       isDark ? AppColors.backgroundCardDark : AppColors.backgroundLight;
 
@@ -179,10 +172,19 @@ class _QuranScreenState extends State<QuranScreen>
   Future<void> _loadLastPage() async =>
       _currentPage = _prefs.getInt('last_page') ?? 1;
 
+  // ─── تحميل التفضيلات — يضمن وجود قارئ محفوظ دايماً ────────────────────
   Future<void> _loadPrefs() async {
     _lastBookmarkPage = _prefs.getInt('last_bookmark_page');
-    _selectedReciterId =
-        _prefs.getString('reciter_id') ?? 'Minshawy_Murattal_128kbps';
+
+    final saved = _prefs.getString('reciter_id');
+    if (saved != null && kReciters.any((r) => r['id'] == saved)) {
+      // قارئ محفوظ وصحيح ← استخدمه
+      _selectedReciterId = saved;
+    } else {
+      // أول تشغيل أو القيمة غلط ← احفظ الافتراضي
+      _selectedReciterId = kReciters.first['id']!;
+      await _prefs.setString('reciter_id', _selectedReciterId);
+    }
   }
 
   Future<void> _savePage(int page) async => _prefs.setInt('last_page', page);
@@ -212,14 +214,29 @@ class _QuranScreenState extends State<QuranScreen>
 
   bool _isPageBookmarked(int page) => _lastBookmarkPage == page;
 
+  // ─── فحص الإنترنت — Socket مباشر أسرع وأموثوق ──────────────────────────
+  // بدل DNS lookup لـ everyayah.com (بيفشل أول تشغيل)
+  // بنستخدم Socket.connect لـ Google DNS 8.8.8.8:53 — يرد في أقل من ثانية
   Future<bool> _hasInternet() async {
+    // المحاولة الأولى: Socket مباشر لـ Google DNS (أسرع وأموثوق)
     try {
-      final r = await InternetAddress.lookup(
-        'everyayah.com',
-      ).timeout(const Duration(seconds: 4));
-      return r.isNotEmpty && r.first.rawAddress.isNotEmpty;
+      final socket = await Socket.connect(
+        '8.8.8.8',
+        53,
+        timeout: const Duration(seconds: 3),
+      );
+      socket.destroy();
+      return true;
     } catch (_) {
-      return false;
+      // fallback: DNS lookup لـ Google (احتياطي)
+      try {
+        final result = await InternetAddress.lookup(
+          'google.com',
+        ).timeout(const Duration(seconds: 4));
+        return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
+      } catch (_) {
+        return false;
+      }
     }
   }
 
@@ -773,8 +790,9 @@ class _QuranScreenState extends State<QuranScreen>
       final end = item['end'] as int;
       if (start == 1) {
         widgets.add(_buildSurahHeader(surah, isDark, cfg));
-        if (surah != 1 && surah != 9)
+        if (surah != 1 && surah != 9) {
           widgets.add(_buildBasmalaLine(isDark, cfg));
+        }
       }
       widgets.add(_buildVerseBlock(surah, start, end, isDark, cfg));
     }
@@ -830,7 +848,6 @@ class _QuranScreenState extends State<QuranScreen>
       decoration: BoxDecoration(
         border: Border.all(color: gold.withValues(alpha: 0.4)),
         borderRadius: BorderRadius.circular(cfg.isTablet ? 14 : 10),
-        // هيدر السورة يستخدم containerLight/Dark من AppColors
         color: isDark
             ? AppColors.backgroundCardDark.withValues(alpha: 0.7)
             : AppColors.containerLight.withValues(alpha: 0.8),
@@ -918,7 +935,6 @@ class _QuranScreenState extends State<QuranScreen>
     _MushafConfig cfg,
   ) {
     if (start > end) return const SizedBox.shrink();
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Text.rich(
@@ -1299,6 +1315,7 @@ class _QuranScreenState extends State<QuranScreen>
     );
   }
 
+  // ─── اختيار القارئ — يحفظ فوراً ويعيد التشغيل بالقارئ الجديد ────────────
   void _openReciterSelector(bool isDark) {
     final cfg = _MushafConfig(context);
     final gold = _goldColor(isDark);
@@ -1335,11 +1352,13 @@ class _QuranScreenState extends State<QuranScreen>
                 final isSelected = r['id'] == _selectedReciterId;
                 return ListTile(
                   onTap: () async {
+                    // حفظ القارئ فوراً
                     setState(() => _selectedReciterId = r['id']!);
                     setSheet(() {});
                     await _saveReciter();
                     if (!mounted) return;
                     Navigator.pop(context);
+                    // إعادة التشغيل بالقارئ الجديد لو كان في تشغيل
                     if (_playingSurah != null && !_isAudioLoading) {
                       _isSurahMode
                           ? _playSurah(_playingSurah!)
@@ -1552,8 +1571,8 @@ class _PageOptionsSheet extends StatelessWidget {
     required this.isBookmarked,
     required this.isPlayingPage,
     required this.isPlaying,
-    required this.gold,
     required this.isDark,
+    required this.gold,
     required this.bgColor,
     required this.textColor,
     required this.selectedReciterName,
@@ -1696,7 +1715,6 @@ class _OptionBtn extends StatelessWidget {
   final _MushafConfig cfg;
   final VoidCallback onTap;
   final String? subtitle;
-
   const _OptionBtn({
     required this.icon,
     required this.label,
@@ -1768,7 +1786,6 @@ class _AudioBtn extends StatelessWidget {
   final double size;
   final VoidCallback onTap;
   final bool filled;
-
   const _AudioBtn({
     required this.icon,
     required this.color,
@@ -1801,7 +1818,6 @@ class _EqBars extends StatefulWidget {
   final Color color;
   final double size;
   const _EqBars({required this.isPlaying, required this.color, this.size = 22});
-
   @override
   State<_EqBars> createState() => _EqBarsState();
 }
@@ -1832,11 +1848,10 @@ class _EqBarsState extends State<_EqBars> with TickerProviderStateMixin {
   }
 
   void _start() {
-    for (int i = 0; i < _ctrls.length; i++) {
+    for (int i = 0; i < _ctrls.length; i++)
       Future.delayed(Duration(milliseconds: i * 60), () {
         if (mounted) _ctrls[i].repeat(reverse: true);
       });
-    }
   }
 
   void _stop() {
@@ -1892,7 +1907,6 @@ class _VerseEndBadge extends StatelessWidget {
   final bool isDark;
   final VoidCallback onTap;
   final double size;
-
   const _VerseEndBadge({
     required this.number,
     required this.isPlaying,
@@ -1950,7 +1964,6 @@ class _AyahEndPainter extends CustomPainter {
   const _AyahEndPainter({required this.color, required this.filled});
 
   static const double _pi2 = 6.28318530717959;
-
   static double _sin(double x) {
     double r = x, t = x;
     for (int i = 1; i <= 8; i++) {
@@ -1971,13 +1984,9 @@ class _AyahEndPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final cx = size.width / 2;
-    final cy = size.height / 2;
-    final innerR = size.width * 0.28;
-    final petalR = size.width * 0.095;
-    final petalCx = innerR + petalR * 0.88;
-    final outerR = size.width * 0.47;
-
+    final cx = size.width / 2, cy = size.height / 2;
+    final innerR = size.width * 0.28, petalR = size.width * 0.095;
+    final petalCx = innerR + petalR * 0.88, outerR = size.width * 0.47;
     final petalPaint = Paint()
       ..color = color.withValues(alpha: filled ? 0.85 : 0.5)
       ..style = PaintingStyle.fill;
@@ -2026,13 +2035,11 @@ class _LastReadRibbon extends StatelessWidget {
   final Color color;
   final double width;
   final double height;
-
   const _LastReadRibbon({
     required this.color,
     this.width = 22,
     this.height = 60,
   });
-
   @override
   Widget build(BuildContext context) => CustomPaint(
     size: Size(width, height),
@@ -2043,7 +2050,6 @@ class _LastReadRibbon extends StatelessWidget {
 class _RibbonPainter extends CustomPainter {
   final Color color;
   const _RibbonPainter({required this.color});
-
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawPath(
