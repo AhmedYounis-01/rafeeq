@@ -172,7 +172,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
         animationDuration: const Duration(milliseconds: 340),
         animateChildDecoration: true,
         openScale: 0.92, // كان 0.88 — كلما قرب من 1.0 كلما قل ظهور الخلفية
-        openRatio: 0.68, // كان 0.72
+        openRatio: 0.72,
         disabledGestures: false,
 
         // ─── الخلفية خلف الدرور ─────────────────────────────────────────
