@@ -293,6 +293,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
               ),
             ),
+            onTapOutside: (event) {
+              FocusScope.of(context).unfocus();
+            },
           ),
         ),
       ],
