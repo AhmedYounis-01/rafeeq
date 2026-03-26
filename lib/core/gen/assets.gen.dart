@@ -81,6 +81,46 @@ class $AssetsImagesGen {
   /// File path: assets/images/kaaba.png
   AssetGenImage get kaaba => const AssetGenImage('assets/images/kaaba.png');
 
+  /// File path: assets/images/home.svg
+  AssetGenImage get home => const AssetGenImage('assets/images/home.svg');
+
+  /// File path: assets/images/home_outline.svg
+  AssetGenImage get homeOutline =>
+      const AssetGenImage('assets/images/home_outlined.svg');
+  AssetGenImage get mosque => const AssetGenImage('assets/images/mosque.svg');
+
+  /// File path: assets/images/home_outline.svg
+  AssetGenImage get mosqueOutline =>
+      const AssetGenImage('assets/images/mosque_outline.svg');
+
+  /// File path: assets/images/qibla.svg
+  AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.svg');
+
+  /// File path: assets/images/qibla_outline.svg
+  AssetGenImage get qiblaOutline =>
+      const AssetGenImage('assets/images/qibla_outline.svg');
+
+  /// File path: assets/images/quran.svg
+  AssetGenImage get quran => const AssetGenImage('assets/images/quran.svg');
+
+  /// File path: assets/images/quran_outline.svg
+  AssetGenImage get quranOutline =>
+      const AssetGenImage('assets/images/quran_outline.svg');
+
+  /// File path: assets/images/tasbih.svg
+  AssetGenImage get tasbih => const AssetGenImage('assets/images/tasbih.svg');
+
+  /// File path: assets/images/tasbih_outline.svg
+  AssetGenImage get tasbihOutline =>
+      const AssetGenImage('assets/images/tasbih_outline.svg');
+
+  // /// File path: assets/images/tasbih.svg
+  // AssetGenImage get tasbih => const AssetGenImage('assets/images/tasbih.svg');
+
+  // /// File path: assets/images/tasbih_outline.svg
+  // AssetGenImage get tasbihOutline =>
+  //     const AssetGenImage('assets/images/tasbih_outline.svg');
+
   /// List of all assets
   List<AssetGenImage> get values => [
     duhr,

@@ -4,7 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rafeeq/core/gen/assets.gen.dart';
 import '../routing/app_router.dart';
 import '../themes/app_colors.dart';
 import '../extensions/theme_extension.dart';
@@ -317,26 +319,26 @@ class _SharedNavigationState extends State<SharedNavigation> {
 
   List<NavigationItemData> _getNavigationItems() => [
     NavigationItemData(
-      icon: Icons.home_rounded,
-      iconOutlined: Icons.home_outlined,
+      icon: Assets.images.mosque.path,
+      iconOutlined: Assets.images.mosqueOutline.path,
       label: 'nav.home',
       route: AppRouter.home,
     ),
     NavigationItemData(
-      icon: Icons.menu_book_rounded,
-      iconOutlined: Icons.menu_book_outlined,
+      icon: Assets.images.quran.path,
+      iconOutlined: Assets.images.quranOutline.path,
       label: 'nav.quran',
       route: AppRouter.quran,
     ),
     NavigationItemData(
-      icon: Icons.explore_rounded,
-      iconOutlined: Icons.explore_outlined,
+      icon: Assets.images.qibla.path,
+      iconOutlined: Assets.images.qiblaOutline.path,
       label: 'nav.qibla',
       route: AppRouter.qibla,
     ),
     NavigationItemData(
-      icon: Icons.auto_awesome_rounded,
-      iconOutlined: Icons.auto_awesome_outlined,
+      icon: Assets.images.tasbih.path,
+      iconOutlined: Assets.images.tasbihOutline.path,
       label: 'nav.tasbih',
       route: AppRouter.tasbih,
     ),
@@ -401,10 +403,16 @@ class _NavItem extends StatelessWidget {
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  SvgPicture.asset(
                     isSelected ? item.icon : item.iconOutlined,
-                    size: cfg.iconSize,
-                    color: color,
+                    width: cfg.iconSize,
+                    height: cfg.iconSize,
+                    colorFilter: ColorFilter.mode(
+                      isSelected
+                          ? AppColors.navSelected
+                          : AppColors.navUnselected.withValues(alpha: 0.7),
+                      BlendMode.srcIn,
+                    ),
                   ),
                   if (isExpanded) ...[
                     const SizedBox(width: 14),
@@ -480,12 +488,16 @@ class _BottomNavItem extends StatelessWidget {
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
+                  child: SvgPicture.asset(
                     isSelected ? item.icon : item.iconOutlined,
-                    size: cfg.iconSize,
-                    color: isSelected
-                        ? AppColors.navSelected
-                        : AppColors.navUnselected.withValues(alpha: 0.7),
+                    width: cfg.iconSize,
+                    height: cfg.iconSize,
+                    colorFilter: ColorFilter.mode(
+                      isSelected
+                          ? AppColors.navSelected
+                          : AppColors.navUnselected.withValues(alpha: 0.7),
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -580,8 +592,8 @@ class _UserProfile extends StatelessWidget {
 
 // ─── Data class ───────────────────────────────────────────────────────────────
 class NavigationItemData {
-  final IconData icon;
-  final IconData iconOutlined;
+  final String icon;
+  final String iconOutlined;
   final String label;
   final String route;
 
