@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/core/widgets/main_layout.dart';
 import 'package:rafeeq/features/home/ui/home_screen.dart';
@@ -25,7 +26,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: home,
+    initialLocation: splash,
     routes: [
       // Top-level shell route that provides the shared MainLayout/navigation
       ShellRoute(
@@ -57,12 +58,11 @@ class AppRouter {
       ),
 
       // Uncomment and add additional routes (auth, dashboard subroutes, etc.) as needed
-
-      // GoRoute(
-      //   path: splash,
-      //   name: 'splash',
-      //   builder: (context, state) => const SplashScreen(),
-      // ),
+      GoRoute(
+        path: splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       // GoRoute(
       //   path: signIn,
       //   name: 'signIn',

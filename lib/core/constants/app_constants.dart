@@ -2,7 +2,7 @@
 
 class AppConstants {
   // App Information
-  static const String appName = 'MazidMart Dashboard';
+  static const String appName = 'Rafeeq';
   static const String appVersion = '1.0.0';
   // static String get supaBaseAnonKey => dotenv.get('SUPABASE_ANON_KEY');
   // API Configuration
