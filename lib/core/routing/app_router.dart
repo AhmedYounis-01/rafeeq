@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
+import 'package:rafeeq/features/onboarding/ui/onboarding_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/core/widgets/main_layout.dart';
 import 'package:rafeeq/features/home/ui/home_screen.dart';
@@ -15,6 +16,7 @@ class AppRouter {
       GlobalKey<NavigatorState>();
 
   static const String splash = '/';
+  static const String onboarding = '/onboarding';
   static const String signIn = '/signIn';
   static const String signUp = '/signUp';
 
@@ -62,6 +64,11 @@ class AppRouter {
         path: splash,
         name: 'splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: onboarding,
+        name: 'onboarding',
+        builder: (context, state) => const OnboardingScreen(),
       ),
       // GoRoute(
       //   path: signIn,

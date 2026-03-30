@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/bloc_observer.dart';
+import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/rafeeq.dart';
 
 void main() async {
@@ -15,6 +16,9 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   Bloc.observer = MyBlocObserver();
+
+  // Initialize StorageManager (SharedPreferences)
+  await StorageManager.instance.init();
 
   if (Platform.isAndroid || Platform.isIOS) {
     final view = WidgetsBinding.instance.platformDispatcher.views.first;

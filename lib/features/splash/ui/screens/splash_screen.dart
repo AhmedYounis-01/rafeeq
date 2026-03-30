@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/themes/app_colors.dart';
@@ -83,7 +84,12 @@ class _SplashScreenState extends State<SplashScreen>
     }
 
     if (!mounted) return;
-    context.go(AppRouter.home);
+    final hasSeenOnboarding = StorageManager.instance.hasSeenOnboarding();
+    if (hasSeenOnboarding) {
+      context.go(AppRouter.home);
+    } else {
+      context.go(AppRouter.onboarding);
+    }
   }
 
   @override
