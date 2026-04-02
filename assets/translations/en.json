@@ -134,5 +134,11 @@
     "juz": "Juz",
     "sajda": "Sajda",
     "readers": "Readers"
+  },
+  "quick_parts_screens": {
+    "azkar_title": "El-Azkar",
+    "ruqiah_title": "El-Ruqiah El-Shareia",
+    "dua_title": "El-Dua",
+    "seerah_title": "El-Seerah El-Nabawiah"
   }
 }

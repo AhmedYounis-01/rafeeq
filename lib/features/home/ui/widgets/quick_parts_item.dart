@@ -8,29 +8,31 @@ class QuickPartsItem extends StatelessWidget {
     required this.title,
     required this.image,
     this.height,
+    this.onTap,
   });
 
   final String title;
   final String image;
   final double? height;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final side   = MediaQuery.of(context).size.shortestSide;
+    final side = MediaQuery.of(context).size.shortestSide;
     final screenH = MediaQuery.of(context).size.height;
     final screenW = MediaQuery.of(context).size.width;
 
     // ✅ حجم من shortestSide بدل ScreenUtil
-    final itemH   = height ?? (side * 0.38).clamp(120.0, 200.0);
-    final imgPad  = screenH * 0.013;
+    final itemH = height ?? (side * 0.38).clamp(120.0, 200.0);
+    final imgPad = screenH * 0.013;
     final lblVPad = screenH * 0.010;
     final fontSize = (screenW * 0.034).clamp(11.0, 16.0);
-    final radius   = (side * 0.042).clamp(12.0, 20.0);
+    final radius = (side * 0.042).clamp(12.0, 20.0);
 
     return Expanded(
       child: GestureDetector(
-        onTap: () {},
+        onTap: onTap,
         child: Container(
           height: itemH,
           decoration: BoxDecoration(
@@ -58,10 +60,7 @@ class QuickPartsItem extends StatelessWidget {
               // ── Label ──
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  vertical: lblVPad,
-                  horizontal: 6,
-                ),
+                padding: EdgeInsets.symmetric(vertical: lblVPad, horizontal: 6),
                 decoration: BoxDecoration(
                   gradient: AppColors.getGreenGradient(context),
                 ),

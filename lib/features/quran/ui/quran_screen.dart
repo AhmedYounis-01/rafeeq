@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:just_audio/just_audio.dart';
+import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -100,8 +101,7 @@ class _QuranScreenState extends State<QuranScreen>
   )['name']!;
 
   // ─── Colors ──────────────────────────────────────────────────────────────
-  Color _bgColor(bool isDark) =>
-      isDark ? AppColors.backgroundDark : AppColors.backgroundCard;
+  Color _bgColor(bool isDark) => context.colorScheme.surface;
   Color _goldColor(bool isDark) =>
       isDark ? AppColors.secondaryDark : AppColors.secondary;
   Color _textColor(bool isDark) =>
@@ -1943,9 +1943,7 @@ class _VerseEndBadge extends StatelessWidget {
                 style: TextStyle(
                   fontSize: number > 99 ? size * 0.25 : size * 0.3,
                   fontWeight: FontWeight.bold,
-                  color: isPlaying
-                      ? (isDark ? AppColors.backgroundDark : AppColors.white)
-                      : activeColor,
+                  color: isPlaying ? context.colorScheme.surface : activeColor,
                   height: 1,
                   fontFamily: 'Amiri',
                 ),

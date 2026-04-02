@@ -100,13 +100,10 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = context.isDarkMode;
     final config = SplashConfig(context);
 
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.backgroundDark
-          : AppColors.backgroundLight,
+      backgroundColor: context.colorScheme.surface,
       body: Container(
         width: double.infinity,
         height: double.infinity,

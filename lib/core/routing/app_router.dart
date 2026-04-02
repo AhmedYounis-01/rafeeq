@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
 import 'package:rafeeq/features/onboarding/ui/onboarding_screen.dart';
+import 'package:rafeeq/features/quick_parts/ui/screens/dhikr_list_screen.dart';
+import 'package:rafeeq/features/quick_parts/ui/screens/seerah_screen.dart';
+import 'package:rafeeq/features/quick_parts/data/quick_parts_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/core/widgets/main_layout.dart';
 import 'package:rafeeq/features/home/ui/home_screen.dart';
@@ -25,6 +28,12 @@ class AppRouter {
   static const String qibla = '/qibla';
   static const String quran = '/quran';
   static const String tasbih = '/tasbih';
+
+  // Quick parts screens
+  static const String azkar = '/azkar';
+  static const String ruqiah = '/ruqiah';
+  static const String dua = '/dua';
+  static const String seerah = '/seerah';
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -69,6 +78,29 @@ class AppRouter {
         path: onboarding,
         name: 'onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: azkar,
+        name: 'azkar',
+        builder: (context, state) =>
+            const DhikrListScreen(type: QuickPartType.azkar),
+      ),
+      GoRoute(
+        path: ruqiah,
+        name: 'ruqiah',
+        builder: (context, state) =>
+            const DhikrListScreen(type: QuickPartType.ruqiah),
+      ),
+      GoRoute(
+        path: dua,
+        name: 'dua',
+        builder: (context, state) =>
+            const DhikrListScreen(type: QuickPartType.dua),
+      ),
+      GoRoute(
+        path: seerah,
+        name: 'seerah',
+        builder: (context, state) => const SeerahScreen(),
       ),
       // GoRoute(
       //   path: signIn,

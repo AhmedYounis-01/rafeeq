@@ -134,5 +134,11 @@
     "juz": "جزء",
     "sajda": "سجدة",
     "readers": "القراء"
+  },
+  "quick_parts_screens": {
+    "azkar_title": "الأذكار",
+    "ruqiah_title": "الرقية الشرعية",
+    "dua_title": "الدعاء",
+    "seerah_title": "السيرة النبوية"
   }
 }
