@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
@@ -11,6 +10,21 @@ import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:rafeeq/features/onboarding/data/models/onboarding_item.dart';
 import 'package:rafeeq/features/onboarding/ui/widgets/onboarding_page_item.dart';
 import 'package:rafeeq/features/onboarding/ui/widgets/onboarding_navigation_buttons.dart';
+
+// ─── Responsive Config ────────────────────────────────────────────────────────
+class _Cfg {
+  final double side, width, height;
+  _Cfg(BuildContext ctx)
+    : side = MediaQuery.sizeOf(ctx).shortestSide,
+      width = MediaQuery.sizeOf(ctx).width,
+      height = MediaQuery.sizeOf(ctx).height;
+
+  bool get isTablet => side >= 600;
+
+  double get hPad => (side * 0.06).clamp(24.0, 48.0);
+  double get indicatorSpacing => (side * 0.08).clamp(32.0, 48.0);
+  double get bottomSpacing => (side * 0.06).clamp(24.0, 36.0);
+}
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -23,21 +37,18 @@ class OnboardingScreenState extends State<OnboardingScreen>
     with TickerProviderStateMixin {
   final List<OnboardingItem> onboardingItems = [
     OnboardingItem(
-      title: 'Find experts for carpentry, electrical work, and more!',
-      description:
-          'Hire skilled professionals for carpentry, electrical repairs, plumbing, painting, and all your home maintenance needs!',
+      titleKey: 'onboarding.page1_title',
+      descriptionKey: 'onboarding.page1_desc',
       imagePath: Assets.images.onboarding1.path,
     ),
     OnboardingItem(
-      title: 'Craftsmen can browse and take on new projects.',
-      description:
-          'Browse job listings, apply for projects, and connect with clients to expand your work opportunities!',
+      titleKey: 'onboarding.page2_title',
+      descriptionKey: 'onboarding.page2_desc',
       imagePath: Assets.images.onboarding2.path,
     ),
     OnboardingItem(
-      title: 'Craftsmen can browse and take on new projects.',
-      description:
-          'Browse job listings, apply for projects, and connect with clients to expand your work opportunities!',
+      titleKey: 'onboarding.page3_title',
+      descriptionKey: 'onboarding.page3_desc',
       imagePath: Assets.images.onboarding3.path,
     ),
   ];
@@ -168,6 +179,7 @@ class OnboardingScreenState extends State<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
+    final cfg = _Cfg(context);
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -223,10 +235,11 @@ class OnboardingScreenState extends State<OnboardingScreen>
                 child: _PremiumDotIndicator(
                   currentPage: _currentPage,
                   itemCount: onboardingItems.length,
+                  cfg: cfg,
                 ),
               ),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: cfg.indicatorSpacing),
 
               // ── Navigation buttons ──
               AnimatedBuilder(
@@ -238,7 +251,7 @@ class OnboardingScreenState extends State<OnboardingScreen>
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  padding: EdgeInsets.symmetric(horizontal: cfg.hPad),
                   child: OnboardingNavigationButtons(
                     isLastPage: _isLastPage,
                     onSkip: _submitOnboarding,
@@ -256,7 +269,7 @@ class OnboardingScreenState extends State<OnboardingScreen>
                 ),
               ),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: cfg.bottomSpacing),
             ],
           ),
         ),
@@ -271,10 +284,12 @@ class OnboardingScreenState extends State<OnboardingScreen>
 class _PremiumDotIndicator extends StatelessWidget {
   final int currentPage;
   final int itemCount;
+  final _Cfg cfg;
 
   const _PremiumDotIndicator({
     required this.currentPage,
     required this.itemCount,
+    required this.cfg,
   });
 
   @override
@@ -286,11 +301,11 @@ class _PremiumDotIndicator extends StatelessWidget {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeOutCubic,
-          margin: EdgeInsets.symmetric(horizontal: 4.w),
-          width: isActive ? 28.w : 8.w,
-          height: 8.h,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: isActive ? 28 : 8,
+          height: 8,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4.r),
+            borderRadius: BorderRadius.circular(4),
             color: isActive
                 ? AppColors.secondary
                 : (context.isDarkMode

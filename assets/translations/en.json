@@ -140,5 +140,16 @@
     "ruqiah_title": "El-Ruqiah El-Shareia",
     "dua_title": "El-Dua",
     "seerah_title": "El-Seerah El-Nabawiah"
+  },
+  "onboarding": {
+    "page1_title": "Your Daily Companion with the Quran",
+    "page1_desc": "Read the Quran easily anytime, anywhere, and make it a daily habit.",
+    "page2_title": "Listen and Reflect",
+    "page2_desc": "Listen to beautiful recitations and explore meanings to understand the verses deeply.",
+    "page3_title": "A Continuous Charity",
+    "page3_desc": "This app is a charity on behalf of Abdulrahman Reda Al-Refaai. May Allah accept it and grant him mercy.",
+    "skip": "Skip",
+    "lets_start": "Start Now",
+    "next": "Next"
   }
 }

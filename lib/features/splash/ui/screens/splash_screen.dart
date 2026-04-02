@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import '../../../../core/routing/app_router.dart';
-import '../../../../core/themes/app_colors.dart';
 import '../widgets/splash_logo.dart';
 
 class SplashScreen extends StatefulWidget {

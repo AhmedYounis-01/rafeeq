@@ -1,7 +1,25 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
+
+// ─── Responsive Config ────────────────────────────────────────────────────────
+class _Cfg {
+  final double side, width, height;
+  _Cfg(BuildContext ctx)
+    : side = MediaQuery.sizeOf(ctx).shortestSide,
+      width = MediaQuery.sizeOf(ctx).width,
+      height = MediaQuery.sizeOf(ctx).height;
+
+  bool get isTablet => side >= 600;
+
+  double get btnHeight => (side * 0.15).clamp(56.0, 68.0);
+  double get fontSize => (side * 0.042).clamp(14.0, 18.0);
+  double get skipFontSize => (side * 0.038).clamp(13.0, 17.0);
+  double get iconSize => (side * 0.05).clamp(18.0, 24.0);
+  double get nextBtnSize => (side * 0.16).clamp(58.0, 72.0);
+  double get nextIconSize => (side * 0.062).clamp(22.0, 30.0);
+}
 
 class OnboardingNavigationButtons extends StatefulWidget {
   final bool isLastPage;
@@ -49,6 +67,8 @@ class _OnboardingNavigationButtonsState
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
+    final cfg = _Cfg(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
@@ -67,22 +87,22 @@ class _OnboardingNavigationButtonsState
         );
       },
       child: widget.isLastPage
-          ? _buildStartButton(isDark)
-          : _buildNavRow(isDark),
+          ? _buildStartButton(isDark, cfg, isRtl)
+          : _buildNavRow(isDark, cfg, isRtl),
     );
   }
 
   // ─────────────────────────────────────────
-  //  "Let's Start" — full-width gradient pill
+  //  "Start Now" — full-width gradient pill
   // ─────────────────────────────────────────
-  Widget _buildStartButton(bool isDark) {
+  Widget _buildStartButton(bool isDark, _Cfg cfg, bool isRtl) {
     return SizedBox(
       key: const ValueKey('start'),
       width: double.infinity,
-      height: 56.h,
+      height: cfg.btnHeight,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28.r),
+          borderRadius: BorderRadius.circular(32),
           gradient: LinearGradient(
             colors: isDark
                 ? [AppColors.primaryDark, const Color(0xFF03C464)]
@@ -99,28 +119,39 @@ class _OnboardingNavigationButtonsState
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(28.r),
+            borderRadius: BorderRadius.circular(32),
             onTap: widget.onSkip,
             splashColor: Colors.white.withAlpha(40),
             highlightColor: Colors.white.withAlpha(20),
             child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                // Natural RTL flip: Icon will be on Left in Ar, Right in En
                 children: [
                   Text(
-                    "Let's Start",
+                    "onboarding.lets_start".tr(),
                     style: context.textTheme.titleMedium?.copyWith(
-                      fontSize: 16.sp,
+                      fontSize: cfg.fontSize,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
-                      letterSpacing: 0.5,
+                      letterSpacing: isRtl ? 0 : 0.5,
                     ),
                   ),
-                  SizedBox(width: 8.w),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                    size: 20.sp,
+                  const SizedBox(width: 10),
+                  // Forward arrow pointing right for both languages
+                  AnimatedBuilder(
+                    animation: _pulseAnimation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(_pulseAnimation.value * 0.6, 0),
+                        child: child,
+                      );
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ),
                 ],
               ),
@@ -134,7 +165,7 @@ class _OnboardingNavigationButtonsState
   // ─────────────────────────────────────────
   //  Skip + Next row
   // ─────────────────────────────────────────
-  Widget _buildNavRow(bool isDark) {
+  Widget _buildNavRow(bool isDark, _Cfg cfg, bool isRtl) {
     return Row(
       key: const ValueKey('nav'),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,19 +174,19 @@ class _OnboardingNavigationButtonsState
         TextButton(
           onPressed: widget.onSkip,
           style: TextButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             foregroundColor: isDark
                 ? AppColors.textSecondaryDark
                 : AppColors.textSecondary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
           child: Text(
-            'Skip',
+            'onboarding.skip'.tr(),
             style: context.textTheme.bodyMedium?.copyWith(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w500,
+              fontSize: cfg.skipFontSize,
+              fontWeight: FontWeight.w600,
               color: isDark
                   ? AppColors.textSecondaryDark
                   : AppColors.textSecondary,
@@ -163,50 +194,54 @@ class _OnboardingNavigationButtonsState
           ),
         ),
 
-        // ── Next circle button with animated arrow ──
-        GestureDetector(
-          onTap: widget.onNext,
-          child: Container(
-            width: 58.w,
-            height: 58.h,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? [AppColors.primaryDark, const Color(0xFF03C464)]
-                    : [AppColors.primary, const Color(0xFF02A856)],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withAlpha(50),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                  spreadRadius: 0,
+        // ── Next circle button with forward-pointing arrow ──
+        Tooltip(
+          message: 'onboarding.next'.tr(),
+          child: GestureDetector(
+            onTap: widget.onNext,
+            child: Container(
+              width: cfg.nextBtnSize,
+              height: cfg.nextBtnSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                      ? [AppColors.primaryDark, const Color(0xFF03C464)]
+                      : [AppColors.primary, const Color(0xFF02A856)],
                 ),
-                BoxShadow(
-                  color: AppColors.primary.withAlpha(25),
-                  blurRadius: 30,
-                  offset: const Offset(0, 10),
-                  spreadRadius: 4,
-                ),
-              ],
-            ),
-            child: AnimatedBuilder(
-              animation: _pulseAnimation,
-              builder: (context, child) {
-                return Center(
-                  child: Transform.translate(
-                    offset: Offset(_pulseAnimation.value, 0),
-                    child: Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.white,
-                      size: 24.sp,
-                    ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withAlpha(50),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                    spreadRadius: 0,
                   ),
-                );
-              },
+                  BoxShadow(
+                    color: AppColors.primary.withAlpha(25),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: AnimatedBuilder(
+                animation: _pulseAnimation,
+                builder: (context, child) {
+                  return Center(
+                    child: Transform.translate(
+                      // Continuous forward pulse toward the right
+                      offset: Offset(_pulseAnimation.value, 0),
+                      child: const Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
