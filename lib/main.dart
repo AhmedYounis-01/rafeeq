@@ -24,11 +24,16 @@ void main() async {
     final view = WidgetsBinding.instance.platformDispatcher.views.first;
     final shortSide = view.physicalSize.shortestSide / view.devicePixelRatio;
 
-    await SystemChrome.setPreferredOrientations(
-      shortSide >= 600
-          ? DeviceOrientation.values
-          : [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
-    );
+    try {
+      await SystemChrome.setPreferredOrientations(
+        shortSide >= 600
+            ? DeviceOrientation.values
+            : [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+      );
+    } catch (e) {
+      // Some Android 8.0 devices throw if the activity isn't fullscreen
+      debugPrint('setPreferredOrientations failed: $e');
+    }
   }
 
   runApp(

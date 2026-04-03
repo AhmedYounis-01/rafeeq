@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,6 +8,7 @@ import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/logic/theme_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
 import 'package:rafeeq/core/widgets/location_picker_dialog.dart';
+import 'package:rafeeq/core/widgets/shared_navigation.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -79,7 +81,7 @@ class CustomDrawer extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(24.w, 60.h, 24.w, 30.h),
       decoration: BoxDecoration(
-        color: context.colorScheme.primary.withValues(alpha:0.05),
+        color: context.colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(40.r),
           bottomRight: Radius.circular(40.r),
@@ -95,7 +97,7 @@ class CustomDrawer extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.r),
               boxShadow: [
                 BoxShadow(
-                  color: context.colorScheme.primary.withValues(alpha:0.3),
+                  color: context.colorScheme.primary.withValues(alpha: 0.3),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -147,7 +149,9 @@ class CustomDrawer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest.withValues(alpha:0.5),
+        color: context.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.5,
+        ),
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Row(
@@ -159,7 +163,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               if (!isArabic) {
                 HapticFeedback.lightImpact();
-                context.setLocale(const Locale('ar'));
+                _changeLocale(context, const Locale('ar'));
               }
             },
           ),
@@ -170,13 +174,41 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               if (isArabic) {
                 HapticFeedback.lightImpact();
-                context.setLocale(const Locale('en'));
+                _changeLocale(context, const Locale('en'));
               }
             },
           ),
         ],
       ),
     );
+  }
+
+  /// Close the drawer first, then change locale after the drawer animation
+  /// completes. This prevents GoRouter from losing its navigation stack
+  /// during the widget tree rebuild triggered by the locale change.
+  void _changeLocale(BuildContext context, Locale newLocale) {
+    // Capture the current route location before closing the drawer
+    final currentLocation = GoRouterState.of(context).uri.toString();
+
+    // Close the drawer safely using AdvancedDrawerController if available
+    final advancedDrawerController = AdvancedDrawerControllerProvider.of(
+      context,
+    );
+    if (advancedDrawerController != null) {
+      advancedDrawerController.hideDrawer();
+    } else if (Navigator.of(context).canPop()) {
+      // Fallback for standard drawer or different layout
+      Navigator.of(context).pop();
+    }
+
+    // Delay locale change until the drawer is fully closed
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        context.setLocale(newLocale);
+        // Re-navigate to the current location to ensure the stack is valid
+        GoRouter.of(context).go(currentLocation);
+      }
+    });
   }
 
   Widget _buildThemeToggle(BuildContext context) {
@@ -189,7 +221,9 @@ class CustomDrawer extends StatelessWidget {
         return Container(
           padding: EdgeInsets.all(4.r),
           decoration: BoxDecoration(
-            color: context.colorScheme.surfaceContainerHighest.withValues(alpha:0.5),
+            color: context.colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.5,
+            ),
             borderRadius: BorderRadius.circular(16.r),
           ),
           child: Row(
@@ -246,7 +280,7 @@ class CustomDrawer extends StatelessWidget {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha:0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 5,
                       offset: const Offset(0, 2),
                     ),
@@ -308,7 +342,13 @@ class CustomDrawer extends StatelessWidget {
           );
 
           if (context.mounted) {
-            Navigator.pop(context); // Close drawer after successful update
+            final advancedDrawerController =
+                AdvancedDrawerControllerProvider.of(context);
+            if (advancedDrawerController != null) {
+              advancedDrawerController.hideDrawer();
+            } else if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
           }
         }
       },
@@ -317,7 +357,7 @@ class CustomDrawer extends StatelessWidget {
         padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           border: Border.all(
-            color: context.colorScheme.primary.withValues(alpha:0.2),
+            color: context.colorScheme.primary.withValues(alpha: 0.2),
           ),
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -353,7 +393,7 @@ class CustomDrawer extends StatelessWidget {
       child: Text(
         "Version 1.0.0",
         style: context.textTheme.labelSmall?.copyWith(
-          color: context.colorScheme.onSurfaceVariant.withValues(alpha:0.5),
+          color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         ),
       ),
     );
