@@ -50,7 +50,9 @@ dependencies:
   go_router: ^17.1.0
   google_fonts: ^8.0.2
   just_audio: ^0.10.5
+  qcf_quran_plus: ^0.0.7
   quran: ^1.4.1
+  quran_library: ^3.2.0
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
   table_calendar: ^3.2.0

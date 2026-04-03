@@ -183,30 +183,23 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  /// Close the drawer first, then change locale after the drawer animation
-  /// completes. This prevents GoRouter from losing its navigation stack
-  /// during the widget tree rebuild triggered by the locale change.
+  /// Close the drawer first, then change locale.
+  /// Awaiting context.setLocale ensures translation files are loaded before rebuild.
   void _changeLocale(BuildContext context, Locale newLocale) {
-    // Capture the current route location before closing the drawer
-    final currentLocation = GoRouterState.of(context).uri.toString();
-
-    // Close the drawer safely using AdvancedDrawerController if available
+    // 1. Close the drawer safely
     final advancedDrawerController = AdvancedDrawerControllerProvider.of(
       context,
     );
     if (advancedDrawerController != null) {
       advancedDrawerController.hideDrawer();
     } else if (Navigator.of(context).canPop()) {
-      // Fallback for standard drawer or different layout
       Navigator.of(context).pop();
     }
 
-    // Delay locale change until the drawer is fully closed
-    Future.delayed(const Duration(milliseconds: 300), () {
+    // 2. Change locale after a small delay to allow drawer animation to start
+    Future.delayed(const Duration(milliseconds: 150), () async {
       if (context.mounted) {
-        context.setLocale(newLocale);
-        // Re-navigate to the current location to ensure the stack is valid
-        GoRouter.of(context).go(currentLocation);
+        await context.setLocale(newLocale);
       }
     });
   }
