@@ -31,114 +31,127 @@ class _SeerahScreenState extends State<SeerahScreen> {
     final primary = AppColors.getPrimary(context);
 
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFBF7),
       appBar: AppBar(
-        title:  
-            Text(
-              'quick_parts_screens.seerah_title'.tr(),
-              style: TextStyle(
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w700,
-                color: isDark ? Colors.white : AppColors.textPrimary,
-              ),
-            ),
-          
-        centerTitle: true,
-        backgroundColor: context.colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.h),
-          child: Container(
-            height: 1.h,
-            color: isDark
-                ? Colors.white.withAlpha(15)
-                : Colors.black.withAlpha(10),
+        title: Text(
+          'quick_parts_screens.seerah_title'.tr(),
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : AppColors.textPrimary,
           ),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
       ),
-      body: FutureBuilder<List<SeerahItem>>(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: primary,
-                strokeWidth: 2.5,
-              ),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 48.sp,
-                    color: Colors.red.withAlpha(180),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            child: Column(
+              children: [
+                Text(
+                  "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontStyle: FontStyle.italic,
+                    color: primary.withAlpha(200),
+                    fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    'common.error'.tr(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: isDark
-                          ? Colors.white.withAlpha(160)
-                          : Colors.black.withAlpha(120),
+                ),
+                SizedBox(height: 15.h),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<SeerahItem>>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: primary,
+                      strokeWidth: 2.5,
                     ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    snapshot.error.toString(),
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      color: Colors.red.withAlpha(180),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.error_outline_rounded,
+                          size: 48.sp,
+                          color: Colors.red.withAlpha(180),
+                        ),
+                        SizedBox(height: 12.h),
+                        Text(
+                          'common.error'.tr(),
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: isDark
+                                ? Colors.white.withAlpha(160)
+                                : Colors.black.withAlpha(120),
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          snapshot.error.toString(),
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            color: Colors.red.withAlpha(180),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
-          }
+                  );
+                }
 
-          final items = snapshot.data!;
-          final grouped = QuickPartsRepository.instance.groupSeerahByCategory(
-            items,
-            isArabic,
-          );
+                final items = snapshot.data!;
+                final grouped = QuickPartsRepository.instance
+                    .groupSeerahByCategory(items, isArabic);
 
-          return ListView.builder(
-            padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 32.h),
-            itemCount: grouped.length,
-            itemBuilder: (context, sectionIndex) {
-              final category = grouped.keys.elementAt(sectionIndex);
-              final sectionItems = grouped[category]!;
+                return ListView.builder(
+                  padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 32.h),
+                  itemCount: grouped.length,
+                  itemBuilder: (context, sectionIndex) {
+                    final category = grouped.keys.elementAt(sectionIndex);
+                    final sectionItems = grouped[category]!;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CategoryHeader(
-                    title: category,
-                    itemCount: sectionItems.length,
-                  ),
-                  ...sectionItems.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final item = entry.value;
-                    return SeerahCard(
-                      item: item,
-                      isArabic: isArabic,
-                      isFirst: index == 0,
-                      isLast: index == sectionItems.length - 1,
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CategoryHeader(
+                          title: category,
+                          itemCount: sectionItems.length,
+                        ),
+                        ...sectionItems.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final item = entry.value;
+                          return SeerahCard(
+                            item: item,
+                            isArabic: isArabic,
+                            isFirst: index == 0,
+                            isLast: index == sectionItems.length - 1,
+                          );
+                        }),
+                        SizedBox(height: 8.h),
+                      ],
                     );
-                  }),
-                  SizedBox(height: 8.h),
-                ],
-              );
-            },
-          );
-        },
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

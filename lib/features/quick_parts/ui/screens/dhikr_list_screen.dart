@@ -10,8 +10,9 @@ import '../widgets/dhikr_card.dart';
 
 class DhikrListScreen extends StatefulWidget {
   final QuickPartType type;
+  final String? selectedCategory;
 
-  const DhikrListScreen({super.key, required this.type});
+  const DhikrListScreen({super.key, required this.type, this.selectedCategory});
 
   @override
   State<DhikrListScreen> createState() => _DhikrListScreenState();
@@ -27,6 +28,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   }
 
   String _getTitle() {
+    if (widget.selectedCategory != null) return widget.selectedCategory!;
     switch (widget.type) {
       case QuickPartType.azkar:
         return 'quick_parts_screens.azkar_title'.tr();
@@ -114,7 +116,13 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
             );
           }
 
-          final items = snapshot.data!;
+          var items = snapshot.data!;
+          if (widget.selectedCategory != null) {
+            items = items
+                .where((i) => i.cat == widget.selectedCategory)
+                .toList();
+          }
+
           final grouped = QuickPartsRepository.instance.groupByCategory(
             items,
             isArabic,

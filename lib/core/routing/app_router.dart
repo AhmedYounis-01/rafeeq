@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
 import 'package:rafeeq/features/onboarding/ui/onboarding_screen.dart';
+import 'package:rafeeq/features/quick_parts/ui/screens/azkar_categories_screen.dart';
+import 'package:rafeeq/features/quick_parts/ui/screens/asma_allah_screen.dart';
 import 'package:rafeeq/features/quick_parts/ui/screens/dhikr_list_screen.dart';
 import 'package:rafeeq/features/quick_parts/ui/screens/seerah_screen.dart';
 import 'package:rafeeq/features/quick_parts/data/quick_parts_repository.dart';
@@ -82,8 +84,7 @@ class AppRouter {
       GoRoute(
         path: azkar,
         name: 'azkar',
-        builder: (context, state) =>
-            const DhikrListScreen(type: QuickPartType.azkar),
+        builder: (context, state) => const AzkarCategoriesScreen(),
       ),
       GoRoute(
         path: ruqiah,
@@ -94,8 +95,7 @@ class AppRouter {
       GoRoute(
         path: dua,
         name: 'dua',
-        builder: (context, state) =>
-            const DhikrListScreen(type: QuickPartType.dua),
+        builder: (context, state) => const AsmaAllahScreen(),
       ),
       GoRoute(
         path: seerah,

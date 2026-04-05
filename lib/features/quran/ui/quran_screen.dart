@@ -317,7 +317,7 @@ class _QuranScreenState extends State<QuranScreen>
               builder: (_, highlights, _) => QuranPageView(
                 pageController: _pageController,
                 isDarkMode: isDark,
-                isTajweed: true,
+                isTajweed: false,
                 highlights: highlights,
                 onPageChanged: (pageNumber) {
                   _cubit.onPageChanged(pageNumber);

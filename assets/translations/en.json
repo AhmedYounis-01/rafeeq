@@ -44,10 +44,10 @@
       "isha": "El-Isha"
     },
     "quick_parts": {
-      "azkar": "El-Azkar",
+      "azkar": "Adhkar & Supplications",
       "ruqiah": "El-Ruqiah El-Shareia",
-      "dua": "El-Dua",
-      "seerah": "El-Seerah El-Nabawiah"
+      "dua": "Names of Allah",
+      "seerah": "Seerah Nabawiah"
     },
     "greetings": {
       "morning": "Good Morning, Rafeeq",
@@ -136,10 +136,10 @@
     "readers": "Readers"
   },
   "quick_parts_screens": {
-    "azkar_title": "El-Azkar",
-    "ruqiah_title": "El-Ruqiah El-Shareia",
-    "dua_title": "El-Dua",
-    "seerah_title": "El-Seerah El-Nabawiah"
+    "azkar_title": "Adhkar & Supplications",
+    "ruqiah_title": "Ruqiah Shareia",
+    "dua_title": "Names of Allah",
+    "seerah_title": "Seerah Nabawiah"
   },
   "onboarding": {
     "page1_title": "Your Daily Companion with the Quran",

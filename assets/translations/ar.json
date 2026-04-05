@@ -44,9 +44,9 @@
       "isha": "العشاء"
     },
     "quick_parts": {
-      "azkar": "الأذكار",
+      "azkar": "الادعية والاذكار",
       "ruqiah": "الرقية الشرعية",
-      "dua": "الدعاء",
+      "dua": "أسماء الله الحسنى",
       "seerah": "السيرة النبوية"
     },
     "greetings": {
@@ -136,9 +136,9 @@
     "readers": "القراء"
   },
   "quick_parts_screens": {
-    "azkar_title": "الأذكار",
+    "azkar_title": "الادعية والاذكار",
     "ruqiah_title": "الرقية الشرعية",
-    "dua_title": "الدعاء",
+    "dua_title": "أسماء الله الحسنى",
     "seerah_title": "السيرة النبوية"
   },
   "onboarding": {
