@@ -53,7 +53,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
           style: TextStyle(
             fontSize: 17.sp,
             fontWeight: FontWeight.w700,
-            color: isDark ? Colors.white : AppColors.textPrimary,
+            color: context.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,

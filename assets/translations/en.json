@@ -139,7 +139,38 @@
     "azkar_title": "Adhkar & Supplications",
     "ruqiah_title": "Ruqiah Shareia",
     "dua_title": "Names of Allah",
-    "seerah_title": "Seerah Nabawiah"
+    "dua": {
+      "verse": "{ And to Allah belong the best names, so invoke Him by them }"
+    },
+    "seerah_title": "Seerah Nabawiah",
+    "azkar": {
+      "morning": "Morning Adhkar",
+      "evening": "Evening Adhkar",
+      "after_prayer": "After Prayer Adhkar",
+      "sleep": "Sleep Adhkar",
+      "waking_up": "Waking Up Adhkar",
+      "entering_home": "Entering Home Adhkar",
+      "leaving_home": "Leaving Home Adhkar",
+      "food": "Food Adhkar",
+      "wudu": "Wudu Adhkar",
+      "adhan": "Adhan Adhkar",
+      "mosque": "Mosque Adhkar",
+      "travel": "Travel Adhkar",
+      "rain": "Rain Adhkar",
+      "fear": "Fear & Anxiety Adhkar",
+      "sickness": "Sickness Adhkar",
+      "distress": "Distress & Worry Adhkar",
+      "repentance": "Repentance Adhkar",
+      "sustenance": "Sustenance Adhkar",
+      "work": "Work Adhkar",
+      "market": "Market Adhkar",
+      "meeting_people": "Meeting People Adhkar",
+      "children_sleep": "Children Sleep Adhkar",
+      "protection": "Protection Adhkar",
+      "friday": "Friday Adhkar",
+      "hajj": "Hajj & Umrah Adhkar",
+      "quran_completion": "Quran Completion Dua"
+    }
   },
   "onboarding": {
     "page1_title": "Your Daily Companion with the Quran",

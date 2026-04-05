@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../data/models/seerah_item.dart';
 import '../../data/quick_parts_repository.dart';
 import '../widgets/category_header.dart';
@@ -31,16 +32,14 @@ class _SeerahScreenState extends State<SeerahScreen> {
     final primary = AppColors.getPrimary(context);
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDFBF7),
+      backgroundColor: context.colorScheme.surface,
       appBar: AppBar(
         title: Text(
           'quick_parts_screens.seerah_title'.tr(),
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : AppColors.textPrimary,
+            color: context.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -57,11 +56,10 @@ class _SeerahScreenState extends State<SeerahScreen> {
                 Text(
                   "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontStyle: FontStyle.italic,
-                    color: primary.withAlpha(200),
-                    fontWeight: FontWeight.w600,
+                  style: GoogleFonts.amiri(
+                    fontSize: 18.sp,
+                    color: context.colorScheme.onSurface.withAlpha(200),
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 15.h),

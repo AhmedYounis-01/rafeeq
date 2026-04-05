@@ -1,101 +1,596 @@
 [
-  {"ar": "الرَّحْمَنُ", "en": "Ar-Rahman", "description": "The Most or Entirely Merciful"},
-  {"ar": "الرَّحِيمُ", "en": "Ar-Raheem", "description": "The Bestower of Mercy"},
-  {"ar": "الْمَلِكُ", "en": "Al-Malik", "description": "The King and Owner of Dominion"},
-  {"ar": "الْقُدُّوسُ", "en": "Al-Quddus", "description": "The Absolutely Pure"},
-  {"ar": "السَّلَامُ", "en": "As-Salam", "description": "The Perfection and Giver of Peace"},
-  {"ar": "الْمُؤْمِنُ", "en": "Al-Mu'min", "description": "The One Who gives Emaan and Security"},
-  {"ar": "الْمُهَيْمِنُ", "en": "Al-Muhaymin", "description": "The Guardian, The Witness, The Overseer"},
-  {"ar": "الْعَزِيزُ", "en": "Al-Azeez", "description": "The All-Mighty"},
-  {"ar": "الْجَبَّارُ", "en": "Al-Jabbar", "description": "The Compeller, The Restorer"},
-  {"ar": "الْمُتَكَبِّرُ", "en": "Al-Mutakabbir", "description": "The Supreme, The Majestic"},
-  {"ar": "الْخَالِقُ", "en": "Al-Khaliq", "description": "The Creator, The Maker"},
-  {"ar": "الْبَارِئُ", "en": "Al-Baari'", "description": "The Originator"},
-  {"ar": "الْمُصَوِّرُ", "en": "Al-Musawwir", "description": "The Fashioner"},
-  {"ar": "الْغَفَّارُ", "en": "Al-Ghaffar", "description": "The All-and-Oft-Forgiving"},
-  {"ar": "الْقَهَّارُ", "en": "Al-Qahhar", "description": "The Subduer, The Ever-Dominating"},
-  {"ar": "الْوَهَّابُ", "en": "Al-Wahhab", "description": "The Giver of All"},
-  {"ar": "الرَّزَّاقُ", "en": "Ar-Razzaq", "description": "The Sustainer"},
-  {"ar": "الْفَتَّاحُ", "en": "Al-Fattah", "description": "The Opener, The Reliever"},
-  {"ar": "الْعَلِيمُ", "en": "Al-Aleem", "description": "The All-Knowing, The Omniscient"},
-  {"ar": "الْقَابِضُ", "en": "Al-Qaabid", "description": "The Withholder"},
-  {"ar": "الْبَاسِطُ", "en": "Al-Baasit", "description": "The Extender"},
-  {"ar": "الْخَافِضُ", "en": "Al-Khaafid", "description": "The Reducer, The Abaser"},
-  {"ar": "الرَّافِعُ", "en": "Ar-Raafi'", "description": "The Exalter, The Elevator"},
-  {"ar": "الْمُعِزُّ", "en": "Al-Mu'izz", "description": "The Giver of Honour"},
-  {"ar": "الْمُذِلُّ", "en": "Al-Mudhill", "description": "The Giver of Dishonour"},
-  {"ar": "السَّمِيعُ", "en": "As-Samee'", "description": "The All-Hearing"},
-  {"ar": "الْبَصِيرُ", "en": "Al-Baseer", "description": "The All-Seeing"},
-  {"ar": "الْحَكَمُ", "en": "Al-Hakam", "description": "The Judge, The Arbitrator"},
-  {"ar": "الْعَدْلُ", "en": "Al-Adl", "description": "The Utterly Just"},
-  {"ar": "اللَّطِيفُ", "en": "Al-Lateef", "description": "The Subtle One, The Most Gentle"},
-  {"ar": "الْخَبِيرُ", "en": "Al-Khabeer", "description": "The All-Aware"},
-  {"ar": "الْحَلِيمُ", "en": "Al-Haleem", "description": "The Most Forbearing"},
-  {"ar": "الْعَظِيمُ", "en": "Al-Azeem", "description": "The Magnificent, The Supreme"},
-  {"ar": "الْغَفُورُ", "en": "Al-Ghafoor", "description": "The Forgiving, The Exceedingly Forgiving"},
-  {"ar": "الشَّكُورُ", "en": "Ash-Shakoor", "description": "The Most Appreciative"},
-  {"ar": "الْعَلِيُّ", "en": "Al-Aliyy", "description": "The Highest, The Exalted"},
-  {"ar": "الْكَبِيرُ", "en": "Al-Kabeer", "description": "The Greatest, The Most Grand"},
-  {"ar": "الْحَفِيظُ", "en": "Al-Hafiz", "description": "The Preserver"},
-  {"ar": "الْمُقِيتُ", "en": "Al-Muqeet", "description": "The Sustainer"},
-  {"ar": "الْحَسِيبُ", "en": "Al-Haseeb", "description": "The Reckoner, The Sufficient"},
-  {"ar": "الْجَلِيلُ", "en": "Al-Jaleel", "description": "The Majestic"},
-  {"ar": "الْكَرِيمُ", "en": "Al-Kareem", "description": "The Most Generous, The Liberal"},
-  {"ar": "الرَّقِيبُ", "en": "Ar-Raqeeb", "description": "The Watchful"},
-  {"ar": "الْمُجِيبُ", "en": "Al-Mujeeb", "description": "The Responsive One"},
-  {"ar": "الْوَاسِعُ", "en": "Al-Waasi'", "description": "The All-Encompassing, the Boundless"},
-  {"ar": "الْحَكِيمُ", "en": "Al-Hakeem", "description": "The All-Wise"},
-  {"ar": "الْوَدُودُ", "en": "Al-Wadood", "description": "The Most Loving"},
-  {"ar": "الْمَجِيدُ", "en": "Al-Majeed", "description": "The Glorious, The Most Honorable"},
-  {"ar": "الْبَاعِثُ", "en": "Al-Ba'ith", "description": "The Resurrector, The Raiser of the Dead"},
-  {"ar": "الشَّهِيدُ", "en": "Ash-Shaheed", "description": "The All-and-Ever Witnessing"},
-  {"ar": "الْحَقُّ", "en": "Al-Haqq", "description": "The Absolute Truth"},
-  {"ar": "الْوَكِيلُ", "en": "Al-Wakeel", "description": "The Trustee, The Disposer of Affairs"},
-  {"ar": "الْقَوِيُّ", "en": "Al-Qawiyy", "description": "The All-Strong"},
-  {"ar": "الْمَتِينُ", "en": "Al-Mateen", "description": "The Firm, The Steadfast"},
-  {"ar": "الْوَلِيُّ", "en": "Al-Waliyy", "description": "The Protecting Associate"},
-  {"ar": "الْحَمِيدُ", "en": "Al-Hameed", "description": "The Praiseworthy"},
-  {"ar": "الْمُحْصِي", "en": "Al-Muhsee", "description": "The All-Enumerating, The Counter"},
-  {"ar": "الْمُبْدِئُ", "en": "Al-Mubdi'", "description": "The Originator, The Initiator"},
-  {"ar": "الْمُعِيدُ", "en": "Al-Mu'id", "description": "The Restorer, The Reinstater"},
-  {"ar": "الْمُحْيِي", "en": "Al-Muhyee", "description": "The Giver of Life"},
-  {"ar": "الْمُمِيتُ", "en": "Al-Mumeet", "description": "The Bringer of Death, the Destroyer"},
-  {"ar": "الْحَيُّ", "en": "Al-Hayy", "description": "The Ever-Living"},
-  {"ar": "الْقَيُّومُ", "en": "Al-Qayyum", "description": "The Sustainer, The Self-Subsisting"},
-  {"ar": "الْوَاجِدُ", "en": "Al-Waajid", "description": "The Perceiver"},
-  {"ar": "الْمَاجِدُ", "en": "Al-Maajid", "description": "The Illustrious, the Magnificent"},
-  {"ar": "الْوَاحِدُ", "en": "Al-Waahid", "description": "The One"},
-  {"ar": "الْأَحَدُ", "en": "Al-Ahad", "description": "The Unique, The Only One"},
-  {"ar": "الصَّمَدُ", "en": "As-Samad", "description": "The Eternal, Satisfier of Need"},
-  {"ar": "الْقَادِرُ", "en": "Al-Qaadir", "description": "The Capable, The Powerful"},
-  {"ar": "الْمُقْتَدِرُ", "en": "Al-Muqtadir", "description": "The Omnipotent"},
-  {"ar": "الْمُقَدِّمُ", "en": "Al-Muqaddim", "description": "The Expediter, The One Who Brings Forward"},
-  {"ar": "الْمُؤَخِّرُ", "en": "Al-Mu'akhkhir", "description": "The Delayer, the One Who Puts Far Behind"},
-  {"ar": "الْأَوَّلُ", "en": "Al-Awwal", "description": "The First"},
-  {"ar": "الْآخِرُ", "en": "Al-Akhir", "description": "The Last"},
-  {"ar": "الظَّاهِرُ", "en": "Az-Zaahir", "description": "The Manifest"},
-  {"ar": "الْبَاطِنُ", "en": "Al-Baatin", "description": "The Hidden One, Knower of the Hidden"},
-  {"ar": "الْوَالِي", "en": "Al-Waali", "description": "The Governor, The Patron"},
-  {"ar": "الْمُتَعَالِي", "en": "Al-Muta'ali", "description": "The Self Exalted"},
-  {"ar": "الْبَرُّ", "en": "Al-Barr", "description": "The Source of Goodness, the Kind Benefactor"},
-  {"ar": "التَّوَّابُ", "en": "At-Tawwab", "description": "The Ever-Pardoning, The Relenting"},
-  {"ar": "الْمُنْتَقِمُ", "en": "Al-Muntaqim", "description": "The Avenger"},
-  {"ar": "الْعَفُوُّ", "en": "Al-Afuww", "description": "The Pardoner"},
-  {"ar": "الرَّؤُوفُ", "en": "Ar-Ra'oof", "description": "The Most Kind"},
-  {"ar": "مَالِكُ الْمُلْكِ", "en": "Maalik-ul-Mulk", "description": "Master of Kingdom, Owner of Dominion"},
-  {"ar": "ذُو الْجَلَالِ وَالْإِكْرَامِ", "en": "Dhul-Jalaali-wal-Ikram", "description": "Possessor of Glory and Honour, Lord of Majesty and Generosity"},
-  {"ar": "الْمُقْسِطُ", "en": "Al-Muqsit", "description": "The Equitable, the Requiter"},
-  {"ar": "الْجَامِعُ", "en": "Al-Jaami'", "description": "The Gatherer, the Uniter"},
-  {"ar": "الْغَنِيُّ", "en": "Al-Ghaniyy", "description": "The Self-Sufficient, The Wealthy"},
-  {"ar": "الْمُغْنِي", "en": "Al-Mughni", "description": "The Enricher"},
-  {"ar": "الْمَانِعُ", "en": "Al-Maani'", "description": "The Withholder"},
-  {"ar": "الضَّارُّ", "en": "Ad-Daarr", "description": "The Distressor"},
-  {"ar": "النَّافِعُ", "en": "An-Naafi'", "description": "The Propitious, the Benefactor"},
-  {"ar": "النُّورُ", "en": "An-Noor", "description": "The Light, The Illuminator"},
-  {"ar": "الْهَادِي", "en": "Al-Haadi", "description": "The Guide"},
-  {"ar": "الْبَدِيعُ", "en": "Al-Badee'", "description": "The Incomparable Originator"},
-  {"ar": "الْبَاقِي", "en": "Al-Baaqi", "description": "The Ever-Surviving, The Everlasting"},
-  {"ar": "الْوَارِثُ", "en": "Al-Waarith", "description": "The Ultimate Inheritor"},
-  {"ar": "الرَّشِيدُ", "en": "Ar-Rasheed", "description": "The Guide, Infallible Teacher, and Knower"},
-  {"ar": "الصَّبُورُ", "en": "As-Saboor", "description": "The Forbearing, The Patient"}
+  {
+    "ar": "الرَّحْمَنُ",
+    "en": "Ar-Rahman",
+    "descriptionAr": "كثير الرحمة وهو اسم مقصور على الله عز وجل، ورحمته وسعت كل شيء وهو أرحم الراحمين",
+    "descriptionEn": "The All-Compassionate, The Most Gracious, The One who is All-Merciful and whose mercy encompasses all of creation."
+  },
+  {
+    "ar": "الرَّحِيمُ",
+    "en": "Ar-Rahim",
+    "descriptionAr": "هو المنعم أبداً، المتفضل دوماً، فرحمته لا تنتهي في الدنيا والآخرة",
+    "descriptionEn": "The All-Merciful, The Specially Merciful, The One who grants special mercy to the believers."
+  },
+  {
+    "ar": "الْمَلِكُ",
+    "en": "Al-Malik",
+    "descriptionAr": "هو الله، ملك الملوك، له الملك، وهو المالك المطلق لجميع الخلائق",
+    "descriptionEn": "The Absolute Ruler, The King, The Sovereign Lord, The One who is the Absolute Ruler over all that exists."
+  },
+  {
+    "ar": "الْقُدُّوسُ",
+    "en": "Al-Quddus",
+    "descriptionAr": "هو الطاهر المنزه عن كل نقص وعيب مما لا يليق بجلاله",
+    "descriptionEn": "The Most Holy, The Pure One, The One who is pure, holy, and free from all defects."
+  },
+  {
+    "ar": "السَّلَامُ",
+    "en": "As-Salam",
+    "descriptionAr": "هو ناشر السلام بين الأنام وهو الذي سلمت ذاته وخلقه من كل ظلم",
+    "descriptionEn": "The Source of Peace, The Giver of Peace, The One who is free from all faults and provides peace to His creation."
+  },
+  {
+    "ar": "الْمُؤْمِنُ",
+    "en": "Al-Mu'min",
+    "descriptionAr": "هو الذي يصدق عباده ما وعدهم، والذي آمن خلقه من عذابه وظلمه",
+    "descriptionEn": "The Inspirer of Faith, The Giver of Security, The Guardian of faith and the One who gives security."
+  },
+  {
+    "ar": "الْمُهَيْمِنُ",
+    "en": "Al-Muhaymin",
+    "descriptionAr": "هو الرقيب الحافظ لكل شيء، القائم على خلقه والمطلع على خفايا الأمور",
+    "descriptionEn": "The Guardian, The Witness, The Overseer, The Protector, the Witness, and the One who maintains all things."
+  },
+  {
+    "ar": "الْعَزِيزُ",
+    "en": "Al-Aziz",
+    "descriptionAr": "هو المنفرد بالعزة، القوي الغالب الذي لا يغلبه شيء",
+    "descriptionEn": "The All Mighty, The Worthy of All Honour, The All-Powerful and the Undefeated."
+  },
+  {
+    "ar": "الْجَبَّارُ",
+    "en": "Al-Jabbar",
+    "descriptionAr": "هو الذي تنفذ مشيئته، وهو القاهر لخلقه على ما أراد، والمصلح لأحوالهم",
+    "descriptionEn": "The Compeller, The Restorer, The One who restores and mends, and to whose will all must submit."
+  },
+  {
+    "ar": "الْمُتَكَبِّرُ",
+    "en": "Al-Mutakabbir",
+    "descriptionAr": "هو المنفرد بالعظمة والكبرياء، والمتعالي عن صفات الخلق",
+    "descriptionEn": "The Supreme, The Majestic, The Majestic One who is above all creation."
+  },
+  {
+    "ar": "الْخَالِقُ",
+    "en": "Al-Khaliq",
+    "descriptionAr": "هو الفاطر المبدع لكل شيء، الموجد للأشياء من العدم بغير مثال سابق",
+    "descriptionEn": "The Creator, The Maker, The One who determines and creates from nothing."
+  },
+  {
+    "ar": "الْبَارِئُ",
+    "en": "Al-Baari'",
+    "descriptionAr": "هو الذي خلق الخلق بقدرته، القادر على إبراز ما قدره إلى الوجود",
+    "descriptionEn": "The Originator, The Evolver, The One who creates without any model or previous existence."
+  },
+  {
+    "ar": "الْمُصَوِّرُ",
+    "en": "Al-Musawwir",
+    "descriptionAr": "هو الذي صور جميع الموجودات وأعطى كل شيء منها صورة خاصة وهيئة منفردة",
+    "descriptionEn": "The Fashioner, The Shaper of Beauty, The One who gives everything its unique form and appearance."
+  },
+  {
+    "ar": "الْغَفَّارُ",
+    "en": "Al-Ghaffar",
+    "descriptionAr": "هو وحده الذي يستر العيوب ويغفر الذنوب في الدنيا والآخرة",
+    "descriptionEn": "The All-Forgiving, The Forgiving One, The One who is prone to forgive again and again."
+  },
+  {
+    "ar": "الْقَهَّارُ",
+    "en": "Al-Qahhar",
+    "descriptionAr": "هو الغالب الذي قهر كل شيء بسلطانه وقدرته وخضع له كل جبار",
+    "descriptionEn": "The Subduer, The Ever-Dominating, The One who has total power over all things."
+  },
+  {
+    "ar": "الْوَهَّابُ",
+    "en": "Al-Wahhab",
+    "descriptionAr": "هو المنعم على العباد، الذي يهب بغير عوض ويعطي بغير سؤال",
+    "descriptionEn": "The Giver of All, The Bestower, The One who gives generously without any expectation of return."
+  },
+  {
+    "ar": "الرَّزَّاقُ",
+    "en": "Ar-Razzaq",
+    "descriptionAr": "هو الذي خلق الأرزاق وتكفل بها لكل الخلائق ومد كل كائن بما يحتاجه",
+    "descriptionEn": "The Sustainer, The Provider, The One who provides everything that creation needs."
+  },
+  {
+    "ar": "الْفَتَّاحُ",
+    "en": "Al-Fattah",
+    "descriptionAr": "هو الذي يفتح مغلق الأمور، ويسهل العسير، وبيده مفاتيح كل شيء",
+    "descriptionEn": "The Opener, The Judge, The One who opens every door and solves every problem."
+  },
+  {
+    "ar": "الْعَلِيمُ",
+    "en": "Al-Alim",
+    "descriptionAr": "هو الذي أحاط علمه بكل شيء، الظاهر والباطن، السر والعلانية",
+    "descriptionEn": "The All-Knowing, The Omniscient, The One whose knowledge encompasses everything."
+  },
+  {
+    "ar": "الْقَابِضُ",
+    "en": "Al-Qabid",
+    "descriptionAr": "هو الذي يقبض الأرزاق والنفوس بقدرته وحكمته",
+    "descriptionEn": "The Withholder, The Restrainer, The One who constricts and withholds as He wills."
+  },
+  {
+    "ar": "الْبَاسِطُ",
+    "en": "Al-Basit",
+    "descriptionAr": "هو الذي يبسط الرزق لمن يشاء بفضله وكرمه",
+    "descriptionEn": "The Extender, The Expander, The One who expands and amplifies provision."
+  },
+  {
+    "ar": "الْخَافِضُ",
+    "en": "Al-Khafid",
+    "descriptionAr": "هو الذي يخفض من يشاء بقدرته وحكمته من المتكبرين والجبارين",
+    "descriptionEn": "The Reducer, The Abaser, The One who humbles and lowers the arrogant."
+  },
+  {
+    "ar": "الرَّافِعُ",
+    "en": "Ar-Rafi'",
+    "descriptionAr": "هو الذي يرفع من يشاء من أوليائه بفضله وإعزازه",
+    "descriptionEn": "The Exalter, The Elevator, The One who raises and uplifts whom He wills."
+  },
+  {
+    "ar": "الْمُعِزُّ",
+    "en": "Al-Mu'izz",
+    "descriptionAr": "هو الذي يعز من يشاء من عباده بطاعته ونصره",
+    "descriptionEn": "The Giver of Honour, The Bestower of Honor, The One who gives dignity and power."
+  },
+  {
+    "ar": "الْمُذِلُّ",
+    "en": "Al-Mudhill",
+    "descriptionAr": "هو الذي يذل من يشاء بقهره وخزلانه من أهل معصيته",
+    "descriptionEn": "The Dishonourer, The Humiliator, The One who brings disgrace and humiliation."
+  },
+  {
+    "ar": "السَّمِيعُ",
+    "en": "As-Sami'",
+    "descriptionAr": "هو الذي يسمع كل الأصوات، خفيها وجليها، ولا يشغله سمع عن سمع",
+    "descriptionEn": "The All-Hearing, The Ever-Listening, The One whose hearing is perfect and encompasses all."
+  },
+  {
+    "ar": "الْبَصِيرُ",
+    "en": "Al-Basir",
+    "descriptionAr": "هو الذي يرى كل شيء، دقيقه وجليله، ولا يغيب عنه شيء في الأرض ولا في السماء",
+    "descriptionEn": "The All-Seeing, The Ever-Watching, The One whose sight is perfect and encompasses all."
+  },
+  {
+    "ar": "الْحَكَمُ",
+    "en": "Al-Hakam",
+    "descriptionAr": "هو الحاكم العادل الذي لا يرد قضاؤه، ولا معقب لحكمه",
+    "descriptionEn": "The Judge, The Arbitrator, The One who judges and whose judgment is final."
+  },
+  {
+    "ar": "الْعَدْلُ",
+    "en": "Al-Adl",
+    "descriptionAr": "هو المنزه عن الظلم والجور، الذي يعطي كل ذي حق حقه",
+    "descriptionEn": "The Utterly Just, The Equitable One, The One whose justice is perfect and absolute."
+  },
+  {
+    "ar": "اللَّطِيفُ",
+    "en": "Al-Latif",
+    "descriptionAr": "هو البر بعباده، العالم بخفايا أمورهم، الذي يوصل إليهم مصالحهم بلطف",
+    "descriptionEn": "The Subtle One, The Most Gentle, The One who is kind and aware of the finest details."
+  },
+  {
+    "ar": "الْخَبِيرُ",
+    "en": "Al-Khabir",
+    "descriptionAr": "هو الذي لا يخفى عليه شيء، العالم ببواطن الأمور وخباياها",
+    "descriptionEn": "The All-Aware, The Well-Acquainted, The One who knows the inner reality of all things."
+  },
+  {
+    "ar": "الْحَلِيمُ",
+    "en": "Al-Haleem",
+    "descriptionAr": "هو الذي لا يعجل بالعقوبة على عباده مع قدرته عليهم",
+    "descriptionEn": "The Most Forbearing, The Serene One, The One who does not hasten to punish."
+  },
+  {
+    "ar": "الْعَظِيمُ",
+    "en": "Al-Azim",
+    "descriptionAr": "هو المستحق لصفات العظمة والكبرياء، الذي لا تدرك كنهه العقول",
+    "descriptionEn": "The Magnificent, The Supreme One, The One who is infinitely great and beyond comprehension."
+  },
+  {
+    "ar": "الْغَفُورُ",
+    "en": "Al-Ghafur",
+    "descriptionAr": "هو كثير المغفرة والستر لعباده، الذي يغفر الذنوب العظيمة بفضله",
+    "descriptionEn": "The Forgiving, The Exceedingly Forgiving, The One who forgives all sins."
+  },
+  {
+    "ar": "الشَّكُورُ",
+    "en": "Ash-Shakur",
+    "descriptionAr": "هو الذي يثيب على القليل من العمل بالكثير من الأجر",
+    "descriptionEn": "The Appreciative, The Grateful, The One who rewards extensively for small actions."
+  },
+  {
+    "ar": "الْعَلِيُّ",
+    "en": "Al-Ali",
+    "descriptionAr": "هو الذي له العلو المطلق بذاته وقدره وقهره، المنزه عن الأشباه والأنداد",
+    "descriptionEn": "The Highest, The Sublime One, The One who is high above all."
+  },
+  {
+    "ar": "الْكَبِيرُ",
+    "en": "Al-Kabir",
+    "descriptionAr": "هو الموصوف بالجلال وعظمة الشأن، الذي كل شيء دونه صغير",
+    "descriptionEn": "The Greatest, The Grand One, The One whose greatness is unparalleled."
+  },
+  {
+    "ar": "الْحَفِيظُ",
+    "en": "Al-Hafiz",
+    "descriptionAr": "هو الذي يحفظ الخلائق بقدرته، ويحفظ أعمال العباد ليجازيهم عليها",
+    "descriptionEn": "The Preserver, The Protector, The One who protects and maintains all creation."
+  },
+  {
+    "ar": "الْمُقِيتُ",
+    "en": "Al-Muqit",
+    "descriptionAr": "هو المقتدر على إيصال الأقوات، والحافظ لكل شيء بعلمه وقدرته",
+    "descriptionEn": "The Nourisher, The Sustainer, The One who gives strength and sustenance."
+  },
+  {
+    "ar": "الْحَسِيبُ",
+    "en": "Al-Hasib",
+    "descriptionAr": "هو الكافي لعباده، والمحاسب لهم على أعمالهم، والمطلع على ضمائرهم",
+    "descriptionEn": "The Reckoner, The Sufficient One, The One who is enough for His servants."
+  },
+  {
+    "ar": "الْجَلِيلُ",
+    "en": "Al-Jalil",
+    "descriptionAr": "هو الموصوف بصفات الجلال والكمال، العظيم الشأن المنزه عن النقص",
+    "descriptionEn": "The Majestic, The Sublime, The One who possesses all attributes of majesty."
+  },
+  {
+    "ar": "الْكَرِيمُ",
+    "en": "Al-Karim",
+    "descriptionAr": "هو كثير الخير، الجواد الذي يعطي من غير سؤال، ويصفح عن الخطأ",
+    "descriptionEn": "The Generous, The Bountiful One, The One who is infinitely generous and kind."
+  },
+  {
+    "ar": "الرَّقِيبُ",
+    "en": "Ar-Raqib",
+    "descriptionAr": "هو المطلع على ما في الخواطر، الحافظ الذي لا يغيب عنه شيء من أفعال العباد",
+    "descriptionEn": "The Watchful, The All-Observing, The One from whom nothing is hidden."
+  },
+  {
+    "ar": "الْمُجِيبُ",
+    "en": "Al-Mujib",
+    "descriptionAr": "هو الذي يجيب دعاء الداعين، ويقضي حوائج المحتاجين بفضله وكرمه",
+    "descriptionEn": "The Responsive One, The Answerer, The One who answers the pleas of those in need."
+  },
+  {
+    "ar": "الْوَاسِعُ",
+    "en": "Al-Wasi'",
+    "descriptionAr": "هو الذي وسع فضله ورزقه وكرمه ورحمته كل شيء، المحيط بكل شيء علماً",
+    "descriptionEn": "The All-Encompassing, The Boundless, The One whose attributes and mercy are infinite."
+  },
+  {
+    "ar": "الْحَكِيمُ",
+    "en": "Al-Hakim",
+    "descriptionAr": "هو الذي يضع الأشياء في مواضعها، الموصوف بكمال العلم والحكمة في التدبير",
+    "descriptionEn": "The All-Wise, The Wise One, The One who has perfect wisdom in all His affairs."
+  },
+  {
+    "ar": "الْوَدُودُ",
+    "en": "Al-Wadud",
+    "descriptionAr": "هو المحب لأوليائه، والمودود في قلوب عباده الصالحين، كثير الود واللطف",
+    "descriptionEn": "The Loving One, The Most Affectionate, The One who loves His righteous servants."
+  },
+  {
+    "ar": "الْمَجِيدُ",
+    "en": "Al-Majid",
+    "descriptionAr": "هو عظيم الشأن، كثير الخير والبر، الموصوف بصفات الكمال والجلال",
+    "descriptionEn": "The Glorious, The Most Honorable, The One who is infinitely glorious."
+  },
+  {
+    "ar": "الْبَاعِثُ",
+    "en": "Al-Ba'ith",
+    "descriptionAr": "هو الذي يبعث الموتى من القبور للحساب والجزاء، وباعث الرسل لهداية الناس",
+    "descriptionEn": "The Resurrector, The Raiser of the Dead, The One who will bring the dead back to life."
+  },
+  {
+    "ar": "الشَّهِيدُ",
+    "en": "Ash-Shahid",
+    "descriptionAr": "هو المطلع على كل شيء، الذي لا يغيب عنه غائب، الشاهد على أعمال العباد",
+    "descriptionEn": "The Witness, The All-and-Ever Witnessing, The One who sees and knows everything."
+  },
+  {
+    "ar": "الْحَقُّ",
+    "en": "Al-Haqq",
+    "descriptionAr": "هو الموجود حقاً، الدائم الذي لا يزول، وكل ما سواه باطل",
+    "descriptionEn": "The Truth, The Absolute Reality, The One who is the only true reality."
+  },
+  {
+    "ar": "الْوَكِيلُ",
+    "en": "Al-Wakil",
+    "descriptionAr": "هو القيم بأرزاق العباد، والمفوض إليه كل الأمور، الكافي لمن توكل عليه",
+    "descriptionEn": "The Trustee, The Dependable, The One who handles all affairs perfectly."
+  },
+  {
+    "ar": "الْقَوِيُّ",
+    "en": "Al-Qawiyy",
+    "descriptionAr": "هو تام القدرة، الذي لا يعجزه شيء، ولا يلحقه ضعف",
+    "descriptionEn": "The Strong, The All-Strong, The One who possesses all power and strength."
+  },
+  {
+    "ar": "الْمَتِينُ",
+    "en": "Al-Mateen",
+    "descriptionAr": "هو شديد القوة، الذي لا تنقطع قوته، ولا يلحقه في أفعاله تعب",
+    "descriptionEn": "The Firm, The Steadfast, The One who is invincible and whose strength is unwavering."
+  },
+  {
+    "ar": "الْوَلِيُّ",
+    "en": "Al-Wali",
+    "descriptionAr": "هو المحب والناصر لأوليائه، المتولي لأمور خلقه بتدبيره",
+    "descriptionEn": "The Protecting Associate, The Friend, The One who protects and aids the believers."
+  },
+  {
+    "ar": "الْحَمِيدُ",
+    "en": "Al-Hamid",
+    "descriptionAr": "هو المستحق للحمد والثناء لكثرة نعمه وكمال صفاته",
+    "descriptionEn": "The Praiseworthy, The All-Praiseworthy, The One who is worthy of all praise."
+  },
+  {
+    "ar": "الْمُحْصِي",
+    "en": "Al-Muhsi",
+    "descriptionAr": "هو الذي أحاط علمه بكل شيء، فلا يغيب عنه عدد ولا مقدار",
+    "descriptionEn": "The Appraiser, The Counter, The One who knows the count and measure of all things."
+  },
+  {
+    "ar": "الْمُبْدِئُ",
+    "en": "Al-Mubdi'",
+    "descriptionAr": "هو الذي بدأ خلق الأشياء من العدم على غير مثال سابق",
+    "descriptionEn": "The Originator, The Initiator, The One who creates everything for the first time."
+  },
+  {
+    "ar": "الْمُعِيدُ",
+    "en": "Al-Mu'id",
+    "descriptionAr": "هو الذي يعيد الخلق بعد فنائهم إلى الحياة مرة أخرى",
+    "descriptionEn": "The Restorer, The Reinstater, The One who brings back everything to life after death."
+  },
+  {
+    "ar": "الْمُحْيِي",
+    "en": "Al-Muhyi",
+    "descriptionAr": "هو الذي يحيي الأجساد البالية بنفخ الأرواح فيها، ومحيي القلوب بنور الإيمان",
+    "descriptionEn": "The Giver of Life, The Life-Giver, The One who gives and grants life."
+  },
+  {
+    "ar": "الْمُمِيتُ",
+    "en": "Al-Mumit",
+    "descriptionAr": "هو الذي يميت الأحياء بقهره، ومميت المتكبرين والظلمة",
+    "descriptionEn": "The Bringer of Death, The Taker of Life, The One who causes death."
+  },
+  {
+    "ar": "الْحَيُّ",
+    "en": "Al-Hayy",
+    "descriptionAr": "هو الباقي الذي لا يموت، الموصوف بالحياة الدائمة التي لا أول لها ولا آخر",
+    "descriptionEn": "The Ever-Living, The Living One, The One who was and will be forever alive."
+  },
+  {
+    "ar": "الْقَيُّومُ",
+    "en": "Al-Qayyum",
+    "descriptionAr": "هو القائم بنفسه، المستغني عن غيره، المقيم لكل ما سواه بقدرته",
+    "descriptionEn": "The Sustainer, The Self-Subsisting, The One who remains and sustains all."
+  },
+  {
+    "ar": "الْوَاجِدُ",
+    "en": "Al-Wajid",
+    "descriptionAr": "هو الذي لا يعجزه شيء، ولا يفوته شيء، الغني الذي لا يلحقه فقر",
+    "descriptionEn": "The Finder, The Perceiver, The One who finds and knows everything."
+  },
+  {
+    "ar": "الْمَاجِدُ",
+    "en": "Al-Majid",
+    "descriptionAr": "هو العظيم الشأن، كثير الجود والبر، الموصوف بصفات الجلال",
+    "descriptionEn": "The Illustrious, The Magnificent One, The One whose glory is expansive."
+  },
+  {
+    "ar": "الْوَاحِدُ",
+    "en": "Al-Wahid",
+    "descriptionAr": "هو المنفرد بذاته وصفاته، الذي لا شريك له في ملكه",
+    "descriptionEn": "The One, The Unique, The One who is unique and has no partner."
+  },
+  {
+    "ar": "الْأَحَدُ",
+    "en": "Al-Ahad",
+    "descriptionAr": "هو الواحد الصمد الذي لا يتجزأ، ولا شبيه له ولا مثيل",
+    "descriptionEn": "The Only One, The Unique, The One who is indivisibly One."
+  },
+  {
+    "ar": "الصَّمَدُ",
+    "en": "As-Samad",
+    "descriptionAr": "هو الذي تصمد إليه الخلائق في حوائجها، المستغني عن كل شيء",
+    "descriptionEn": "The Eternal, The Satisfier of Need, The One whom all creation depends upon."
+  },
+  {
+    "ar": "الْقَادِرُ",
+    "en": "Al-Qadir",
+    "descriptionAr": "هو الذي لا يعجزه شيء، المقتدر على كل ممكن إيجاداً وإعداماً",
+    "descriptionEn": "The Capable, The Powerful, The One who determines and has power over all things."
+  },
+  {
+    "ar": "الْمُقْتَدِرُ",
+    "en": "Al-Muqtadir",
+    "descriptionAr": "هو تام القدرة الذي لا يمتنع عليه شيء، والمنفرد بتقدير الأشياء",
+    "descriptionEn": "The Omnipotent, The Powerful One, The One who has total command over all power."
+  },
+  {
+    "ar": "الْمُقَدِّمُ",
+    "en": "Al-Muqaddim",
+    "descriptionAr": "هو الذي يقدم الأشياء ويضعها في مواضعها المناسبة بحكمته",
+    "descriptionEn": "The Expediter, The One who brings forward, The One who advances things as He wills."
+  },
+  {
+    "ar": "الْمُؤَخِّرُ",
+    "en": "Al-Mu'akhkhir",
+    "descriptionAr": "هو الذي يؤخر الأشياء ويضعها في مواضعها المتأخرة بحكمته",
+    "descriptionEn": "The Delayer, The Postponer, The One who delays things as He wills."
+  },
+  {
+    "ar": "الْأَوَّلُ",
+    "en": "Al-Awwal",
+    "descriptionAr": "هو الذي لا بداية لوجوده، السابق لكل ما سواه",
+    "descriptionEn": "The First, The One who has no beginning."
+  },
+  {
+    "ar": "الْآخِرُ",
+    "en": "Al-Akhir",
+    "descriptionAr": "هو الباقي بعد فناء خلقه، الذي لا نهاية لوجوده",
+    "descriptionEn": "The Last, The One who has no end."
+  },
+  {
+    "ar": "الظَّاهِرُ",
+    "en": "Az-Zahir",
+    "descriptionAr": "هو الذي ظهر فوق كل شيء وعلا عليه بقهره وقدرته براهين وجوده",
+    "descriptionEn": "The Manifest, The Evident One, The One whose existence is clearly evident."
+  },
+  {
+    "ar": "الْبَاطِنُ",
+    "en": "Al-Batin",
+    "descriptionAr": "هو المحتجب عن أوهام الخلق، العالم ببواطن الأمور وخفاياها",
+    "descriptionEn": "The Hidden, The Imperceptible One, The One who is hidden and knows the hidden."
+  },
+  {
+    "ar": "الْوَالِي",
+    "en": "Al-Wali",
+    "descriptionAr": "هو المالك للأشياء، المتصرف فيها بمشيئته، المتولي لأمور خلقه",
+    "descriptionEn": "The Governor, The Patron, The One who directs and governs all things."
+  },
+  {
+    "ar": "الْمُتَعَالِي",
+    "en": "Al-Muta'ali",
+    "descriptionAr": "هو المنزه عن صفات الخلق، المرتفع عن تنقص المتنقصين",
+    "descriptionEn": "The Self Exalted, The Most High, The One who is far above all creation."
+  },
+  {
+    "ar": "الْبَرُّ",
+    "en": "Al-Barr",
+    "descriptionAr": "هو كثير الخير، العطوف على عباده، المحسن إليهم بفضله ورحمته",
+    "descriptionEn": "The Source of Goodness, The Kind Benefactor, The One whose heart is full of kindness."
+  },
+  {
+    "ar": "التَّوَّابُ",
+    "en": "At-Tawwab",
+    "descriptionAr": "هو الذي ييسر أسباب التوبة لعباده، ويقبلها منهم بفضله وكرمه",
+    "descriptionEn": "The Ever-Pardoning, The Relenting, The One who accepts repentance."
+  },
+  {
+    "ar": "الْمُنْتَقِمُ",
+    "en": "Al-Muntaqim",
+    "descriptionAr": "هو الذي يقهر الجبارين، ويسلط العقوبة على العصاة بعد الإنذار",
+    "descriptionEn": "The Avenger, The Retaliator, The One who punishes those who persist in wrongdoing."
+  },
+  {
+    "ar": "الْعَفُوُّ",
+    "en": "Al-Afuww",
+    "descriptionAr": "هو الذي يمحو الذنوب، ويتجاوز عن السيئات بفضله ورحمته",
+    "descriptionEn": "The Pardoner, The Effacer, The One who blots out sins and pardons."
+  },
+  {
+    "ar": "الرَّؤُوفُ",
+    "en": "Ar-Ra'uf",
+    "descriptionAr": "هو شديد الرحمة، الذي يخفف عن عباده بمزيد لطفه ورأفته",
+    "descriptionEn": "The Most Kind, The Compassionate One, The One with extreme mercy and pity."
+  },
+  {
+    "ar": "مَالِكُ الْمُلْكِ",
+    "en": "Malik al-Mulk",
+    "descriptionAr": "هو المتصرف في ملكه كيف يشاء، لا راد لقضائه ولا معقب لحكمه",
+    "descriptionEn": "Master of Kingdom, Owner of Dominion, The One who is the sole owner of all sovereignty."
+  },
+  {
+    "ar": "ذُو الْجَلَالِ وَالْإِكْرَامِ",
+    "en": "Dhul-Jalal wal-Ikram",
+    "descriptionAr": "هو المستحق للأوصاف العظيمة، والمكرم لأوليائه بفضله وكرمه",
+    "descriptionEn": "Possessor of Glory and Honour, Lord of Majesty and Generosity."
+  },
+  {
+    "ar": "الْمُقْسِطُ",
+    "en": "Al-Muqsit",
+    "descriptionAr": "هو العادل في حكمه، الذي ينصف المظلوم من الظالم بحكمته",
+    "descriptionEn": "The Equitable, The Requiter, The One who is just and fair in His dealings."
+  },
+  {
+    "ar": "الْجَاِمِعُ",
+    "en": "Al-Jami'",
+    "descriptionAr": "هو الذي يجمع الخلائق يوم الحساب، والجامع للمتفرقات بقدرته",
+    "descriptionEn": "The Gatherer, The Uniter, The One who assembles all on the Day of Judgment."
+  },
+  {
+    "ar": "الْغَنِيُّ",
+    "en": "Al-Ghani",
+    "descriptionAr": "هو الذي لا يحتاج إلى أحد في شيء، وكل ما سواه محتاج إليه",
+    "descriptionEn": "The Self-Sufficient, The Wealthy, The One who has no need of anything."
+  },
+  {
+    "ar": "الْمُغْنِي",
+    "en": "Al-Mughni",
+    "descriptionAr": "هو الذي يغني من يشاء من خلقه بفضله وسعة كرمه",
+    "descriptionEn": "The Enricher, The Giver of Wealth, The One who bestows wealth and sufficiency."
+  },
+  {
+    "ar": "الْمَانِعُ",
+    "en": "Al-Mani'",
+    "descriptionAr": "هو الذي يمنع العطاء عمن يشاء بحكمته، ويحمي أوليائه بلطفه",
+    "descriptionEn": "The Withholder, The Preventer, The One who prevents and protects as He wills."
+  },
+  {
+    "ar": "الضَّارُّ",
+    "en": "Ad-Darr",
+    "descriptionAr": "هو الذي يقدر الضرر لمن يشاء بحكمته وتقديره للامتحان والابتلاء",
+    "descriptionEn": "The Distressor, The Harmer, The One who can cause harm to test and try."
+  },
+  {
+    "ar": "النَّافِعُ",
+    "en": "An-Nafi'",
+    "descriptionAr": "هو الذي يقدر النفع لمن يشاء بفضله وكرمه",
+    "descriptionEn": "The Propitious, The Benefactor, The One who grants benefit and profit."
+  },
+  {
+    "ar": "النُّورُ",
+    "en": "An-Nur",
+    "descriptionAr": "هو الهادي الذي ينور القلوب بنور الإيمان، والمنور للسماوات والأرض بجماله",
+    "descriptionEn": "The Light, The Illuminator, The One who guides to the right path and enlightens."
+  },
+  {
+    "ar": "الْهَادِي",
+    "en": "Al-Hadi",
+    "descriptionAr": "هو الذي يهدي من يشاء من عباده إلى الحق والصراط المستقيم",
+    "descriptionEn": "The Guide, The Way-Shower, The One who guides and simplifies the path."
+  },
+  {
+    "ar": "الْبَدِيعُ",
+    "en": "Al-Badi'",
+    "descriptionAr": "هو الذي خلق الأشياء على غير مثال سابق، الموصف بالجمال المطلق",
+    "descriptionEn": "The Incomparable Originator, The One who creates in beautiful and unique ways."
+  },
+  {
+    "ar": "الْبَاقِي",
+    "en": "Al-Baqi",
+    "descriptionAr": "هو الدائم الوجود، الذي لا يطرأ عليه فناء ولا زوال",
+    "descriptionEn": "The Ever-Surviving, The Everlasting, The One whose existence has no end."
+  },
+  {
+    "ar": "الْوَارِثُ",
+    "en": "Al-Warith",
+    "descriptionAr": "هو الباقي بعد فناء خلقه، الذي يرجع إليه ملك كل شيء",
+    "descriptionEn": "The Ultimate Inheritor, The One who remains after all else has perished."
+  },
+  {
+    "ar": "الرَّشِيدُ",
+    "en": "Ar-Rashid",
+    "descriptionAr": "هو الهادي إلى سواء السبيل، الذي تدبيره في غاية الإتقان والصواب",
+    "descriptionEn": "The Guide, The Righteous Teacher, The One who directs to the right way."
+  },
+  {
+    "ar": "الصَّبُورُ",
+    "en": "As-Sabur",
+    "descriptionAr": "هو الذي لا يعجل بالعقوبة على العصاة، صبور على أذى خلقه",
+    "descriptionEn": "The Forbearing, The Patient, The One who does not hasten to punish and is patient."
+  }
 ]

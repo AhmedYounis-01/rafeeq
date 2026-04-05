@@ -11,7 +11,7 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFFFFFFF); // Soft green mist
   static const Color backgroundCard = Color(0xFFF1F8F4);
   static const Color backgroundDark = Color(0xFF0F1412);
-  static const Color backgroundCardDark = Color(0xFF1B221F);
+  static const Color backgroundCardDark = Color(0xFF161C1A);
   // Status & Common
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);

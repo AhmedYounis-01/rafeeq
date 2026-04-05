@@ -5,6 +5,7 @@ import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:rafeeq/features/quick_parts/data/models/asma_allah_item.dart';
 import 'package:rafeeq/features/quick_parts/data/quick_parts_repository.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AsmaAllahScreen extends StatefulWidget {
   const AsmaAllahScreen({super.key});
@@ -25,77 +26,102 @@ class _AsmaAllahScreenState extends State<AsmaAllahScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = AppColors.getPrimary(context);
-    final isDark = context.isDarkMode;
+    final isArabic = context.locale.languageCode == 'ar';
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDFBF7),
-      appBar: AppBar(
-        title: Text(
-          'quick_parts_screens.dua_title'.tr(),
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : AppColors.textPrimary,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-            child: Column(
-              children: [
-                Text(
-                  "وَلِلَّهِ الأَسْمَاءُ الْحُسْنَى فَادْعُوهُ بِهَا",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontStyle: FontStyle.italic,
-                    color: primary.withAlpha(200),
-                    fontWeight: FontWeight.w600,
+      backgroundColor: context.colorScheme.surface,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        child: FutureBuilder<List<AsmaAllahItem>>(
+          key: ValueKey('asma_${context.locale.languageCode}'),
+          future: _future,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator(color: primary));
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            final items = snapshot.data!;
+
+            return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // ── Sliver AppBar ──
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  pinned: false,
+                  centerTitle: true,
+                  backgroundColor: context.colorScheme.surface,
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
+                  leading: const SizedBox.shrink(),
+                  actions: [
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 20.sp,
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                  title: Text(
+                    'quick_parts_screens.dua_title'.tr(),
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface,
+                    ),
                   ),
                 ),
-                SizedBox(height: 15.h),
-              ],
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<List<AsmaAllahItem>>(
-              future: _future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(color: primary),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                final items = snapshot.data!;
-                return GridView.builder(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 20.h),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 0.85,
-                    crossAxisSpacing: 10.w,
-                    mainAxisSpacing: 10.h,
+
+                // ── Header Verse ──
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 10.h,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'quick_parts_screens.dua.verse'.tr(),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.amiri(
+                            fontSize: 19.sp,
+                            color: context.colorScheme.onSurface.withAlpha(200),
+                            fontWeight: FontWeight.bold,
+                            height: 1.6,
+                          ),
+                        ),
+                        SizedBox(height: 25.h),
+                      ],
+                    ),
                   ),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    return _AsmaCard(item: item, primary: primary);
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+                ),
+
+                // ── Grid of Names ──
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 40.h),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.78,
+                      crossAxisSpacing: 12.w,
+                      mainAxisSpacing: 12.h,
+                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return _AsmaCard(item: items[index], primary: primary);
+                    }, childCount: items.length),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -109,36 +135,38 @@ class _AsmaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
     final isDark = context.isDarkMode;
+
     return GestureDetector(
       onTap: () => _showDetails(context),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? Colors.white.withAlpha(10) : const Color(0xFFF5F5F5),
+          color: context.colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(15.r),
-          border: Border.all(color: primary.withAlpha(30), width: 1),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              item.ar,
-              style: TextStyle(
-                fontSize: 18.sp,
+              isArabic ? item.ar : item.en,
+              style: GoogleFonts.amiri(
+                fontSize: isArabic ? 23.sp : 18.sp,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Amiri', // Placeholder for Arabic calligraphy style
-                color: primary,
+                color: context.colorScheme.onSurface,
               ),
             ),
             SizedBox(height: 4.h),
             Text(
-              item.en,
+              isArabic ? item.en : item.ar,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 10.sp,
-                color: isDark ? Colors.white70 : Colors.black54,
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white70 : Colors.black87.withAlpha(150),
               ),
             ),
+            SizedBox(height: 5.h),
           ],
         ),
       ),
@@ -148,78 +176,125 @@ class _AsmaCard extends StatelessWidget {
   void _showDetails(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: context.colorScheme.surface,
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
       ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.all(24.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              SizedBox(height: 25.h),
-              Text(
-                item.ar,
-                style: TextStyle(
-                  fontSize: 32.sp,
-                  fontWeight: FontWeight.bold,
-                  color: primary,
-                ),
-              ),
-              Text(
-                item.en,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Text(
-                item.description,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  height: 1.5,
-                  color: Colors.black87,
-                ),
-              ),
-              SizedBox(height: 30.h),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 15.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                  ),
-                  child: Text(
-                    item.ar,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-            ],
+      builder: (context) => _AsmaDetailsSheet(item: item),
+    );
+  }
+}
+
+class _AsmaDetailsSheet extends StatelessWidget {
+  final AsmaAllahItem item;
+
+  const _AsmaDetailsSheet({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24.w, 12.h, 24.w, 24.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag Handle
+          Container(
+            width: 45.w,
+            height: 4.h,
+            decoration: BoxDecoration(
+              color: Colors.grey.withAlpha(80),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-        );
-      },
+          SizedBox(height: 40.h),
+
+          // Name Display Card
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 25.h),
+            decoration: BoxDecoration(
+              color: context.colorScheme.surfaceContainer,
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  isArabic ? item.ar : item.en,
+                  style: GoogleFonts.amiri(
+                    fontSize: isArabic ? 48.sp : 36.sp,
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  isArabic ? item.en : item.ar,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 35.h),
+
+          // Description Text
+          Text(
+            isArabic ? item.descriptionAr : item.descriptionEn,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 17.sp,
+              height: 1.6,
+              fontWeight: FontWeight.bold,
+              color: context.colorScheme.onSurface.withAlpha(200),
+            ),
+          ),
+
+          SizedBox(height: 45.h),
+
+          // Action Button
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFF006D5B), // Premium Green
+                borderRadius: BorderRadius.circular(30.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF006D5B).withAlpha(80),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.arrow_back, color: Colors.white, size: 20.sp),
+                  const Spacer(),
+                  Text(
+                    isArabic ? "إغلاق" : "Close",
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const Spacer(),
+                  SizedBox(width: 20.sp),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 10.h),
+        ],
+      ),
     );
   }
 }

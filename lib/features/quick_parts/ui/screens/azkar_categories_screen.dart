@@ -11,36 +11,56 @@ class AzkarCategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
     final primary = AppColors.getPrimary(context);
 
     final categories = [
-      "أذكار الصباح",
-      "أذكار المساء",
-      "أذكار بعد الصلاة",
-      "أذكار النوم",
-      "أذكار الاستيقاظ",
-      "أذكار دخول المنزل",
-      "أذكار الخروج من المنزل",
-      "أذكار الطعام",
-      "أذكار الوضوء",
-      "أذكار الأذان",
-      "أذكار المسجد",
-      "أذكار السفر",
-      "أذكار المطر",
-      "أذكار الخوف والقلق",
-      "أذكار المرض",
-      "أذكار الكرب والهم",
-      "أذكار التوبة والاستغفار",
-      "أذكار الرزق",
-      "أذكار العمل",
-      "أذكار السوق",
-      "أذكار لقاء الناس",
-      "أذكار النوم للأطفال",
-      "أذكار التحصين",
-      "أذكار يوم الجمعة",
-      "أذكار الحج والعمرة",
-      "دعاء ختم القرآن",
+      {'key': 'quick_parts_screens.azkar.morning', 'ar': 'أذكار الصباح'},
+      {'key': 'quick_parts_screens.azkar.evening', 'ar': 'أذكار المساء'},
+      {
+        'key': 'quick_parts_screens.azkar.after_prayer',
+        'ar': 'أذكار بعد الصلاة',
+      },
+      {'key': 'quick_parts_screens.azkar.sleep', 'ar': 'أذكار النوم'},
+      {'key': 'quick_parts_screens.azkar.waking_up', 'ar': 'أذكار الاستيقاظ'},
+      {
+        'key': 'quick_parts_screens.azkar.entering_home',
+        'ar': 'أذكار دخول المنزل',
+      },
+      {
+        'key': 'quick_parts_screens.azkar.leaving_home',
+        'ar': 'أذكار الخروج من المنزل',
+      },
+      {'key': 'quick_parts_screens.azkar.food', 'ar': 'أذكار الطعام'},
+      {'key': 'quick_parts_screens.azkar.wudu', 'ar': 'أذكار الوضوء'},
+      {'key': 'quick_parts_screens.azkar.adhan', 'ar': 'أذكار الأذان'},
+      {'key': 'quick_parts_screens.azkar.mosque', 'ar': 'أذكار المسجد'},
+      {'key': 'quick_parts_screens.azkar.travel', 'ar': 'أذكار السفر'},
+      {'key': 'quick_parts_screens.azkar.rain', 'ar': 'أذكار المطر'},
+      {'key': 'quick_parts_screens.azkar.fear', 'ar': 'أذكار الخوف والقلق'},
+      {'key': 'quick_parts_screens.azkar.sickness', 'ar': 'أذكار المرض'},
+      {'key': 'quick_parts_screens.azkar.distress', 'ar': 'أذكار الكرب والهم'},
+      {
+        'key': 'quick_parts_screens.azkar.repentance',
+        'ar': 'أذكار التوبة والاستغفار',
+      },
+      {'key': 'quick_parts_screens.azkar.sustenance', 'ar': 'أذكار الرزق'},
+      {'key': 'quick_parts_screens.azkar.work', 'ar': 'أذكار العمل'},
+      {'key': 'quick_parts_screens.azkar.market', 'ar': 'أذكار السوق'},
+      {
+        'key': 'quick_parts_screens.azkar.meeting_people',
+        'ar': 'أذكار لقاء الناس',
+      },
+      {
+        'key': 'quick_parts_screens.azkar.children_sleep',
+        'ar': 'أذكار النوم للأطفال',
+      },
+      {'key': 'quick_parts_screens.azkar.protection', 'ar': 'أذكار التحصين'},
+      {'key': 'quick_parts_screens.azkar.friday', 'ar': 'أذكار يوم الجمعة'},
+      {'key': 'quick_parts_screens.azkar.hajj', 'ar': 'أذكار الحج والعمرة'},
+      {
+        'key': 'quick_parts_screens.azkar.quran_completion',
+        'ar': 'دعاء ختم القرآن',
+      },
     ];
 
     return Scaffold(
@@ -51,7 +71,7 @@ class AzkarCategoriesScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : AppColors.textPrimary,
+            color: context.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -63,9 +83,11 @@ class AzkarCategoriesScreen extends StatelessWidget {
         itemCount: categories.length,
         separatorBuilder: (context, index) => SizedBox(height: 10.h),
         itemBuilder: (context, index) {
-          final cat = categories[index];
+          final catMap = categories[index];
+          final catTitle = catMap['key']!.tr();
+          final catAr = catMap['ar']!;
           return _CategoryTile(
-            title: cat,
+            title: catTitle,
             primary: primary,
             onTap: () {
               Navigator.push(
@@ -73,7 +95,7 @@ class AzkarCategoriesScreen extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => DhikrListScreen(
                     type: QuickPartType.azkar,
-                    selectedCategory: cat,
+                    selectedCategory: catAr,
                   ),
                 ),
               );

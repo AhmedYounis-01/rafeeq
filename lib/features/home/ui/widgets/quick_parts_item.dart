@@ -1,20 +1,21 @@
 // quick_parts_item.dart
 import 'package:flutter/material.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class QuickPartsItem extends StatelessWidget {
+  final String titleKey;
+  final String image;
+  final double? height;
+  final VoidCallback? onTap;
+
   const QuickPartsItem({
     super.key,
-    required this.title,
+    required this.titleKey,
     required this.image,
     this.height,
     this.onTap,
   });
-
-  final String title;
-  final String image;
-  final double? height;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,6 @@ class QuickPartsItem extends StatelessWidget {
     final screenH = MediaQuery.of(context).size.height;
     final screenW = MediaQuery.of(context).size.width;
 
-    // ✅ حجم من shortestSide بدل ScreenUtil
     final itemH = height ?? (side * 0.38).clamp(120.0, 200.0);
     final imgPad = screenH * 0.013;
     final lblVPad = screenH * 0.010;
@@ -67,7 +67,7 @@ class QuickPartsItem extends StatelessWidget {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    title,
+                    titleKey.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,

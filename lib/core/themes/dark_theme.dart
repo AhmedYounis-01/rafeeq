@@ -32,6 +32,7 @@ ThemeData getDarkTheme() {
       backgroundColor: AppColors.backgroundDark,
       foregroundColor: AppColors.textPrimaryDark,
       elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: false,
       systemOverlayStyle: SystemUiOverlayStyle.light,
       iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
