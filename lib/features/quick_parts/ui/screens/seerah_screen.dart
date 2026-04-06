@@ -27,100 +27,95 @@ class _SeerahScreenState extends State<SeerahScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final isArabic = context.locale.languageCode == 'ar';
     final primary = AppColors.getPrimary(context);
+    final isArabic = context.locale.languageCode == 'ar';
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          'quick_parts_screens.seerah_title'.tr(),
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: context.colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-            child: Column(
-              children: [
-                Text(
-                  "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.amiri(
-                    fontSize: 18.sp,
-                    color: context.colorScheme.onSurface.withAlpha(200),
-                    fontWeight: FontWeight.bold,
+      body: FutureBuilder<List<SeerahItem>>(
+        key: ValueKey('seerah_${context.locale.languageCode}'),
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(color: primary, strokeWidth: 3),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final items = snapshot.data!;
+          final grouped = QuickPartsRepository.instance.groupSeerahByCategory(
+            items,
+            isArabic,
+          );
+
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // ── Sliver AppBar ──
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                centerTitle: true,
+                backgroundColor: context.colorScheme.surface,
+                elevation: 0,
+                scrolledUnderElevation: 0,
+                leading: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 20.sp,
+                    color: context.colorScheme.onSurface,
                   ),
                 ),
-                SizedBox(height: 15.h),
-              ],
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<List<SeerahItem>>(
-              future: _future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: primary,
-                      strokeWidth: 2.5,
-                    ),
-                  );
-                }
+                title: Text(
+                  'quick_parts_screens.seerah_title'.tr(),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+              ),
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.error_outline_rounded,
-                          size: 48.sp,
-                          color: Colors.red.withAlpha(180),
+              // ── Spiritual Header ──
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 12.h,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.amiri(
+                          fontSize: 22.sp,
+                          color: primary,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(height: 12.h),
-                        Text(
-                          'common.error'.tr(),
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: isDark
-                                ? Colors.white.withAlpha(160)
-                                : Colors.black.withAlpha(120),
-                          ),
-                        ),
-                        SizedBox(height: 6.h),
-                        Text(
-                          snapshot.error.toString(),
-                          style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Colors.red.withAlpha(180),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                      ),
+                      SizedBox(height: 8.h),
+                      Divider(
+                        color: primary.withAlpha(40),
+                        indent: 80.w,
+                        endIndent: 80.w,
+                      ),
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
+                ),
+              ),
 
-                final items = snapshot.data!;
-                final grouped = QuickPartsRepository.instance
-                    .groupSeerahByCategory(items, isArabic);
-
-                return ListView.builder(
-                  padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 32.h),
-                  itemCount: grouped.length,
-                  itemBuilder: (context, sectionIndex) {
+              // ── Seerah List ──
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 40.h),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, sectionIndex) {
                     final category = grouped.keys.elementAt(sectionIndex);
                     final sectionItems = grouped[category]!;
 
@@ -136,20 +131,19 @@ class _SeerahScreenState extends State<SeerahScreen> {
                           final item = entry.value;
                           return SeerahCard(
                             item: item,
-                            isArabic: isArabic,
                             isFirst: index == 0,
                             isLast: index == sectionItems.length - 1,
                           );
                         }),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 12.h),
                       ],
                     );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+                  }, childCount: grouped.length),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

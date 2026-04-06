@@ -23,7 +23,6 @@ class QuickParts extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: hPad),
       child: Column(
         children: [
-          // ✅ Row يعكس ترتيب العناصر تلقائياً مع Directionality
           Row(
             children: [
               QuickPartsItem(

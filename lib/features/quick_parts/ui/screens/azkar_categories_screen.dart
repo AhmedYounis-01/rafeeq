@@ -13,107 +13,242 @@ class AzkarCategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = AppColors.getPrimary(context);
 
+    // EXACT matching categories with JSON
     final categories = [
-      {'key': 'quick_parts_screens.azkar.morning', 'ar': 'أذكار الصباح'},
-      {'key': 'quick_parts_screens.azkar.evening', 'ar': 'أذكار المساء'},
+      // ─── الأذكار اليومية ───
+      {
+        'key': 'quick_parts_screens.azkar.morning',
+        'ar': 'أذكار الصباح',
+        'icon': Icons.wb_sunny_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.evening',
+        'ar': 'أذكار المساء',
+        'icon': Icons.nightlight_round,
+      },
       {
         'key': 'quick_parts_screens.azkar.after_prayer',
         'ar': 'أذكار بعد الصلاة',
+        'icon': Icons.mosque_rounded,
       },
-      {'key': 'quick_parts_screens.azkar.sleep', 'ar': 'أذكار النوم'},
-      {'key': 'quick_parts_screens.azkar.waking_up', 'ar': 'أذكار الاستيقاظ'},
+      {
+        'key': 'quick_parts_screens.azkar.sleep',
+        'ar': 'أذكار النوم',
+        'icon': Icons.bedtime_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.waking_up',
+        'ar': 'أذكار الاستيقاظ',
+        'icon': Icons.wb_twilight_rounded,
+      },
+
+      // ─── أذكار البيت والتنقل ───
       {
         'key': 'quick_parts_screens.azkar.entering_home',
         'ar': 'أذكار دخول المنزل',
+        'icon': Icons.home_rounded,
       },
       {
         'key': 'quick_parts_screens.azkar.leaving_home',
         'ar': 'أذكار الخروج من المنزل',
-      },
-      {'key': 'quick_parts_screens.azkar.food', 'ar': 'أذكار الطعام'},
-      {'key': 'quick_parts_screens.azkar.wudu', 'ar': 'أذكار الوضوء'},
-      {'key': 'quick_parts_screens.azkar.adhan', 'ar': 'أذكار الأذان'},
-      {'key': 'quick_parts_screens.azkar.mosque', 'ar': 'أذكار المسجد'},
-      {'key': 'quick_parts_screens.azkar.travel', 'ar': 'أذكار السفر'},
-      {'key': 'quick_parts_screens.azkar.rain', 'ar': 'أذكار المطر'},
-      {'key': 'quick_parts_screens.azkar.fear', 'ar': 'أذكار الخوف والقلق'},
-      {'key': 'quick_parts_screens.azkar.sickness', 'ar': 'أذكار المرض'},
-      {'key': 'quick_parts_screens.azkar.distress', 'ar': 'أذكار الكرب والهم'},
-      {
-        'key': 'quick_parts_screens.azkar.repentance',
-        'ar': 'أذكار التوبة والاستغفار',
-      },
-      {'key': 'quick_parts_screens.azkar.sustenance', 'ar': 'أذكار الرزق'},
-      {'key': 'quick_parts_screens.azkar.work', 'ar': 'أذكار العمل'},
-      {'key': 'quick_parts_screens.azkar.market', 'ar': 'أذكار السوق'},
-      {
-        'key': 'quick_parts_screens.azkar.meeting_people',
-        'ar': 'أذكار لقاء الناس',
+        'icon': Icons.door_front_door_rounded,
       },
       {
-        'key': 'quick_parts_screens.azkar.children_sleep',
-        'ar': 'أذكار النوم للأطفال',
+        'key': 'quick_parts_screens.azkar.travel',
+        'ar': 'أذكار السفر',
+        'icon': Icons.flight_rounded,
       },
-      {'key': 'quick_parts_screens.azkar.protection', 'ar': 'أذكار التحصين'},
-      {'key': 'quick_parts_screens.azkar.friday', 'ar': 'أذكار يوم الجمعة'},
-      {'key': 'quick_parts_screens.azkar.hajj', 'ar': 'أذكار الحج والعمرة'},
+
+      // ─── أذكار العبادات ───
+      {
+        'key': 'quick_parts_screens.azkar.wudu',
+        'ar': 'أذكار الوضوء',
+        'icon': Icons.water_drop_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.adhan',
+        'ar': 'أذكار الأذان',
+        'icon': Icons.notifications_active_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.mosque',
+        'ar': 'أذكار المسجد',
+        'icon': Icons.account_balance_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.friday',
+        'ar': 'أذكار يوم الجمعة',
+        'icon': Icons.event_available_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.hajj',
+        'ar': 'أذكار الحج والعمرة',
+        'icon': Icons.landscape_rounded,
+      },
       {
         'key': 'quick_parts_screens.azkar.quran_completion',
         'ar': 'دعاء ختم القرآن',
+        'icon': Icons.auto_stories_rounded,
+      },
+
+      // ─── أذكار المواقف اليومية ───
+      {
+        'key': 'quick_parts_screens.azkar.food',
+        'ar': 'أذكار الطعام',
+        'icon': Icons.restaurant_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.market',
+        'ar': 'أذكار السوق',
+        'icon': Icons.shopping_cart_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.work',
+        'ar': 'أذكار العمل',
+        'icon': Icons.work_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.meeting_people',
+        'ar': 'أذكار لقاء الناس',
+        'icon': Icons.groups_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.rain',
+        'ar': 'أذكار المطر',
+        'icon': Icons.umbrella_rounded,
+      },
+
+      // ─── أذكار الشدة والعافية ───
+      {
+        'key': 'quick_parts_screens.azkar.fear',
+        'ar': 'أذكار الخوف والقلق',
+        'icon': Icons.security_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.distress',
+        'ar': 'أذكار الكرب والهم',
+        'icon': Icons.psychology_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.sickness',
+        'ar': 'أذكار المرض',
+        'icon': Icons.health_and_safety_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.tranquility',
+        'ar': 'أذكار السكينة والراحة',
+        'icon': Icons.spa_rounded,
+      },
+
+      // ─── التوبة والتحصين ───
+      {
+        'key': 'quick_parts_screens.azkar.repentance',
+        'ar': 'أذكار التوبة والاستغفار',
+        'icon': Icons.clean_hands_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.protection',
+        'ar': 'أذكار التحصين',
+        'icon': Icons.verified_user_rounded,
+      },
+
+      // ─── الرزق والعلم ───
+      {
+        'key': 'quick_parts_screens.azkar.sustenance',
+        'ar': 'أذكار الرزق',
+        'icon': Icons.payments_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.study',
+        'ar': 'أذكار الدراسة والامتحان',
+        'icon': Icons.school_rounded,
+      },
+
+      // ─── للأطفال والقرارات ───
+      {
+        'key': 'quick_parts_screens.azkar.children_sleep',
+        'ar': 'أذكار النوم للأطفال',
+        'icon': Icons.child_care_rounded,
+      },
+      {
+        'key': 'quick_parts_screens.azkar.istikhara',
+        'ar': 'أذكار الاستخارة',
+        'icon': Icons.help_outline_rounded,
       },
     ];
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          'quick_parts_screens.azkar_title'.tr(),
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: context.colorScheme.onSurface,
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            centerTitle: true,
+            backgroundColor: context.colorScheme.surface,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 20.sp,
+                color: context.colorScheme.onSurface,
+              ),
+            ),
+            title: Text(
+              'quick_parts_screens.azkar_title'.tr(),
+              style: TextStyle(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.onSurface,
+              ),
+            ),
           ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        itemCount: categories.length,
-        separatorBuilder: (context, index) => SizedBox(height: 10.h),
-        itemBuilder: (context, index) {
-          final catMap = categories[index];
-          final catTitle = catMap['key']!.tr();
-          final catAr = catMap['ar']!;
-          return _CategoryTile(
-            title: catTitle,
-            primary: primary,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DhikrListScreen(
-                    type: QuickPartType.azkar,
-                    selectedCategory: catAr,
-                  ),
-                ),
-              );
-            },
-          );
-        },
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 40.h),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final catMap = categories[index];
+                final title = (catMap['key'] as String).tr();
+                final arName = catMap['ar'] as String;
+                final icon = catMap['icon'] as IconData;
+
+                return _CategoryListCard(
+                  title: title,
+                  icon: icon,
+                  primary: primary,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DhikrListScreen(
+                          type: QuickPartType.azkar,
+                          selectedCategory: arName,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }, childCount: categories.length),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _CategoryTile extends StatelessWidget {
+class _CategoryListCard extends StatelessWidget {
   final String title;
+  final IconData icon;
   final Color primary;
   final VoidCallback onTap;
 
-  const _CategoryTile({
+  const _CategoryListCard({
     required this.title,
+    required this.icon,
     required this.primary,
     required this.onTap,
   });
@@ -121,34 +256,40 @@ class _CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
+    final isAr = context.locale.languageCode == 'ar';
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: isDark ? Colors.white.withAlpha(10) : Colors.white,
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(18.r),
           boxShadow: [
             if (!isDark)
               BoxShadow(
-                color: Colors.black.withAlpha(10),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: Colors.black.withAlpha(5),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
           ],
-          border: Border.all(color: primary.withAlpha(30), width: 1),
+          border: Border.all(
+            color: primary.withAlpha(isDark ? 40 : 25),
+            width: 1,
+          ),
         ),
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(8.w),
+              padding: EdgeInsets.all(10.r),
               decoration: BoxDecoration(
                 color: primary.withAlpha(20),
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(12.r),
               ),
-              child: Icon(Icons.menu_book_rounded, color: primary, size: 20.sp),
+              child: Icon(icon, color: primary, size: 24.sp),
             ),
-            SizedBox(width: 15.w),
+            SizedBox(width: 16.w),
             Expanded(
               child: Text(
                 title,
@@ -161,8 +302,8 @@ class _CategoryTile extends StatelessWidget {
             ),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              size: 14.sp,
-              color: Colors.grey,
+              size: 16.sp,
+              color: primary.withAlpha(100),
             ),
           ],
         ),

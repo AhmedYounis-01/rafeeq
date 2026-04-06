@@ -169,7 +169,11 @@
       "protection": "أذكار التحصين",
       "friday": "أذكار يوم الجمعة",
       "hajj": "أذكار الحج والعمرة",
-      "quran_completion": "دعاء ختم القرآن"
+      "quran_completion": "دعاء ختم القرآن",
+      "istikhara": "صلاة الاستخارة",
+      "qunoot": "دعاء القنوت",
+      "parents": "دعاء للوالدين",
+      "general": "أدعية عامة"
     }
   },
   "onboarding": {

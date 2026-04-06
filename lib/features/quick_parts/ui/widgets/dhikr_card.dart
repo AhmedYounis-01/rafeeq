@@ -1,15 +1,17 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../data/models/dhikr_item.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DhikrCard extends StatefulWidget {
   final DhikrItem item;
-  final bool isArabic;
 
-  const DhikrCard({super.key, required this.item, required this.isArabic});
+  const DhikrCard({super.key, required this.item});
 
   @override
   State<DhikrCard> createState() => _DhikrCardState();
@@ -30,7 +32,7 @@ class _DhikrCardState extends State<DhikrCard>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 0.92).animate(
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
   }
@@ -62,296 +64,157 @@ class _DhikrCardState extends State<DhikrCard>
     });
   }
 
-  double get _progress =>
-      widget.item.count > 0
-          ? (widget.item.count - _remaining) / widget.item.count
-          : 1.0;
-
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
-    final primary = AppColors.getPrimary(context);
+    final primary = AppColors.getPrimary(
+      context,
+    ); // This is usually the green color
+    final isAr = context.locale.languageCode == 'ar';
+
+    // Premium light green theme for cards as per the screenshot
+    final cardColor = isDark
+        ? context.colorScheme.surfaceContainerHighest
+        : const Color(0xFFF1F9F6); // Light mint green background
 
     return AnimatedBuilder(
       animation: _pulseAnimation,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _pulseAnimation.value,
-          child: child,
-        );
+        return Transform.scale(scale: _pulseAnimation.value, child: child);
       },
       child: GestureDetector(
-        onTap: widget.item.count > 1 ? _onTap : null,
+        onTap: _onTap,
+        onLongPress: _onReset,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: EdgeInsets.only(bottom: 14.h),
+          margin: EdgeInsets.only(bottom: 20.h),
+          padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
           decoration: BoxDecoration(
             color: _completed
-                ? (isDark
-                      ? primary.withAlpha(30)
-                      : primary.withAlpha(15))
-                : AppColors.cardBackground(context),
-            borderRadius: BorderRadius.circular(18.r),
+                ? (isDark ? primary.withAlpha(40) : const Color(0xFFE8F5EE))
+                : cardColor,
+            borderRadius: BorderRadius.circular(28.r),
             border: Border.all(
               color: _completed
-                  ? primary.withAlpha(120)
-                  : (isDark
-                        ? Colors.white.withAlpha(18)
-                        : Colors.black.withAlpha(12)),
-              width: _completed ? 1.5 : 1.0,
+                  ? primary.withAlpha(150)
+                  : (isDark ? Colors.white10 : const Color(0xFFE0EFE8)),
+              width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: isDark
-                    ? Colors.black.withAlpha(50)
-                    : Colors.black.withAlpha(12),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: isDark ? Colors.black26 : Colors.black.withAlpha(5),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Progress bar (only for multi-count)
-              if (widget.item.count > 1)
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(18.r),
-                    topRight: Radius.circular(18.r),
-                    bottomLeft: _progress < 1.0
-                        ? Radius.zero
-                        : Radius.circular(18.r),
-                    bottomRight: _progress < 1.0
-                        ? Radius.zero
-                        : Radius.circular(18.r),
-                  ),
-                  child: LinearProgressIndicator(
-                    value: _progress,
-                    minHeight: 3.h,
-                    backgroundColor: isDark
-                        ? Colors.white.withAlpha(15)
-                        : Colors.black.withAlpha(10),
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      _completed ? primary : primary.withAlpha(180),
-                    ),
-                  ),
+              // ── Dhikr Main Text ──
+              Text(
+                widget.item.text,
+                textAlign: TextAlign.center,
+                textDirection: isAr
+                    ? ui.TextDirection.rtl
+                    : ui.TextDirection.ltr,
+                style: GoogleFonts.amiri(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                  height: 1.7,
+                  color: isDark ? Colors.white : const Color(0xFF2D312F),
                 ),
+              ),
 
-              Padding(
-                padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 14.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Arabic text
-                    Text(
-                      widget.item.text,
-                      textAlign: TextAlign.center,
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 19.sp,
-                        fontWeight: FontWeight.w600,
-                        height: 2.1,
-                        color: _completed
-                            ? primary
-                            : (isDark ? Colors.white : AppColors.textPrimary),
-                      ),
+              SizedBox(height: 16.h),
+
+              // ── Star Divider with centered star ──
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(color: primary.withAlpha(40), thickness: 1),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Icon(
+                      Icons.star_rounded,
+                      size: 16.sp,
+                      color: primary.withAlpha(80),
                     ),
+                  ),
+                  Expanded(
+                    child: Divider(color: primary.withAlpha(40), thickness: 1),
+                  ),
+                ],
+              ),
 
-                    SizedBox(height: 10.h),
+              SizedBox(height: 16.h),
 
-                    // Divider
-                    Divider(
-                      thickness: 0.5,
-                      color: isDark
-                          ? Colors.white.withAlpha(20)
-                          : Colors.black.withAlpha(12),
-                    ),
-
-                    SizedBox(height: 8.h),
-
-                    // Transliteration
-                    Text(
-                      widget.item.transliteration,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 11.5.sp,
-                        fontStyle: FontStyle.italic,
-                        color: isDark
-                            ? Colors.white.withAlpha(130)
-                            : Colors.black.withAlpha(100),
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-
-                    SizedBox(height: 8.h),
-
-                    // Meaning
-                    Text(
-                      widget.isArabic
-                          ? widget.item.meaningAr
-                          : widget.item.meaning,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12.5.sp,
-                        color: isDark
-                            ? Colors.white.withAlpha(160)
-                            : Colors.black.withAlpha(120),
-                        height: 1.6,
-                      ),
-                    ),
-
-                    SizedBox(height: 14.h),
-
-                    // Bottom row: sub note + counter
-                    Row(
-                      children: [
-                        // Sub note chip
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 5.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.white.withAlpha(12)
-                                  : Colors.black.withAlpha(8),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Text(
-                              widget.isArabic
-                                  ? widget.item.sub
-                                  : widget.item.subEn,
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 10.5.sp,
-                                color: primary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(width: 10.w),
-
-                        // Counter button
-                        if (widget.item.count > 1)
-                          GestureDetector(
-                            onTap: _onTap,
-                            onLongPress: _onReset,
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              width: 60.w,
-                              height: 44.h,
-                              decoration: BoxDecoration(
-                                color: _completed
-                                    ? primary
-                                    : primary.withAlpha(25),
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(
-                                  color: _completed
-                                      ? primary
-                                      : primary.withAlpha(80),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _completed ? '✓' : '$_remaining',
-                                    style: TextStyle(
-                                      fontSize: _completed ? 16.sp : 14.sp,
-                                      fontWeight: FontWeight.w800,
-                                      color: _completed
-                                          ? Colors.white
-                                          : primary,
-                                    ),
-                                  ),
-                                  if (!_completed)
-                                    Text(
-                                      '/ ${widget.item.count}',
-                                      style: TextStyle(
-                                        fontSize: 9.sp,
-                                        color: primary.withAlpha(160),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          )
-                        else
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 14.w,
-                              vertical: 8.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: primary.withAlpha(20),
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(
-                                color: primary.withAlpha(60),
-                              ),
-                            ),
-                            child: Text(
-                              '${widget.item.count}×',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w700,
-                                color: primary,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-
-                    // Long-press hint for counter
-                    if (widget.item.count > 1 && !_completed)
-                      Padding(
-                        padding: EdgeInsets.only(top: 6.h),
-                        child: Text(
-                          widget.isArabic
-                              ? 'اضغط للعد • اضغط مطولاً للإعادة'
-                              : 'Tap to count • Long press to reset',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 9.5.sp,
-                            color: isDark
-                                ? Colors.white.withAlpha(60)
-                                : Colors.black.withAlpha(50),
-                          ),
-                        ),
-                      ),
-
-                    if (_completed)
-                      Padding(
-                        padding: EdgeInsets.only(top: 6.h),
-                        child: GestureDetector(
-                          onTap: _onReset,
-                          child: Text(
-                            widget.isArabic
-                                ? '✓ اكتمل — اضغط للإعادة'
-                                : '✓ Completed — tap to reset',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              color: primary.withAlpha(180),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+              // ── Description / Meaning Text ──
+              Text(
+                isAr ? widget.item.meaningAr : widget.item.meaning,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  height: 1.6,
+                  color: isDark ? Colors.white70 : const Color(0xFF707874),
+                  fontWeight: FontWeight.w500,
                 ),
+              ),
+
+              SizedBox(height: 24.h),
+
+              // ── Bottom Badges Row ──
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Count Badge (Bottom Left)
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 8.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: primary.withAlpha(25),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Text(
+                      '×${widget.item.count}',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w900,
+                        color: primary,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+
+                  // Count Text (Bottom Right)
+                  Text(
+                    _completed
+                        ? (isAr ? "تم بحمد الله" : "Completed")
+                        : (isAr
+                              ? _getArabicCountText(widget.item.count)
+                              : "Count: ${widget.item.count}"),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      color: primary,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  String _getArabicCountText(int count) {
+    if (count == 1) return "مرة واحدة";
+    if (count == 2) return "مرتان";
+    if (count <= 10) return "$count مرات";
+    return "$count مرة";
   }
 }

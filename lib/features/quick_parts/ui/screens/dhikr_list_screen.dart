@@ -28,7 +28,12 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   }
 
   String _getTitle() {
-    if (widget.selectedCategory != null) return widget.selectedCategory!;
+    if (widget.selectedCategory != null) {
+      // If we have a category, we might want to localize it if it's a key,
+      // but here selectedCategory is usually the Arabic name for filtering.
+      // So we return it directly.
+      return widget.selectedCategory!;
+    }
     switch (widget.type) {
       case QuickPartType.azkar:
         return 'quick_parts_screens.azkar_title'.tr();
@@ -41,113 +46,98 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final isArabic = context.locale.languageCode == 'ar';
     final primary = AppColors.getPrimary(context);
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          _getTitle(),
-          style: TextStyle(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w700,
-            color: context.colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: context.colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.h),
-          child: Container(
-            height: 1.h,
-            color: isDark
-                ? Colors.white.withAlpha(15)
-                : Colors.black.withAlpha(10),
-          ),
-        ),
-      ),
       body: FutureBuilder<List<DhikrItem>>(
+        key: ValueKey('dhikr_${widget.type}_${context.locale.languageCode}'),
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(
-                color: primary,
-                strokeWidth: 2.5,
-              ),
+              child: CircularProgressIndicator(color: primary, strokeWidth: 3),
             );
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 48.sp,
-                    color: Colors.red.withAlpha(180),
-                  ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    'common.error'.tr(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: isDark
-                          ? Colors.white.withAlpha(160)
-                          : Colors.black.withAlpha(120),
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    snapshot.error.toString(),
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      color: Colors.red.withAlpha(180),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           var items = snapshot.data!;
           if (widget.selectedCategory != null) {
+            // Aggressive normalization for robust matching (ignores all spaces/tabs)
+            final normalizedSelected = widget.selectedCategory!.replaceAll(
+              RegExp(r'\s+'),
+              '',
+            );
             items = items
-                .where((i) => i.cat == widget.selectedCategory)
+                .where(
+                  (i) =>
+                      i.cat.replaceAll(RegExp(r'\s+'), '') ==
+                      normalizedSelected,
+                )
                 .toList();
           }
 
+          final isArabic = context.locale.languageCode == 'ar';
           final grouped = QuickPartsRepository.instance.groupByCategory(
             items,
             isArabic,
           );
 
-          return ListView.builder(
-            padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 32.h),
-            itemCount: grouped.length,
-            itemBuilder: (context, sectionIndex) {
-              final category = grouped.keys.elementAt(sectionIndex);
-              final sectionItems = grouped[category]!;
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // ── Sliver AppBar ──
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                centerTitle: true,
+                backgroundColor: context.colorScheme.surface,
+                elevation: 0,
+                scrolledUnderElevation: 0,
+                leading: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 20.sp,
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+                title: Text(
+                  _getTitle(),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+              ),
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CategoryHeader(
-                    title: category,
-                    itemCount: sectionItems.length,
-                  ),
-                  ...sectionItems.map(
-                    (item) => DhikrCard(item: item, isArabic: isArabic),
-                  ),
-                ],
-              );
-            },
+              // ── Dhikr List ──
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 32.h),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, sectionIndex) {
+                    final category = grouped.keys.elementAt(sectionIndex);
+                    final sectionItems = grouped[category]!;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.selectedCategory == null)
+                          CategoryHeader(
+                            title: category,
+                            itemCount: sectionItems.length,
+                          ),
+                        ...sectionItems.map((item) => DhikrCard(item: item)),
+                      ],
+                    );
+                  }, childCount: grouped.length),
+                ),
+              ),
+            ],
           );
         },
       ),

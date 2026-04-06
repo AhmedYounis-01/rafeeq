@@ -169,7 +169,11 @@
       "protection": "Protection Adhkar",
       "friday": "Friday Adhkar",
       "hajj": "Hajj & Umrah Adhkar",
-      "quran_completion": "Quran Completion Dua"
+      "quran_completion": "Quran Completion Dua",
+      "istikhara": "Istikhara Prayer",
+      "qunoot": "Qunoot Dua",
+      "parents": "Dua for Parents",
+      "general": "General Duas"
     }
   },
   "onboarding": {
