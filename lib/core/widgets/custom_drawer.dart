@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,114 +14,112 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isArabic = context.locale.languageCode == 'ar';
+
     return Drawer(
-      width: 0.85.sw,
+      width: 0.88.sw,
+      backgroundColor: colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: context.locale.languageCode == 'ar'
-              ? Radius.circular(30.r)
-              : Radius.zero,
-          bottomLeft: context.locale.languageCode == 'ar'
-              ? Radius.circular(30.r)
-              : Radius.zero,
-          topRight: context.locale.languageCode == 'en'
-              ? Radius.circular(30.r)
-              : Radius.zero,
-          bottomRight: context.locale.languageCode == 'en'
-              ? Radius.circular(30.r)
-              : Radius.zero,
-        ),
+        borderRadius: BorderRadiusDirectional.horizontal(
+          start: Radius.circular(isArabic ? 0 : 32.r),
+          end: Radius.circular(isArabic ? 32.r : 0),
+        ).resolve(Directionality.of(context)),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.surface,
-          borderRadius: BorderRadius.only(
-            topLeft: context.locale.languageCode == 'ar'
-                ? Radius.circular(30.r)
-                : Radius.zero,
-            bottomLeft: context.locale.languageCode == 'ar'
-                ? Radius.circular(30.r)
-                : Radius.zero,
-            topRight: context.locale.languageCode == 'en'
-                ? Radius.circular(30.r)
-                : Radius.zero,
-            bottomRight: context.locale.languageCode == 'en'
-                ? Radius.circular(30.r)
-                : Radius.zero,
-          ),
-        ),
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+      child: Column(
+        children: [
+          // ==================== Fixed Header ====================
+          _buildHeader(context),
+
+          // ==================== Scrollable Content (Language + Theme + Location + Footer) ====================
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(context, "drawer.language".tr()),
-                  _buildLanguageToggle(context),
-                  SizedBox(height: 24.h),
-                  _buildSectionTitle(context, "drawer.theme".tr()),
-                  _buildThemeToggle(context),
-                  SizedBox(height: 24.h),
-                  _buildSectionTitle(context, "home.select_location".tr()),
-                  _buildLocationButton(context),
+                  _buildSection(
+                    context,
+                    title: "drawer.language".tr(),
+                    icon: Icons.language_rounded,
+                    child: _buildLanguageToggle(context),
+                  ),
+                  SizedBox(height: 32.h),
+
+                  _buildSection(
+                    context,
+                    title: "drawer.theme".tr(),
+                    icon: Icons.palette_outlined,
+                    child: _buildThemeToggle(context),
+                  ),
+                  SizedBox(height: 32.h),
+
+                  _buildSection(
+                    context,
+                    title: "home.select_location".tr(),
+                    icon: Icons.location_on_rounded,
+                    child: _buildLocationButton(context),
+                  ),
+
+                  // مساحة كبيرة قبل الفوتر عشان يبقى في الأسفل بشكل طبيعي
+                  SizedBox(height: 80.h),
+
+                  // ==================== Footer (الآن داخل الـ Scroll) ====================
+                  _buildFooter(context),
+                  SizedBox(height: 16.h),
                 ],
               ),
             ),
-            _buildFooter(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ====================== Fixed Header ======================
+  Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(28.w, 65.h, 28.w, 40.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colorScheme.primary.withValues(alpha: 0.07),
+            colorScheme.surface,
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(24.w, 60.h, 24.w, 30.h),
-      decoration: BoxDecoration(
-        color: context.colorScheme.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(40.r),
-          bottomRight: Radius.circular(40.r),
-        ),
-      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(12.r),
+            padding: EdgeInsets.all(16.r),
             decoration: BoxDecoration(
-              color: context.colorScheme.primary,
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: context.colorScheme.primary.withValues(alpha: 0.3),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
+              shape: BoxShape.circle,
+              color: colorScheme.primary.withValues(alpha: 0.08),
             ),
-            child: Icon(
-              Icons.mosque,
-              color: context.colorScheme.onPrimary,
-              size: 32.sp,
-            ),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            "drawer.title".tr(),
-            style: context.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: context.colorScheme.primary,
+            child: Image.asset(
+              'assets/images/rafeeq_logo.png',
+              width: 100.r,
+              height: 100.r,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => Icon(
+                Icons.mosque_rounded,
+                size: 72.r,
+                color: colorScheme.primary,
+              ),
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 24.h),
           Text(
             "drawer.about".tr(),
+            textAlign: TextAlign.center,
             style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-              height: 1.5,
+              color: colorScheme.onSurfaceVariant,
+              height: 1.6,
             ),
           ),
         ],
@@ -130,120 +127,112 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
-      child: Text(
-        title,
-        style: context.textTheme.labelLarge?.copyWith(
-          color: context.colorScheme.primary,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
+  // ====================== Section Title ======================
+  Widget _buildSection(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 22.sp, color: colorScheme.primary),
+            SizedBox(width: 12.w),
+            Text(
+              title,
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ],
         ),
-      ),
+        SizedBox(height: 16.h),
+        child,
+      ],
     );
   }
 
+  // ====================== Language Toggle ======================
   Widget _buildLanguageToggle(BuildContext context) {
-    bool isArabic = context.locale.languageCode == 'ar';
+    final isArabic = context.locale.languageCode == 'ar';
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      padding: EdgeInsets.all(4.r),
+      height: 64.h,
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest.withValues(
-          alpha: 0.5,
-        ),
-        borderRadius: BorderRadius.circular(16.r),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         children: [
-          _buildToggleButton(
-            context,
-            title: "drawer.arabic".tr(),
-            isSelected: isArabic,
-            onTap: () {
-              if (!isArabic) {
-                HapticFeedback.lightImpact();
-                _changeLocale(context, const Locale('ar'));
-              }
-            },
+          Expanded(
+            child: _buildToggleOption(
+              context,
+              "English",
+              !isArabic,
+              () => _changeLocale(context, const Locale('en')),
+            ),
           ),
-          _buildToggleButton(
-            context,
-            title: "drawer.english".tr(),
-            isSelected: !isArabic,
-            onTap: () {
-              if (isArabic) {
-                HapticFeedback.lightImpact();
-                _changeLocale(context, const Locale('en'));
-              }
-            },
+          Expanded(
+            child: _buildToggleOption(
+              context,
+              "العربية",
+              isArabic,
+              () => _changeLocale(context, const Locale('ar')),
+            ),
           ),
         ],
       ),
     );
   }
 
-  /// Close the drawer first, then change locale.
-  /// Awaiting context.setLocale ensures translation files are loaded before rebuild.
-  void _changeLocale(BuildContext context, Locale newLocale) {
-    // 1. Close the drawer safely
-    final advancedDrawerController = AdvancedDrawerControllerProvider.of(
-      context,
-    );
-    if (advancedDrawerController != null) {
-      advancedDrawerController.hideDrawer();
-    } else if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
-    }
-
-    // 2. Change locale after a small delay to allow drawer animation to start
-    Future.delayed(const Duration(milliseconds: 150), () async {
-      if (context.mounted) {
-        await context.setLocale(newLocale);
-      }
-    });
-  }
-
+  // ====================== Theme Toggle ======================
   Widget _buildThemeToggle(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
+        final colorScheme = Theme.of(context).colorScheme;
         bool isDark = themeMode == ThemeMode.dark;
         if (themeMode == ThemeMode.system) {
           isDark = Theme.of(context).brightness == Brightness.dark;
         }
+
         return Container(
-          padding: EdgeInsets.all(4.r),
+          height: 64.h,
           decoration: BoxDecoration(
-            color: context.colorScheme.surfaceContainerHighest.withValues(
-              alpha: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(16.r),
+            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(20.r),
           ),
           child: Row(
             children: [
-              _buildToggleButton(
-                context,
-                title: "drawer.light".tr(),
-                isSelected: !isDark,
-                icon: Icons.light_mode,
-                onTap: () {
-                  if (isDark) {
-                    HapticFeedback.lightImpact();
-                    context.read<ThemeCubit>().setTheme(ThemeMode.light);
-                  }
-                },
+              Expanded(
+                child: _buildToggleOption(
+                  context,
+                  "drawer.light".tr(),
+                  !isDark,
+                  () {
+                    if (isDark)
+                      context.read<ThemeCubit>().setTheme(ThemeMode.light);
+                  },
+                  Icons.wb_sunny_rounded,
+                ),
               ),
-              _buildToggleButton(
-                context,
-                title: "drawer.dark".tr(),
-                isSelected: isDark,
-                icon: Icons.dark_mode,
-                onTap: () {
-                  if (!isDark) {
-                    HapticFeedback.lightImpact();
-                    context.read<ThemeCubit>().setTheme(ThemeMode.dark);
-                  }
-                },
+              Expanded(
+                child: _buildToggleOption(
+                  context,
+                  "drawer.dark".tr(),
+                  isDark,
+                  () {
+                    if (!isDark)
+                      context.read<ThemeCubit>().setTheme(ThemeMode.dark);
+                  },
+                  Icons.nightlight_round,
+                ),
               ),
             ],
           ),
@@ -252,54 +241,62 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildToggleButton(
-    BuildContext context, {
-    required String title,
-    required bool isSelected,
-    required VoidCallback onTap,
+  // ====================== Reusable Toggle Option ======================
+  Widget _buildToggleOption(
+    BuildContext context,
+    String label,
+    bool isSelected,
+    VoidCallback onTap, [
     IconData? icon,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(vertical: 12.h),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? context.colorScheme.surface
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12.r),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 5,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : [],
-          ),
+  ]) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
+      splashColor: colorScheme.primary.withValues(alpha: 0.1),
+      highlightColor: colorScheme.primary.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18.r),
+      child: Container(
+        margin: EdgeInsets.all(4.r),
+        decoration: BoxDecoration(
+          color: isSelected ? colorScheme.surface : Colors.transparent,
+          borderRadius: BorderRadius.circular(18.r),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: colorScheme.primary.withValues(alpha: 0.15),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [],
+        ),
+        child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
                 Icon(
                   icon,
-                  size: 18.sp,
+                  size: 21.sp,
                   color: isSelected
-                      ? context.colorScheme.primary
-                      : context.colorScheme.onSurfaceVariant,
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 10.w),
               ],
               Text(
-                title,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                label,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                   color: isSelected
-                      ? context.colorScheme.primary
-                      : context.colorScheme.onSurfaceVariant,
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
+                  fontSize: 15.5.sp,
                 ),
               ),
             ],
@@ -309,70 +306,56 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  // ====================== Location Button ======================
   Widget _buildLocationButton(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: () async {
         HapticFeedback.mediumImpact();
-        // 1. Capture the Cubit before popping the drawer
-        final prayerCubit = context.read<PrayerTimeCubit>();
-
-        // 2. Open the Location Picker Dialog
-        // We use the root navigator to ensure the dialog stays even if drawer closes
         final result = await showDialog<Map<String, dynamic>>(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const LocationPickerDialog(),
+          builder: (_) => const LocationPickerDialog(),
         );
 
-        if (result != null) {
-          // 3. Update the location using the captured cubit
-          // This will trigger a state change that all listeners (like Home) will react to
-          await prayerCubit.updateLocationManually(
+        if (result != null && context.mounted) {
+          await context.read<PrayerTimeCubit>().updateLocationManually(
             latitude: result['lat'] as double,
             longitude: result['lon'] as double,
             cityName: result['city'] as String,
             countryName: result['country'] as String,
           );
 
-          if (context.mounted) {
-            final advancedDrawerController =
-                AdvancedDrawerControllerProvider.of(context);
-            if (advancedDrawerController != null) {
-              advancedDrawerController.hideDrawer();
-            } else if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          }
+          final controller = AdvancedDrawerControllerProvider.of(context);
+          if (controller != null) controller.hideDrawer();
         }
       },
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(20.r),
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: context.colorScheme.primary.withValues(alpha: 0.2),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
-          borderRadius: BorderRadius.circular(16.r),
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.location_on_outlined,
-              color: context.colorScheme.primary,
-            ),
-            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 "drawer.location".tr(),
-                style: context.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios,
-              size: 14.sp,
-              color: context.colorScheme.onSurfaceVariant,
+              Icons.arrow_forward_ios_rounded,
+              size: 18.sp,
+              color: colorScheme.onSurfaceVariant,
             ),
           ],
         ),
@@ -380,15 +363,37 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  void _changeLocale(BuildContext context, Locale newLocale) {
+    final controller = AdvancedDrawerControllerProvider.of(context);
+    if (controller != null) controller.hideDrawer();
+
+    Future.delayed(const Duration(milliseconds: 250), () {
+      if (context.mounted) context.setLocale(newLocale);
+    });
+  }
+
+  // ====================== Footer ======================
   Widget _buildFooter(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 30.h, top: 20.h),
-      child: Text(
-        "Version 1.0.0",
-        style: context.textTheme.labelSmall?.copyWith(
-          color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.35)),
+        SizedBox(height: 20.h),
+        Text(
+          "Version 1.0.0",
+          style: context.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        SizedBox(height: 6.h),
+        Text(
+          "Rafeeq © 2026",
+          style: context.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }
