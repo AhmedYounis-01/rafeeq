@@ -44,12 +44,14 @@ class QuranCubit extends Cubit<QuranState> {
   Color _highlightColor = const Color(0x66D4A853);
   void setHighlightColor(Color color) => _highlightColor = color;
 
-  final ValueNotifier<List<HighlightVerse>> highlightsNotifier =
-      ValueNotifier([]);
+  final ValueNotifier<List<HighlightVerse>> highlightsNotifier = ValueNotifier(
+    [],
+  );
 
   // ─── Ayah Search ──────────────────────────────────────────────────────
-  final ValueNotifier<List<AyahSearchResult>> ayahSearchResults =
-      ValueNotifier([]);
+  final ValueNotifier<List<AyahSearchResult>> ayahSearchResults = ValueNotifier(
+    [],
+  );
   final ValueNotifier<bool> isSearchingAyahs = ValueNotifier(false);
   Timer? _searchDebounce;
 
@@ -61,6 +63,7 @@ class QuranCubit extends Cubit<QuranState> {
   Future<void> init() async {
     if (state is QuranReady) return;
 
+    final watch = Stopwatch()..start();
     emit(QuranPrefsLoading());
 
     try {
@@ -70,21 +73,32 @@ class QuranCubit extends Cubit<QuranState> {
       final savedReciter = _prefs.getString('reciter_id');
       final reciterId =
           (savedReciter != null &&
-                  kReciters.any((r) => r['id'] == savedReciter))
-              ? savedReciter
-              : kReciters.first['id']!;
+              kReciters.any((r) => r['id'] == savedReciter))
+          ? savedReciter
+          : kReciters.first['id']!;
 
       emit(QuranFontsLoading(0.0));
 
+      final fontWatch = Stopwatch()..start();
       _loadFontsInBackground(
-        onReady: () => emit(QuranReady(
-          currentPage: page,
-          bookmarkPage: bookmark,
-          selectedReciterId: reciterId,
-        )),
+        onReady: () {
+          debugPrint(
+            'Performance: Quran fonts loaded in ${fontWatch.elapsedMilliseconds}ms',
+          );
+          emit(
+            QuranReady(
+              currentPage: page,
+              bookmarkPage: bookmark,
+              selectedReciterId: reciterId,
+            ),
+          );
+        },
       );
 
       _setupAudioListeners();
+      debugPrint(
+        'Performance: QuranCubit initialized in ${watch.elapsedMilliseconds}ms',
+      );
     } catch (e) {
       emit(QuranError('حدث خطأ أثناء التهيئة: $e'));
     }
@@ -92,17 +106,19 @@ class QuranCubit extends Cubit<QuranState> {
 
   void _loadFontsInBackground({required VoidCallback onReady}) {
     QcfFontLoader.setupFontsAtStartup(
-      onProgress: (progress) {
-        if (state is QuranFontsLoading) {
-          emit(QuranFontsLoading(progress));
-        }
-      },
-    ).then((_) {
-      if (!isClosed) onReady();
-    }).catchError((e) {
-      debugPrint('Font loading error: $e');
-      if (!isClosed) onReady();
-    });
+          onProgress: (progress) {
+            if (state is QuranFontsLoading) {
+              emit(QuranFontsLoading(progress));
+            }
+          },
+        )
+        .then((_) {
+          if (!isClosed) onReady();
+        })
+        .catchError((e) {
+          debugPrint('Font loading error: $e');
+          if (!isClosed) onReady();
+        });
   }
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -188,12 +204,14 @@ class QuranCubit extends Cubit<QuranState> {
       if (s != null && a != null && s >= 1 && s <= 114) {
         final count = getVerseCount(s);
         if (a >= 1 && a <= count) {
-          results.add(AyahSearchResult(
-            surah: s,
-            ayah: a,
-            surahName: getSurahNameArabic(s),
-            verseText: getVerse(s, a),
-          ));
+          results.add(
+            AyahSearchResult(
+              surah: s,
+              ayah: a,
+              surahName: getSurahNameArabic(s),
+              verseText: getVerse(s, a),
+            ),
+          );
         }
       }
       return results;
@@ -208,12 +226,14 @@ class QuranCubit extends Cubit<QuranState> {
       for (int a = 1; a <= count; a++) {
         final verse = getVerse(s, a);
         if (_stripDiacritics(verse).contains(qStripped)) {
-          results.add(AyahSearchResult(
-            surah: s,
-            ayah: a,
-            surahName: getSurahNameArabic(s),
-            verseText: verse,
-          ));
+          results.add(
+            AyahSearchResult(
+              surah: s,
+              ayah: a,
+              surahName: getSurahNameArabic(s),
+              verseText: verse,
+            ),
+          );
           if (results.length >= 80) return results; // حد أقصى 80 نتيجة
         }
       }
@@ -259,14 +279,18 @@ class QuranCubit extends Cubit<QuranState> {
   // ═══════════════════════════════════════════════════════════════════════
   Future<bool> checkInternet() async {
     try {
-      final socket = await Socket.connect('8.8.8.8', 53,
-          timeout: const Duration(seconds: 3));
+      final socket = await Socket.connect(
+        '8.8.8.8',
+        53,
+        timeout: const Duration(seconds: 3),
+      );
       socket.destroy();
       return true;
     } catch (_) {
       try {
-        final result = await InternetAddress.lookup('google.com')
-            .timeout(const Duration(seconds: 4));
+        final result = await InternetAddress.lookup(
+          'google.com',
+        ).timeout(const Duration(seconds: 4));
         return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
       } catch (_) {
         return false;
@@ -290,7 +314,8 @@ class QuranCubit extends Cubit<QuranState> {
       final r = _ready;
       if (r == null) return;
 
-      final isLoading = ps.processingState == ProcessingState.loading ||
+      final isLoading =
+          ps.processingState == ProcessingState.loading ||
           ps.processingState == ProcessingState.buffering;
 
       if (ps.processingState == ProcessingState.completed) {
@@ -298,10 +323,14 @@ class QuranCubit extends Cubit<QuranState> {
         return;
       }
 
-      emit(r.copyWith(
-        audioStatus: r.audioStatus
-            .copyWith(isPlaying: ps.playing, isLoading: isLoading),
-      ));
+      emit(
+        r.copyWith(
+          audioStatus: r.audioStatus.copyWith(
+            isPlaying: ps.playing,
+            isLoading: isLoading,
+          ),
+        ),
+      );
     });
 
     _playerIndexSub = _player.currentIndexStream.listen((index) {
@@ -314,9 +343,11 @@ class QuranCubit extends Cubit<QuranState> {
       final surah = m['surah']!;
       final ayah = m['ayah']!;
 
-      emit(r.copyWith(
-        audioStatus: r.audioStatus.copyWith(surah: surah, ayah: ayah),
-      ));
+      emit(
+        r.copyWith(
+          audioStatus: r.audioStatus.copyWith(surah: surah, ayah: ayah),
+        ),
+      );
 
       _updateHighlight(surah, ayah, r.currentPage);
     });
@@ -348,13 +379,16 @@ class QuranCubit extends Cubit<QuranState> {
     try {
       await _player.stop();
       if (isClosed) return;
-      emit(r.copyWith(
-        audioStatus: AudioStatus(
+      emit(
+        r.copyWith(
+          audioStatus: AudioStatus(
             mode: AudioPlayMode.ayah,
             surah: surah,
             ayah: ayah,
-            isLoading: true),
-      ));
+            isLoading: true,
+          ),
+        ),
+      );
       _updateHighlight(surah, ayah, r.currentPage);
       await _player.setUrl(_audioUrl(surah, ayah));
       await _player.play();
@@ -384,8 +418,7 @@ class QuranCubit extends Cubit<QuranState> {
 
     _audioBusy = true;
     final count = getVerseCount(surah);
-    _sequenceMap =
-        List.generate(count, (i) => {'surah': surah, 'ayah': i + 1});
+    _sequenceMap = List.generate(count, (i) => {'surah': surah, 'ayah': i + 1});
     final sources = List.generate(
       count,
       (i) => AudioSource.uri(Uri.parse(_audioUrl(surah, i + 1))),
@@ -394,18 +427,23 @@ class QuranCubit extends Cubit<QuranState> {
     try {
       await _player.stop();
       if (isClosed) return;
-      emit(r.copyWith(
-        audioStatus: AudioStatus(
+      emit(
+        r.copyWith(
+          audioStatus: AudioStatus(
             mode: AudioPlayMode.surah,
             surah: surah,
             ayah: 1,
-            isLoading: true),
-      ));
+            isLoading: true,
+          ),
+        ),
+      );
       _updateHighlight(surah, 1, r.currentPage);
-      await _player.setAudioSources(sources,
-          initialIndex: 0,
-          initialPosition: Duration.zero,
-          preload: false);
+      await _player.setAudioSources(
+        sources,
+        initialIndex: 0,
+        initialPosition: Duration.zero,
+        preload: false,
+      );
       await _player.play();
     } catch (_) {
       _emitNoInternet();
@@ -447,18 +485,23 @@ class QuranCubit extends Cubit<QuranState> {
     try {
       await _player.stop();
       if (isClosed) return;
-      emit(r.copyWith(
-        audioStatus: AudioStatus(
+      emit(
+        r.copyWith(
+          audioStatus: AudioStatus(
             mode: AudioPlayMode.page,
             surah: firstSurah,
             ayah: firstAyah,
-            isLoading: true),
-      ));
+            isLoading: true,
+          ),
+        ),
+      );
       _updateHighlight(firstSurah, firstAyah, r.currentPage);
-      await _player.setAudioSources(sources,
-          initialIndex: 0,
-          initialPosition: Duration.zero,
-          preload: false);
+      await _player.setAudioSources(
+        sources,
+        initialIndex: 0,
+        initialPosition: Duration.zero,
+        preload: false,
+      );
       await _player.play();
     } catch (_) {
       _emitNoInternet();
@@ -480,7 +523,8 @@ class QuranCubit extends Cubit<QuranState> {
     final duration = _player.duration;
     if (duration == null || duration == Duration.zero) return;
     await _player.seek(
-        Duration(milliseconds: (fraction * duration.inMilliseconds).round()));
+      Duration(milliseconds: (fraction * duration.inMilliseconds).round()),
+    );
   }
 
   void _resetAudioInternal() {
@@ -528,8 +572,7 @@ class QuranCubit extends Cubit<QuranState> {
   // ═══════════════════════════════════════════════════════════════════════
   int getJuz(int page) {
     final data = getPageData(page);
-    return getJuzNumber(
-        data.first['surah'] as int, data.first['start'] as int);
+    return getJuzNumber(data.first['surah'] as int, data.first['start'] as int);
   }
 
   String getHizb(int page) {
@@ -549,9 +592,9 @@ class QuranCubit extends Cubit<QuranState> {
   }
 
   String getReciterName(String id) => kReciters.firstWhere(
-        (r) => r['id'] == id,
-        orElse: () => kReciters.first,
-      )['name']!;
+    (r) => r['id'] == id,
+    orElse: () => kReciters.first,
+  )['name']!;
 
   final StreamController<String> _errorController =
       StreamController<String>.broadcast();

@@ -10,15 +10,27 @@ import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/rafeeq.dart';
 
 void main() async {
+  final watch = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrint(
+    'Startup: WidgetsBinding initialized in ${watch.elapsedMilliseconds}ms',
+  );
 
   // Initialize easy_localization
+  final locWatch = Stopwatch()..start();
   await EasyLocalization.ensureInitialized();
+  debugPrint(
+    'Startup: EasyLocalization initialized in ${locWatch.elapsedMilliseconds}ms',
+  );
 
   Bloc.observer = MyBlocObserver();
 
   // Initialize StorageManager (SharedPreferences)
+  final storageWatch = Stopwatch()..start();
   await StorageManager.instance.init();
+  debugPrint(
+    'Startup: StorageManager initialized in ${storageWatch.elapsedMilliseconds}ms',
+  );
 
   if (Platform.isAndroid || Platform.isIOS) {
     final view = WidgetsBinding.instance.platformDispatcher.views.first;
