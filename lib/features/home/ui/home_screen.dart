@@ -13,14 +13,27 @@ import 'widgets/prayer_time.dart';
 import 'widgets/quick_parts.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   static bool isTablet(BuildContext context) =>
       MediaQuery.of(context).size.shortestSide >= 600;
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ تحميل مواقيت الصلاة بشكل lazy لما الـ HomeScreen يتبني لأول مرة
+    context.read<PrayerTimeCubit>().loadPrayerTimes();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isTablet = HomeScreen.isTablet(context);
     return BlocProvider(
       create: (_) => TimerCubit(),
       child: Column(
@@ -35,22 +48,20 @@ class HomeScreen extends StatelessWidget {
                     isManual: true,
                   );
                 },
-                // نفس الـ ListView للاتنين — الفرق في الـ padding والأحجام جوا كل widget
                 child: ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(
-                    // tablet: padding أكبر من الجانبين عشان المحتوى ما يتمددش لآخر الشاشة
-                    horizontal: isTablet(context)
+                    horizontal: isTablet
                         ? MediaQuery.of(context).size.width * 0.06
                         : 0,
                   ),
                   children: [
                     const HomePrayerHeader(),
-                    SizedBox(height: isTablet(context) ? 20 : 16.h),
+                    SizedBox(height: isTablet ? 20 : 16.h),
                     const PrayerTime(),
-                    SizedBox(height: isTablet(context) ? 20 : 16.h),
+                    SizedBox(height: isTablet ? 20 : 16.h),
                     const QuickParts(),
-                    SizedBox(height: isTablet(context) ? 40 : 50.h),
+                    SizedBox(height: isTablet ? 40 : 50.h),
                   ],
                 ),
               ),

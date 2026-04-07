@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,21 +14,17 @@ void main() async {
     'Startup: WidgetsBinding initialized in ${watch.elapsedMilliseconds}ms',
   );
 
-  // Initialize easy_localization
-  final locWatch = Stopwatch()..start();
-  await EasyLocalization.ensureInitialized();
+  // Initialize easy_localization and StorageManager in parallel
+  final initWatch = Stopwatch()..start();
+  await Future.wait([
+    EasyLocalization.ensureInitialized(),
+    StorageManager.instance.init(),
+  ]);
   debugPrint(
-    'Startup: EasyLocalization initialized in ${locWatch.elapsedMilliseconds}ms',
+    'Startup: Parallel initialization completed in ${initWatch.elapsedMilliseconds}ms',
   );
 
   Bloc.observer = MyBlocObserver();
-
-  // Initialize StorageManager (SharedPreferences)
-  final storageWatch = Stopwatch()..start();
-  await StorageManager.instance.init();
-  debugPrint(
-    'Startup: StorageManager initialized in ${storageWatch.elapsedMilliseconds}ms',
-  );
 
   if (Platform.isAndroid || Platform.isIOS) {
     final view = WidgetsBinding.instance.platformDispatcher.views.first;
@@ -49,15 +43,12 @@ void main() async {
   }
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('ar')],
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en'),
-        startLocale: const Locale('ar'),
-        child: const Rafeeq(),
-      ),
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      startLocale: const Locale('ar'),
+      child: const Rafeeq(),
     ),
   );
 }

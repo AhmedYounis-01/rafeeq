@@ -260,7 +260,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            children: _getNavigationItems().asMap().entries.map((entry) {
+            children: NavigationItemData.items.asMap().entries.map((entry) {
               final item = entry.value;
               final isSelected = entry.key == widget.currentIndex;
               return _NavItem(
@@ -301,7 +301,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
           // ✅ Row يعكس ترتيب العناصر تلقائياً مع Directionality
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: _getNavigationItems().asMap().entries.map((entry) {
+            children: NavigationItemData.items.asMap().entries.map((entry) {
               final item = entry.value;
               final isSelected = entry.key == widget.currentIndex;
               return _BottomNavItem(
@@ -316,33 +316,6 @@ class _SharedNavigationState extends State<SharedNavigation> {
       ),
     );
   }
-
-  List<NavigationItemData> _getNavigationItems() => [
-    NavigationItemData(
-      icon: Assets.images.mosque.path,
-      iconOutlined: Assets.images.mosqueOutline.path,
-      label: 'nav.home',
-      route: AppRouter.home,
-    ),
-    NavigationItemData(
-      icon: Assets.images.quran.path,
-      iconOutlined: Assets.images.quranOutline.path,
-      label: 'nav.quran',
-      route: AppRouter.quran,
-    ),
-    NavigationItemData(
-      icon: Assets.images.qibla.path,
-      iconOutlined: Assets.images.qiblaOutline.path,
-      label: 'nav.qibla',
-      route: AppRouter.qibla,
-    ),
-    NavigationItemData(
-      icon: Assets.images.tasbih.path,
-      iconOutlined: Assets.images.tasbihOutline.path,
-      label: 'nav.tasbih',
-      route: AppRouter.tasbih,
-    ),
-  ];
 
   void _onNavigationTap(BuildContext context, String route) {
     if (GoRouterState.of(context).uri.toString() != route) {
@@ -603,4 +576,31 @@ class NavigationItemData {
     required this.label,
     required this.route,
   });
+
+  static List<NavigationItemData> get items => [
+    NavigationItemData(
+      icon: Assets.images.mosque.path,
+      iconOutlined: Assets.images.mosqueOutline.path,
+      label: 'nav.home',
+      route: AppRouter.home,
+    ),
+    NavigationItemData(
+      icon: Assets.images.quran.path,
+      iconOutlined: Assets.images.quranOutline.path,
+      label: 'nav.quran',
+      route: AppRouter.quran,
+    ),
+    NavigationItemData(
+      icon: Assets.images.qibla.path,
+      iconOutlined: Assets.images.qiblaOutline.path,
+      label: 'nav.qibla',
+      route: AppRouter.qibla,
+    ),
+    NavigationItemData(
+      icon: Assets.images.tasbih.path,
+      iconOutlined: Assets.images.tasbihOutline.path,
+      label: 'nav.tasbih',
+      route: AppRouter.tasbih,
+    ),
+  ];
 }

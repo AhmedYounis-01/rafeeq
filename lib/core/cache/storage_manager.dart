@@ -53,6 +53,17 @@ class StorageManager {
     await saveData(key: 'hasSeenOnboarding', value: true);
   }
 
+  // ================= Theme =================
+  static const String _themeKey = 'theme_mode';
+
+  int? getThemeModeIndex() {
+    return getData<int>(key: _themeKey);
+  }
+
+  Future<bool> setThemeModeIndex(int index) {
+    return saveData(key: _themeKey, value: index);
+  }
+
   // ================= Secure Storage =================
 
   Future<void> setSecuredString({

@@ -100,32 +100,21 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final config = SplashConfig(context);
+    final logo = SplashLogo(size: config.logoSize, radius: config.logoRadius);
 
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: context.scaffoldBackgroundColor,
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: AnimatedBuilder(
-            animation: _mainController,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, _slideAnimation.value),
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Center(
-                    child: SplashLogo(
-                      size: config.logoSize,
-                      radius: config.logoRadius,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+      backgroundColor: context.scaffoldBackgroundColor,
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: AnimatedBuilder(
+          animation: _mainController,
+          child: Center(child: logo),
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, _slideAnimation.value),
+              child: ScaleTransition(scale: _scaleAnimation, child: child),
+            );
+          },
         ),
       ),
     );
@@ -135,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen>
 class SplashConfig {
   final double shortestSide;
   SplashConfig(BuildContext context)
-    : shortestSide = MediaQuery.of(context).size.shortestSide;
+    : shortestSide = MediaQuery.sizeOf(context).shortestSide;
 
   double get logoSize => (shortestSide * 0.7).clamp(160.0, 320.0);
   double get spacing => (shortestSide * 0.08).clamp(24.0, 48.0);

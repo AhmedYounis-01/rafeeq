@@ -4,7 +4,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
@@ -197,6 +196,13 @@ class _LocationInfo extends StatelessWidget {
     final fontSize =
         MediaQuery.of(context).size.width * (isTablet ? 0.019 : 0.031);
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+      // ✅ نعيد البناء فقط لما يتغير نوع الـ state (مش كل emit)
+      buildWhen: (prev, curr) =>
+          prev.runtimeType != curr.runtimeType ||
+          (prev is PrayerTimeLoaded &&
+              curr is PrayerTimeLoaded &&
+              (prev.cityName != curr.cityName ||
+                  prev.countryName != curr.countryName)),
       builder: (context, state) {
         final loc = state is PrayerTimeLoaded
             ? "${state.cityName}, ${state.countryName}"
@@ -286,6 +292,12 @@ class _NextPrayerCard extends StatelessWidget {
     final fontSize = screenW * (isTablet ? 0.022 : 0.038);
 
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+      // ✅ نعيد البناء فقط لما يتغير الصلاة الجاية
+      buildWhen: (prev, curr) =>
+          prev.runtimeType != curr.runtimeType ||
+          (prev is PrayerTimeLoaded &&
+              curr is PrayerTimeLoaded &&
+              prev.nextPrayer != curr.nextPrayer),
       builder: (context, state) {
         if (state is! PrayerTimeLoaded) return const SizedBox.shrink();
         final nextTime = state.nextPrayerTime;

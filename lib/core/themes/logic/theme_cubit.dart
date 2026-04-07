@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rafeeq/core/cache/storage_manager.dart';
 
 enum ThemeState { light, dark, system }
 
 class ThemeCubit extends Cubit<ThemeMode> {
-  ThemeCubit() : super(ThemeMode.system) {
-    _loadTheme();
-  }
+  ThemeCubit() : super(_getInitialTheme());
 
-  static const String _themeKey = 'theme_mode';
-
-  Future<void> _loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    final themeIndex = prefs.getInt(_themeKey);
-    if (themeIndex != null) {
-      emit(ThemeMode.values[themeIndex]);
+  static ThemeMode _getInitialTheme() {
+    final index = StorageManager.instance.getThemeModeIndex();
+    if (index != null && index >= 0 && index < ThemeMode.values.length) {
+      return ThemeMode.values[index];
     }
+    return ThemeMode.system;
   }
 
   Future<void> setTheme(ThemeMode themeMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_themeKey, themeMode.index);
+    await StorageManager.instance.setThemeModeIndex(themeMode.index);
     emit(themeMode);
   }
 
