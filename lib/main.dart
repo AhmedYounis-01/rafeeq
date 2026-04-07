@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:rafeeq/bloc_observer.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/rafeeq.dart';
 
 void main() async {
   final watch = Stopwatch()..start();
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   debugPrint(
     'Startup: WidgetsBinding initialized in ${watch.elapsedMilliseconds}ms',
   );
@@ -51,4 +54,7 @@ void main() async {
       child: const Rafeeq(),
     ),
   );
+
+  // Remove splash screen after first frame is drawn
+  FlutterNativeSplash.remove();
 }
