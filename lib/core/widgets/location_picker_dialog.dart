@@ -88,7 +88,7 @@ class _LocationPickerDialogState extends State<LocationPickerDialog> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: context.colorScheme.surfaceContainerHighest
-                          .withValues(alpha:0.5),
+                          .withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     child: TextField(
@@ -98,7 +98,7 @@ class _LocationPickerDialogState extends State<LocationPickerDialog> {
                         hintText: "home.search_city_hint".tr(),
                         hintStyle: context.textTheme.bodyMedium?.copyWith(
                           color: context.colorScheme.onSurfaceVariant
-                              .withValues(alpha:0.7),
+                              .withValues(alpha: 0.7),
                         ),
                         prefixIcon: Icon(
                           Icons.search,
@@ -218,7 +218,7 @@ class _LocationPickerDialogState extends State<LocationPickerDialog> {
               color: context.colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),

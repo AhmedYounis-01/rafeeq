@@ -12,6 +12,7 @@ import 'package:quran/quran.dart'
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:rafeeq/features/quran/logic/cubit/quran_cubit.dart';
+import 'package:rafeeq/features/quran/data/tafsir_model.dart';
 
 // ─── Responsive Config ────────────────────────────────────────────────────
 class _MushafConfig {
@@ -322,6 +323,11 @@ class _QuranScreenState extends State<QuranScreen>
                 onPageChanged: (pageNumber) {
                   _cubit.onPageChanged(pageNumber);
                   HapticFeedback.lightImpact();
+                },
+                onLongPress: (surah, ayah, details) {
+                  HapticFeedback.mediumImpact();
+                  _cubit.fetchTafsir(surah, ayah);
+                  _showTafsirSheet(isDark, cfg);
                 },
               ),
             ),
@@ -721,6 +727,28 @@ class _QuranScreenState extends State<QuranScreen>
         ),
       ),
     );
+  }
+
+  // ─── Tafsir Sheet ─────────────────────────────────────────────────────
+  void _showTafsirSheet(bool isDark, _MushafConfig cfg) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
+      builder: (ctx) => _TafsirSheet(
+        cubit: _cubit,
+        isDark: isDark,
+        cfg: cfg,
+        gold: _goldColor(isDark),
+        bgColor: _cardColor(isDark),
+        textColor: _textColor(isDark),
+        onPlayAyah: (surah, ayah) {
+          Navigator.pop(ctx);
+          _cubit.playAyah(surah, ayah);
+        },
+      ),
+    ).whenComplete(_cubit.clearTafsir);
   }
 
   // ─── Reciter Selector ────────────────────────────────────────────────
@@ -2212,4 +2240,269 @@ class _RibbonPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _RibbonPainter old) => old.color != color;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Tafsir Sheet
+// ═══════════════════════════════════════════════════════════════════════════
+class _TafsirSheet extends StatelessWidget {
+  final QuranCubit cubit;
+  final bool isDark;
+  final _MushafConfig cfg;
+  final Color gold, bgColor, textColor;
+  final void Function(int surah, int ayah) onPlayAyah;
+
+  const _TafsirSheet({
+    required this.cubit,
+    required this.isDark,
+    required this.cfg,
+    required this.gold,
+    required this.bgColor,
+    required this.textColor,
+    required this.onPlayAyah,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.72,
+      maxChildSize: 0.95,
+      minChildSize: 0.4,
+      expand: false,
+      builder: (_, sc) => Container(
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: gold.withValues(alpha: 0.2)),
+        ),
+        child: ValueListenableBuilder<TafsirData?>(
+          valueListenable: cubit.tafsirNotifier,
+          builder: (_, data, _) {
+            if (data == null) {
+              return Center(child: CircularProgressIndicator(color: gold));
+            }
+            return Column(
+              children: [
+                // ── Handle
+                Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 4),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: gold.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+
+                // ── Header: اسم السورة + رقم الآية + زر تشغيل
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Row(
+                    children: [
+                      // زر تشغيل الآية
+                      GestureDetector(
+                        onTap: () => onPlayAyah(data.surah, data.ayah),
+                        child: Container(
+                          width: cfg.headerCircleSize,
+                          height: cfg.headerCircleSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: gold.withValues(alpha: 0.12),
+                            border: Border.all(
+                              color: gold.withValues(alpha: 0.45),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.play_arrow_rounded,
+                            color: gold,
+                            size: cfg.headerIconSize * 0.75,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      // اسم السورة ورقم الآية
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            data.surahName,
+                            style: GoogleFonts.amiri(
+                              fontSize: cfg.surahNameFontSize * 0.78,
+                              color: gold,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'آية ${data.ayah}',
+                            style: GoogleFonts.amiri(
+                              fontSize: cfg.overlayLabelSize,
+                              color: gold.withValues(alpha: 0.65),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                Divider(
+                  height: 20,
+                  color: gold.withValues(alpha: 0.18),
+                  indent: 20,
+                  endIndent: 20,
+                ),
+
+                // ── نص الآية + التفسير
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: sc,
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // نص الآية — من الباكدج offline
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: gold.withValues(alpha: 0.06),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: gold.withValues(alpha: 0.22),
+                            ),
+                          ),
+                          child: Text(
+                            data.verseText,
+                            textDirection: TextDirection.rtl,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.amiri(
+                              fontSize: cfg.surahNameFontSize * 0.85,
+                              color: textColor,
+                              height: 2.0,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        // عنوان التفسير
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'التفسير الميسّر',
+                              style: GoogleFonts.amiri(
+                                fontSize: cfg.surahNameFontSize * 0.68,
+                                color: gold,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.menu_book_rounded,
+                              color: gold,
+                              size: cfg.headerIconSize * 0.7,
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        // محتوى التفسير
+                        _buildTafsirBody(data),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTafsirBody(TafsirData data) {
+    if (data.isLoading) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32),
+        child: Center(child: CircularProgressIndicator(color: gold)),
+      );
+    }
+    if (data.noInternet) {
+      return _TafsirMessage(
+        icon: Icons.wifi_off_rounded,
+        text: 'لا يوجد اتصال بالإنترنت',
+        sub: 'التفسير يحتاج اتصال للتحميل\nثم يُحفظ تلقائياً',
+        gold: gold,
+        textColor: textColor,
+        cfg: cfg,
+      );
+    }
+    if (data.hasError) {
+      return _TafsirMessage(
+        icon: Icons.error_outline_rounded,
+        text: 'تعذّر تحميل التفسير',
+        sub: 'تحقق من الاتصال وحاول مجدداً',
+        gold: gold,
+        textColor: textColor,
+        cfg: cfg,
+      );
+    }
+    return Text(
+      data.tafsir,
+      textDirection: TextDirection.rtl,
+      style: GoogleFonts.amiri(
+        fontSize: cfg.surahNameFontSize * 0.72,
+        color: textColor.withValues(alpha: 0.85),
+        height: 1.9,
+      ),
+    );
+  }
+}
+
+// ─── رسالة حالة ──────────────────────────────────────────────────────────
+class _TafsirMessage extends StatelessWidget {
+  final IconData icon;
+  final String text, sub;
+  final Color gold, textColor;
+  final _MushafConfig cfg;
+
+  const _TafsirMessage({
+    required this.icon,
+    required this.text,
+    required this.sub,
+    required this.gold,
+    required this.textColor,
+    required this.cfg,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32),
+      child: Column(
+        children: [
+          Icon(icon, color: gold.withValues(alpha: 0.45), size: 42),
+          const SizedBox(height: 12),
+          Text(
+            text,
+            style: GoogleFonts.amiri(
+              fontSize: cfg.surahNameFontSize * 0.7,
+              color: textColor.withValues(alpha: 0.65),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            sub,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.amiri(
+              fontSize: cfg.overlayLabelSize,
+              color: textColor.withValues(alpha: 0.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

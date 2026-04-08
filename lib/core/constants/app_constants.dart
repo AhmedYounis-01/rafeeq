@@ -72,4 +72,8 @@ class AppConstants {
   static const String signInSuccess = 'SignIn successful';
   static const String logoutSuccess = 'Logout successful';
   static const String updateSuccess = 'Update successful';
+  // URLs
+  static const String tafsirBaseUrl = 'https://api.alquran.cloud/v1/ayah/';
+  static const String tafsirSuffix = '/ar.muyassar';
+  static const String audioBaseUrl = 'https://everyayah.com/data/';
 }

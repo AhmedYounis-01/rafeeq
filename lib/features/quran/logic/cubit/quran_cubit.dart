@@ -10,7 +10,10 @@ import 'package:qcf_quran_plus/qcf_quran_plus.dart'
     hide getPageData, getPageNumber;
 import 'package:quran/quran.dart'
     hide getSurahNameArabic, getJuzNumber, getVerseCount, getVerse;
+import 'package:rafeeq/core/constants/app_constants.dart';
+import 'package:rafeeq/features/quran/data/tafsir_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 part 'quran_state.dart';
 
@@ -54,6 +57,90 @@ class QuranCubit extends Cubit<QuranState> {
   );
   final ValueNotifier<bool> isSearchingAyahs = ValueNotifier(false);
   Timer? _searchDebounce;
+  // ─── Tafsir ───────────────────────────────────────────────────────────────
+  final ValueNotifier<TafsirData?> tafsirNotifier = ValueNotifier(null);
+  final Map<String, String> _tafsirCache = {};
+  // ═══════════════════════════════════════════════════════════════════════
+  // TAFSIR — alquran.cloud (ar.muyassar) مع cache في الميموري
+  // ═══════════════════════════════════════════════════════════════════════
+  Future<void> fetchTafsir(int surah, int ayah) async {
+    final surahName = getSurahNameArabic(surah);
+    final verseText = getVerse(surah, ayah);
+    final cacheKey = '$surah:$ayah';
+
+    // أظهر loading فوراً مع نص الآية
+    tafsirNotifier.value = TafsirData(
+      surah: surah,
+      ayah: ayah,
+      surahName: surahName,
+      verseText: verseText,
+      isLoading: true,
+    );
+
+    // Cache hit — مفيش request
+    if (_tafsirCache.containsKey(cacheKey)) {
+      tafsirNotifier.value = TafsirData(
+        surah: surah,
+        ayah: ayah,
+        surahName: surahName,
+        verseText: verseText,
+        tafsir: _tafsirCache[cacheKey]!,
+      );
+      return;
+    }
+
+    // تحقق من النت
+    if (!await checkInternet()) {
+      if (!isClosed) {
+        tafsirNotifier.value = tafsirNotifier.value?.copyWith(
+          isLoading: false,
+          noInternet: true,
+        );
+      }
+      return;
+    }
+
+    try {
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 8);
+      final request = await client.getUrl(
+        Uri.parse(
+          '${AppConstants.tafsirBaseUrl}$surah:$ayah${AppConstants.tafsirSuffix}',
+        ),
+      );
+      final response = await request.close();
+      final body = await response
+          .transform(const Utf8Decoder())
+          .join()
+          .timeout(const Duration(seconds: 10));
+      client.close();
+
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      final tafsirText = (json['data']?['text'] as String?) ?? '';
+
+      if (tafsirText.isNotEmpty) _tafsirCache[cacheKey] = tafsirText;
+
+      if (!isClosed) {
+        tafsirNotifier.value = TafsirData(
+          surah: surah,
+          ayah: ayah,
+          surahName: surahName,
+          verseText: verseText,
+          tafsir: tafsirText,
+        );
+      }
+    } catch (e) {
+      debugPrint('Tafsir fetch error: $e');
+      if (!isClosed) {
+        tafsirNotifier.value = tafsirNotifier.value?.copyWith(
+          isLoading: false,
+          hasError: true,
+        );
+      }
+    }
+  }
+
+  void clearTafsir() => tafsirNotifier.value = null;
 
   QuranReady? get _ready => state is QuranReady ? state as QuranReady : null;
 
@@ -300,7 +387,7 @@ class QuranCubit extends Cubit<QuranState> {
 
   String _audioUrl(int surah, int ayah) {
     final reciter = _ready?.selectedReciterId ?? kReciters.first['id']!;
-    return 'https://everyayah.com/data/$reciter/'
+    return '${AppConstants.audioBaseUrl}$reciter/'
         '${surah.toString().padLeft(3, '0')}'
         '${ayah.toString().padLeft(3, '0')}.mp3';
   }
@@ -619,6 +706,7 @@ class QuranCubit extends Cubit<QuranState> {
     highlightsNotifier.dispose();
     ayahSearchResults.dispose();
     isSearchingAyahs.dispose();
+    tafsirNotifier.dispose();
     return super.close();
   }
 }
