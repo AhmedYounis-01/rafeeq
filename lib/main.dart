@@ -19,12 +19,15 @@ void main() async {
 
   // Initialize easy_localization and StorageManager in parallel
   final initWatch = Stopwatch()..start();
-  await Future.wait([
-    EasyLocalization.ensureInitialized(),
-    StorageManager.instance.init(),
-  ]);
+  await EasyLocalization.ensureInitialized();
   debugPrint(
-    'Startup: Parallel initialization completed in ${initWatch.elapsedMilliseconds}ms',
+    'Startup: EasyLocalization initialized in ${initWatch.elapsedMilliseconds}ms',
+  );
+
+  initWatch.reset();
+  await StorageManager.instance.init();
+  debugPrint(
+    'Startup: StorageManager initialized in ${initWatch.elapsedMilliseconds}ms',
   );
 
   Bloc.observer = MyBlocObserver();
@@ -54,7 +57,4 @@ void main() async {
       child: const Rafeeq(),
     ),
   );
-
-  // Remove splash screen after first frame is drawn
-  FlutterNativeSplash.remove();
 }

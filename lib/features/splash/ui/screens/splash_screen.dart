@@ -1,18 +1,18 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:rafeeq/core/cache/storage_manager.dart';
-import 'package:rafeeq/core/extensions/theme_extension.dart';
-import '../../../../core/routing/app_router.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:rafeeq/core/gen/assets.gen.dart';
 import '../widgets/splash_logo.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class SplashOverlay extends StatefulWidget {
+  final VoidCallback onComplete;
+  const SplashOverlay({super.key, required this.onComplete});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashOverlay> createState() => _SplashOverlayState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashOverlayState extends State<SplashOverlay>
     with TickerProviderStateMixin {
   late AnimationController _mainController;
   late Animation<double> _fadeAnimation;
@@ -24,6 +24,28 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _setupAnimations();
     _runSplashSequence();
+
+    // Remove native splash after a small delay to ensure Flutter frame is fully ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _precacheAssets(context);
+      Future.delayed(const Duration(milliseconds: 100), () {
+        FlutterNativeSplash.remove();
+      });
+    });
+  }
+
+  void _precacheAssets(BuildContext context) {
+    // 1. Pre-cache large background images
+    precacheImage(Assets.images.best.provider(), context);
+    precacheImage(Assets.images.fajr.provider(), context);
+    precacheImage(Assets.images.duhr.provider(), context);
+    precacheImage(Assets.images.asr.provider(), context);
+    precacheImage(Assets.images.maghrb.provider(), context);
+    precacheImage(Assets.images.isha.provider(), context);
+    precacheImage(Assets.images.azkar.provider(), context);
+    precacheImage(Assets.images.ruqiah.provider(), context);
+    precacheImage(Assets.images.dua.provider(), context);
+    precacheImage(Assets.images.seerah.provider(), context);
   }
 
   void _setupAnimations() {
@@ -33,44 +55,30 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _fadeAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 0.0,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeInQuad)),
-        weight: 30,
-      ),
-      TweenSequenceItem(tween: ConstantTween(1.0), weight: 50),
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 75),
       TweenSequenceItem(
         tween: Tween(
           begin: 1.0,
           end: 0.0,
-        ).chain(CurveTween(curve: Curves.easeOutQuad)),
-        weight: 20,
+        ).chain(CurveTween(curve: Curves.easeOutCubic)),
+        weight: 25,
       ),
     ]).animate(_mainController);
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween(
-          begin: 0.85,
+          begin: 1.0,
           end: 1.05,
-        ).chain(CurveTween(curve: Curves.easeOutBack)),
-        weight: 40,
-      ),
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 1.05,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 60,
+        ).chain(CurveTween(curve: Curves.easeOutQuad)),
+        weight: 100,
       ),
     ]).animate(_mainController);
 
-    _slideAnimation = Tween<double>(begin: 20, end: 0).animate(
+    _slideAnimation = Tween<double>(begin: 0.0, end: -15.0).animate(
       CurvedAnimation(
         parent: _mainController,
-        curve: const Interval(0.0, 0.4, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 1.0, curve: Curves.easeOutCubic),
       ),
     );
   }
@@ -82,13 +90,7 @@ class _SplashScreenState extends State<SplashScreen>
       // Handle dispose
     }
 
-    if (!mounted) return;
-    final hasSeenOnboarding = StorageManager.instance.hasSeenOnboarding();
-    if (hasSeenOnboarding) {
-      context.go(AppRouter.home);
-    } else {
-      context.go(AppRouter.onboarding);
-    }
+    widget.onComplete();
   }
 
   @override
@@ -99,20 +101,23 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final config = SplashConfig(context);
-    final logo = SplashLogo(size: config.logoSize, radius: config.logoRadius);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: context.scaffoldBackgroundColor,
+      backgroundColor: isDark ? const Color(0xFF0F1412) : Colors.white,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: AnimatedBuilder(
           animation: _mainController,
-          child: Center(child: logo),
           builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(0, _slideAnimation.value),
-              child: ScaleTransition(scale: _scaleAnimation, child: child),
+            return Center(
+              child: Transform.translate(
+                offset: Offset(0, _slideAnimation.value),
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: const SplashLogo(size: 250, radius: 32),
+                ),
+              ),
             );
           },
         ),

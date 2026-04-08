@@ -1,10 +1,9 @@
 import 'package:adhan/adhan.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafeeq/core/services/location_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 import 'prayer_time_state.dart';
 
 class PrayerTimeCubit extends Cubit<PrayerTimeState> {
@@ -13,81 +12,70 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   Future<void> loadPrayerTimes({bool isManual = false}) async {
     if (state is PrayerTimeLoading && !isManual) return;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final watch = Stopwatch()..start();
-      emit(PrayerTimeLoading());
-      try {
-        final prefs = await SharedPreferences.getInstance();
-        final hasAskedBefore = prefs.getBool('has_asked_location') ?? false;
+    final watch = Stopwatch()..start();
+    emit(PrayerTimeLoading());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final hasAskedBefore = prefs.getBool('has_asked_location') ?? false;
 
-        final savedLat = prefs.getDouble('location_lat');
-        final savedLon = prefs.getDouble('location_lon');
-        final savedCity = prefs.getString('location_city');
-        final savedCountry = prefs.getString('location_country');
+      final savedLat = prefs.getDouble('location_lat');
+      final savedLon = prefs.getDouble('location_lon');
+      final savedCity = prefs.getString('location_city');
+      final savedCountry = prefs.getString('location_country');
 
-        final isManualLocation = prefs.getBool('is_manual_location') ?? false;
+      final isManualLocation = prefs.getBool('is_manual_location') ?? false;
 
-        final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-        final permission = await LocationService.checkPermission();
-        final isAuthorized =
-            permission == LocationPermission.always ||
-            permission == LocationPermission.whileInUse;
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      final permission = await LocationService.checkPermission();
+      final isAuthorized =
+          permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse;
 
-        bool shouldTryAutomatic =
-            !isManualLocation && isAuthorized && serviceEnabled;
+      bool shouldTryAutomatic =
+          !isManualLocation && isAuthorized && serviceEnabled;
 
-        if (isManual && !isManualLocation) {
-          shouldTryAutomatic = true;
-        }
-
-        if (shouldTryAutomatic) {
-          if (!isAuthorized && !hasAskedBefore) {
-            await prefs.setBool('has_asked_location', true);
-          }
-
-          try {
-            await _fetchWithPermission(isManual: isManual, stopwatch: watch);
-            return;
-          } catch (e) {
-            if (savedLat != null && savedLon != null) {
-              await _emitFromCoordinates(
-                latitude: savedLat,
-                longitude: savedLon,
-                cityName: savedCity ?? 'موقع محفوظ',
-                countryName: savedCountry ?? '',
-                stopwatch: watch,
-              );
-              return;
-            }
-          }
-        }
-
-        if (savedLat != null && savedLon != null) {
-          await _emitFromCoordinates(
-            latitude: savedLat,
-            longitude: savedLon,
-            cityName: savedCity ?? 'موقع محفوظ',
-            countryName: savedCountry ?? '',
-            stopwatch: watch,
-          );
-        } else {
-          String msg = 'يُرجى تحديد موقعك لعرض مواقيت الصلاة';
-          if (!serviceEnabled)
-            msg = 'خدمة الموقع غير مفعلة، يرجى تفعيلها أو تحديد الموقع يدوياً';
-
-          emit(
-            PrayerTimeLocationDenied(
-              message: msg,
-              isPermanentlyDenied:
-                  permission == LocationPermission.deniedForever,
-            ),
-          );
-        }
-      } catch (e) {
-        debugPrint('PrayerTimeCubit Error: $e');
-        emit(PrayerTimeError('حدث خطأ: $e'));
+      if (isManual && !isManualLocation) {
+        shouldTryAutomatic = true;
       }
-    });
+
+      if (shouldTryAutomatic) {
+        if (!isAuthorized && !hasAskedBefore) {
+          await prefs.setBool('has_asked_location', true);
+        }
+
+        try {
+          await _fetchWithPermission(isManual: isManual, stopwatch: watch);
+          return;
+        } catch (e) {
+          debugPrint('Automatic fetch failed, falling back to saved: $e');
+        }
+      }
+
+      if (savedLat != null && savedLon != null) {
+        await _emitFromCoordinates(
+          latitude: savedLat,
+          longitude: savedLon,
+          cityName: savedCity ?? 'موقع محفوظ',
+          countryName: savedCountry ?? '',
+          stopwatch: watch,
+        );
+      } else {
+        String msg = 'يُرجى تحديد موقعك لعرض مواقيت الصلاة';
+        if (!serviceEnabled) {
+          msg = 'خدمة الموقع غير مفعلة، يرجى تفعيلها أو تحديد الموقع يدوياً';
+        }
+
+        emit(
+          PrayerTimeLocationDenied(
+            message: msg,
+            isPermanentlyDenied: permission == LocationPermission.deniedForever,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('PrayerTimeCubit Error: $e');
+      emit(PrayerTimeError('حدث خطأ: $e'));
+    }
   }
 
   Future<void> _fetchWithPermission({
@@ -96,6 +84,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   }) async {
     final result = await LocationService.requestAndGetLocation(
       forceRequest: isManual,
+      useLastKnownIfAvailable: !isManual, // Use last known if it's auto-load
     );
 
     final prefs = await SharedPreferences.getInstance();

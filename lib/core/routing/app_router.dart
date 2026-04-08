@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
 import 'package:rafeeq/features/onboarding/ui/onboarding_screen.dart';
 import 'package:rafeeq/features/quick_parts/ui/screens/azkar_categories_screen.dart';
 import 'package:rafeeq/features/quick_parts/ui/screens/asma_allah_screen.dart';
@@ -13,14 +12,12 @@ import 'package:rafeeq/features/home/ui/home_screen.dart';
 import 'package:rafeeq/features/qibla/ui/qibla_screen.dart';
 import 'package:rafeeq/features/quran/ui/quran_screen.dart';
 import 'package:rafeeq/features/tasbih/ui/tasbih_screen.dart';
-// import '../../features/dashboard/data/models/dashboard_models.dart'
-//     as dashboardModels;
+import 'package:rafeeq/core/cache/storage_manager.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
-  static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String signIn = '/signIn';
   static const String signUp = '/signUp';
@@ -39,16 +36,24 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: splash,
+    initialLocation: '/home', // Changed from splash
+    redirect: (context, state) {
+      final hasSeenOnboarding = StorageManager.instance.hasSeenOnboarding();
+      final isGoingToOnboarding = state.uri.toString() == onboarding;
+
+      if (!hasSeenOnboarding && !isGoingToOnboarding) {
+        return onboarding;
+      }
+      return null;
+    },
     routes: [
-      // Top-level shell route that provides the shared MainLayout/navigation
       ShellRoute(
         builder: (context, state, child) {
           return MainLayout(child: child);
         },
         routes: [
           GoRoute(
-            path: home,
+            path: '/home',
             name: 'home',
             builder: (context, state) => const HomeScreen(),
           ),
@@ -70,12 +75,6 @@ class AppRouter {
         ],
       ),
 
-      // Uncomment and add additional routes (auth, dashboard subroutes, etc.) as needed
-      GoRoute(
-        path: splash,
-        name: 'splash',
-        builder: (context, state) => const SplashScreen(),
-      ),
       GoRoute(
         path: onboarding,
         name: 'onboarding',

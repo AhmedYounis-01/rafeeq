@@ -32,9 +32,19 @@ class LocationService {
   static Future<LocationPermission> checkPermission() =>
       Geolocator.checkPermission();
 
+  /// Gets the last known position or a default if not available.
+  static Future<Position?> getLastKnownPosition() async {
+    try {
+      return await Geolocator.getLastKnownPosition();
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Requests permission and returns a [LocationResult] with coords + city info.
   static Future<LocationResult> requestAndGetLocation({
     bool forceRequest = false,
+    bool useLastKnownIfAvailable = false,
   }) async {
     // 1. Check if the device location service is on
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -54,11 +64,17 @@ class LocationService {
       throw const LocationPermanentlyDeniedException();
     }
 
-    // 3. Get position with high accuracy
-    final position = await Geolocator.getCurrentPosition(
+    Position? position;
+
+    if (useLastKnownIfAvailable) {
+      position = await getLastKnownPosition();
+    }
+
+    // 3. Get position if last known is null or not requested
+    position ??= await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 15),
+        accuracy: LocationAccuracy.medium, // Medium is usually faster than High
+        timeLimit: Duration(seconds: 10),
       ),
     );
 
