@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'dart:isolate';
+
+import 'package:flutter/services.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 part 'quran_state.dart';
+part 'quran_search_service.dart';
 
 // ─── قائمة القراء ─────────────────────────────────────────────────────────
 const List<Map<String, String>> kReciters = [
@@ -52,6 +56,8 @@ class QuranCubit extends Cubit<QuranState> {
   );
 
   // ─── Ayah Search ──────────────────────────────────────────────────────
+  final _QuranSearchService _searchService = _QuranSearchService();
+  final List<AyahSearchResult> _accumulatedResults = [];
   final ValueNotifier<List<AyahSearchResult>> ayahSearchResults = ValueNotifier(
     [],
   );
@@ -183,6 +189,12 @@ class QuranCubit extends Cubit<QuranState> {
       );
 
       _setupAudioListeners();
+      unawaited(
+        _searchService.start(
+          _onSearchResults,
+          token: RootIsolateToken.instance,
+        ),
+      );
       debugPrint(
         'Performance: QuranCubit initialized in ${watch.elapsedMilliseconds}ms',
       );
@@ -271,94 +283,44 @@ class QuranCubit extends Cubit<QuranState> {
   // AYAH SEARCH — يشتغل في isolate منفصل عشان مايوقفش الـ UI
   // ═══════════════════════════════════════════════════════════════════════
 
-  /// إزالة التشكيل لمقارنة مرنة
-  static String _stripDiacritics(String s) => s.replaceAll(
-    RegExp(
-      r'[\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]',
-    ),
-    '',
-  );
-
-  /// تُشتغل في isolate — يجب أن تكون static
-  static List<AyahSearchResult> _runAyahSearch(String query) {
-    final results = <AyahSearchResult>[];
-
-    // بحث بمرجع مباشر: سورة:آية مثل "2:255"
-    final refMatch = RegExp(r'^(\d+)[:\-](\d+)$').firstMatch(query);
-    if (refMatch != null) {
-      final s = int.tryParse(refMatch.group(1) ?? '');
-      final a = int.tryParse(refMatch.group(2) ?? '');
-      if (s != null && a != null && s >= 1 && s <= 114) {
-        final count = getVerseCount(s);
-        if (a >= 1 && a <= count) {
-          results.add(
-            AyahSearchResult(
-              surah: s,
-              ayah: a,
-              surahName: getSurahNameArabic(s),
-              verseText: getVerse(s, a),
-            ),
-          );
-        }
-      }
-      return results;
-    }
-
-    // بحث بالنص — مع تجاهل التشكيل
-    final qStripped = _stripDiacritics(query);
-    if (qStripped.length < 2) return results; // حد أدنى 2 حروف
-
-    for (int s = 1; s <= 114; s++) {
-      final count = getVerseCount(s);
-      for (int a = 1; a <= count; a++) {
-        final verse = getVerse(s, a);
-        if (_stripDiacritics(verse).contains(qStripped)) {
-          results.add(
-            AyahSearchResult(
-              surah: s,
-              ayah: a,
-              surahName: getSurahNameArabic(s),
-              verseText: verse,
-            ),
-          );
-          if (results.length >= 80) return results; // حد أقصى 80 نتيجة
-        }
-      }
-    }
-    return results;
+  void _onSearchResults(List<AyahSearchResult> batch, bool isDone) {
+    if (isClosed) return;
+    _accumulatedResults.addAll(batch);
+    ayahSearchResults.value = List<AyahSearchResult>.from(_accumulatedResults);
+    if (isDone) isSearchingAyahs.value = false;
   }
 
-  /// يُستدعى من الـ UI — debounced + compute
   void searchAyahs(String query) {
     _searchDebounce?.cancel();
     final q = query.trim();
 
     if (q.isEmpty) {
-      ayahSearchResults.value = [];
-      isSearchingAyahs.value = false;
+      clearAyahSearch();
       return;
     }
 
+    // Reset state immediately so UI clears old results
+    _accumulatedResults.clear();
+    ayahSearchResults.value = [];
     isSearchingAyahs.value = true;
+    _searchService.cancel(); // discard any in-flight response
 
-    _searchDebounce = Timer(const Duration(milliseconds: 450), () async {
-      try {
-        final results = await compute(_runAyahSearch, q);
-        if (!isClosed) {
-          ayahSearchResults.value = results;
-          isSearchingAyahs.value = false;
-        }
-      } catch (e) {
-        debugPrint('Ayah search error: $e');
-        if (!isClosed) isSearchingAyahs.value = false;
+    // Debounce: 200ms instead of 450ms
+    _searchDebounce = Timer(const Duration(milliseconds: 200), () {
+      if (_searchService.isReady) {
+        _searchService.search(q);
+      } else {
+        isSearchingAyahs.value = false;
       }
     });
   }
 
   void clearAyahSearch() {
     _searchDebounce?.cancel();
+    _accumulatedResults.clear();
     ayahSearchResults.value = [];
     isSearchingAyahs.value = false;
+    _searchService.cancel();
   }
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -707,6 +669,7 @@ class QuranCubit extends Cubit<QuranState> {
     ayahSearchResults.dispose();
     isSearchingAyahs.dispose();
     tafsirNotifier.dispose();
+    _searchService.dispose();
     return super.close();
   }
 }

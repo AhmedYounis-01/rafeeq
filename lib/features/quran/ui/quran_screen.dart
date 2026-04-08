@@ -954,17 +954,64 @@ class _SurahIndexContentState extends State<_SurahIndexContent> {
   final TextEditingController _ctrl = TextEditingController();
   List<int> _filtered = List.generate(114, (i) => i + 1);
 
+  // Cache lists
+  late final List<String> _surahNames;
+  late final List<String> _surahNamesNormalized;
+
+  @override
+  void initState() {
+    super.initState();
+    // Cache Surah names to avoid calling getSurahNameArabic 114 times per keystroke
+    _surahNames = List.generate(114, (i) => getSurahNameArabic(i + 1));
+    _surahNamesNormalized = _surahNames.map(_normalizeArabic).toList();
+  }
+
+  String _normalizeArabic(String text) {
+    var s = text.trim();
+    // remove all diacritics
+    s = s.replaceAll(RegExp(r'[\u064B-\u0652]'), '');
+    // unify alef
+    s = s.replaceAll(RegExp(r'[آإأ]'), 'ا');
+    // unify yaa
+    s = s.replaceAll('ى', 'ي');
+    // unify haa
+    s = s.replaceAll('ة', 'ه');
+
+    // remove extra spaces and unify numerals (English/Arabic)
+    s = s.replaceAllMapped(RegExp(r'[٠-٩]'), (m) {
+      return (m.group(0)!.codeUnitAt(0) - 1632).toString();
+    });
+    return s.toLowerCase();
+  }
+
   void _filter(String q) {
-    final query = q.trim();
-    setState(() {
-      if (query.isEmpty) {
-        _filtered = List.generate(114, (i) => i + 1);
-      } else {
-        _filtered = List.generate(114, (i) => i + 1).where((s) {
-          final name = getSurahNameArabic(s);
-          return name.contains(query) || '$s' == query;
-        }).toList();
+    if (q.isEmpty) {
+      if (_filtered.length != 114) {
+        setState(() {
+          _filtered = List.generate(114, (i) => i + 1);
+        });
       }
+      return;
+    }
+
+    final query = _normalizeArabic(q);
+    final List<int> results = [];
+
+    for (int i = 0; i < 114; i++) {
+      final surahNum = i + 1;
+      final nameOrig = _surahNames[i];
+      final nameNorm = _surahNamesNormalized[i];
+
+      // Match normalized name, original name, or surah number
+      if (nameNorm.contains(query) ||
+          nameOrig.contains(query) ||
+          surahNum.toString().contains(query)) {
+        results.add(surahNum);
+      }
+    }
+
+    setState(() {
+      _filtered = results;
     });
   }
 
@@ -1148,6 +1195,8 @@ class _AyahSearchSheet extends StatefulWidget {
 
 class _AyahSearchSheetState extends State<_AyahSearchSheet> {
   final TextEditingController _ctrl = TextEditingController();
+  static const int _pageSize = 30; // results shown per page
+  int _displayCount = _pageSize;
 
   @override
   void dispose() {
@@ -1240,44 +1289,41 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
                       color: gold,
                       size: 20,
                     ),
-                    // مؤشر التحميل أو زر المسح
                     suffixIcon: ValueListenableBuilder<bool>(
                       valueListenable: widget.cubit.isSearchingAyahs,
                       builder: (_, isSearching, _) {
-                        if (isSearching) {
-                          return Padding(
-                            padding: const EdgeInsets.all(13),
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: gold,
-                              ),
-                            ),
-                          );
-                        }
-                        if (_ctrl.text.isNotEmpty) {
-                          return IconButton(
-                            icon: Icon(
-                              Icons.close_rounded,
-                              color: gold,
-                              size: 18,
-                            ),
-                            onPressed: () {
-                              _ctrl.clear();
-                              widget.cubit.clearAyahSearch();
-                              setState(() {});
-                            },
-                          );
-                        }
-                        return const SizedBox.shrink();
+                        if (_ctrl.text.isEmpty) return const SizedBox.shrink();
+                        return isSearching
+                            ? Padding(
+                                padding: const EdgeInsets.all(13),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: gold,
+                                  ),
+                                ),
+                              )
+                            : IconButton(
+                                icon: Icon(
+                                  Icons.close_rounded,
+                                  color: gold,
+                                  size: 18,
+                                ),
+                                onPressed: () {
+                                  _ctrl.clear();
+                                  widget.cubit.clearAyahSearch();
+                                  setState(() => _displayCount = _pageSize);
+                                },
+                              );
                       },
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   onChanged: (v) {
-                    setState(() {});
+                    // Reset pagination on every new query
+                    setState(() => _displayCount = _pageSize);
                     widget.cubit.searchAyahs(v);
                   },
                 ),
@@ -1286,7 +1332,7 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
 
             Divider(height: 1, color: gold.withValues(alpha: 0.15)),
 
-            // النتائج
+            // Results area
             Expanded(
               child: ValueListenableBuilder<List<AyahSearchResult>>(
                 valueListenable: widget.cubit.ayahSearchResults,
@@ -1294,13 +1340,13 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
                   return ValueListenableBuilder<bool>(
                     valueListenable: widget.cubit.isSearchingAyahs,
                     builder: (_, isSearching, _) {
-                      // الحالة الافتراضية — لم يبدأ البحث بعد
+                      // ── Idle state ──────────────────────────────────
                       if (_ctrl.text.isEmpty) {
                         return _buildIdleState(gold, cfg);
                       }
 
-                      // جاري البحث
-                      if (isSearching) {
+                      // ── Pure loading (no results yet) ────────────────
+                      if (isSearching && results.isEmpty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -1328,8 +1374,8 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
                         );
                       }
 
-                      // لا نتائج
-                      if (results.isEmpty) {
+                      // ── No results ──────────────────────────────────
+                      if (!isSearching && results.isEmpty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -1365,14 +1411,32 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
                         );
                       }
 
-                      // النتائج
+                      // ── Results (with streaming + pagination) ────────
+                      final displayed = results.take(_displayCount).toList();
+                      final hasMore = results.length > _displayCount;
+                      final totalCount = results.length;
+
                       return Column(
                         children: [
+                          // Result count badge
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                // "loading more" micro indicator
+                                if (isSearching)
+                                  SizedBox(
+                                    width: 14,
+                                    height: 14,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1.5,
+                                      color: gold.withValues(alpha: 0.5),
+                                    ),
+                                  )
+                                else
+                                  const SizedBox(width: 14),
+
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
@@ -1386,7 +1450,9 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
                                     ),
                                   ),
                                   child: Text(
-                                    '${results.length} نتيجة',
+                                    isSearching
+                                        ? '${totalCount}+ نتيجة'
+                                        : '$totalCount نتيجة',
                                     style: GoogleFonts.amiri(
                                       fontSize: cfg.overlayLabelSize,
                                       color: gold.withValues(alpha: 0.8),
@@ -1396,17 +1462,71 @@ class _AyahSearchSheetState extends State<_AyahSearchSheet> {
                               ],
                             ),
                           ),
+
                           Expanded(
                             child: ListView.separated(
                               controller: sc,
-                              padding: const EdgeInsets.fromLTRB(12, 4, 12, 32),
-                              itemCount: results.length,
+                              padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+                              itemCount: displayed.length + (hasMore ? 1 : 0),
                               separatorBuilder: (_, _) => Divider(
                                 height: 1,
                                 color: gold.withValues(alpha: 0.08),
                               ),
                               itemBuilder: (_, i) {
-                                final r = results[i];
+                                // ── "Load more" button ─────────────────
+                                if (i == displayed.length) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    child: Center(
+                                      child: GestureDetector(
+                                        onTap: () => setState(
+                                          () => _displayCount += _pageSize,
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 24,
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: gold.withValues(alpha: 0.08),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                            border: Border.all(
+                                              color: gold.withValues(
+                                                alpha: 0.3,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.expand_more_rounded,
+                                                color: gold,
+                                                size: 18,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                'عرض المزيد (${results.length - _displayCount} باقية)',
+                                                style: GoogleFonts.amiri(
+                                                  fontSize:
+                                                      cfg.overlayLabelSize,
+                                                  color: gold,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                final r = displayed[i];
                                 return _AyahResultTile(
                                   result: r,
                                   query: _ctrl.text.trim(),
@@ -1501,12 +1621,21 @@ class _AyahResultTile extends StatelessWidget {
     required this.onTap,
   });
 
-  static String _stripDiacritics(String s) => s.replaceAll(
-    RegExp(
-      r'[\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]',
-    ),
-    '',
-  );
+  static String _normalizeArabic(String text) {
+    if (text.isEmpty) return '';
+    var s = text;
+    // 1. Normalize complex letters
+    s = s.replaceAll(RegExp(r'[أإآٱ]'), 'ا'); // Alef
+    s = s.replaceAll(RegExp(r'[ئى]'), 'ي'); // Ya / Alef Maksura
+    s = s.replaceAll('ؤ', 'و'); // Waw Hamza
+    s = s.replaceAll('ة', 'ه'); // Ta Marbuta
+    // 2. Remove Tatweel
+    s = s.replaceAll('ـ', '');
+    // 3. Remove all non-letter characters
+    s = s.replaceAll(RegExp(r'[^\u0621-\u064A\s]'), '');
+    // 4. Normalize whitespace
+    return s.replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
 
   /// يستخرج مقتطفاً حول موضع التطابق في النص الأصلي
   (String snippet, int matchStart, int matchEnd) _getSnippet() {
@@ -1521,8 +1650,8 @@ class _AyahResultTile extends StatelessWidget {
     int matchLen = query.length;
 
     if (idx == -1) {
-      final stripped = _stripDiacritics(verse);
-      final strippedQ = _stripDiacritics(query);
+      final stripped = _normalizeArabic(verse);
+      final strippedQ = _normalizeArabic(query);
       final strIdx = stripped.indexOf(strippedQ);
       if (strIdx == -1) {
         final s = verse.length > 90 ? '${verse.substring(0, 87)}...' : verse;
