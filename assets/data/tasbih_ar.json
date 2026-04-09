@@ -1,0 +1,594 @@
+[
+  {
+    "cat": "بعد الصلاة",
+    "text": "أَسْتَغْفِرُ اللهَ",
+    "transliteration": "Astaghfiru-llah",
+    "meaning": "أطلب المغفرة من الله ثلاث مرات، وهو من أول ما يُشرع بعد السلام مباشرة، يُكفر الخطايا ويفتح أبواب الرحمة",
+    "count": 3,
+    "sub": "بعد الانتهاء من الصلاة المكتوبة - حديث ثوبان في مسلم"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "اللهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
+    "transliteration": "Allahumma anta as-Salam wa minka as-salam, tabarakta ya Dhal-Jalali wal-Ikram",
+    "meaning": "اللهم أنت السلام ومنك السلام، تباركت يا صاحب الجلال والإكرام - يُقال بعد الاستغفار، يُكمل الذكر بعد الصلاة ويجلب السلام الداخلي",
+    "count": 1,
+    "sub": "بعد الاستغفار ثلاثاً - حديث ثوبان في مسلم"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "سُبْحَانَ اللهِ",
+    "transliteration": "Subhana-llah",
+    "meaning": "سبحان الله وتنزيهه عن كل نقص وعيب",
+    "count": 33,
+    "sub": "بعد كل صلاة مكتوبة - حديث أهل الدثور في البخاري ومسلم"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "الْحَمْدُ لِلَّهِ",
+    "transliteration": "Alhamdulillah",
+    "meaning": "الحمد لله على جميع نعمه الظاهرة والباطنة، يملأ الميزان يوم القيامة",
+    "count": 33,
+    "sub": "بعد كل صلاة مكتوبة - حديث أهل الدثور"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "اللهُ أَكْبَرُ",
+    "transliteration": "Allahu Akbar",
+    "meaning": "الله أكبر من كل شيء، يُكمل المائة مع التسبيح والتحميد",
+    "count": 34,
+    "sub": "بعد كل صلاة مكتوبة - حديث أهل الدثور"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ",
+    "transliteration": "Subhana-llahi wa bihamdihi, Subhana-llahi al-Azim",
+    "meaning": "خفيفتان على اللسان ثقيلتان في الميزان، يُكفر الخطايا ويرفع الدرجات",
+    "count": 33,
+    "sub": "خفيفتان على اللسان ثقيلتان في الميزان - حديث البخاري"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    "transliteration": "La ilaha illa-llah wahdahu la sharika lah, lahu al-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir",
+    "meaning": "لا معبود بحق إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير - مثل أعتق أربعة من ولد إسماعيل",
+    "count": 10,
+    "sub": "كمن أعتق أربعة من ولد إسماعيل - بعد كل صلاة"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "أَسْتَغْفِرُ اللهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ",
+    "transliteration": "Astaghfiru-llaha al-Azeem wa atubu ilayh",
+    "meaning": "أستغفر الله العظيم وأتوب إليه - من استغفر الله غُفر له ولو كان ذنبه مثل زبد البحر",
+    "count": 100,
+    "sub": "من استغفر الله غُفر له - يُكرر بعد الصلاة أو في أي وقت"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    "transliteration": "La ilaha illa-llah wahdahu la sharika lah, lahu al-mulku wa lahul-hamd, yuhyi wa yumitu wa huwa ala kulli shay'in qadir",
+    "meaning": "يحيي ويميت بيده الخير وهو على كل شيء قدير - يُقال عشر مرات بعد المغرب والفجر خاصة",
+    "count": 10,
+    "sub": "عشر مرات بعد صلاة المغرب والفجر"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "La hawla wa la quwwata illa billah",
+    "meaning": "لا حول ولا قوة إلا بالله - كنز من كنوز الجنة، يُضاف بعد التهليل في بعض الروايات",
+    "count": 1,
+    "sub": "بعد الذكر الأساسي بعد الصلاة - حديث ابن الزبير في مسلم"
+  },
+  {
+    "cat": "بعد الصلاة",
+    "text": "آيَةُ الْكُرْسِيِّ",
+    "transliteration": "Ayat al-Kursi",
+    "meaning": "الله لا إله إلا هو الحي القيوم... (كاملة) - أعظم آية في القرآن، من قرأها دبر كل صلاة لم يمنعه من الجنة إلا الموت",
+    "count": 1,
+    "sub": "بعد كل صلاة مكتوبة"
+  },
+  {
+    "cat": "الصلاة على النبي ﷺ",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ",
+    "transliteration": "Allahumma salli ala Muhammad",
+    "meaning": "اللهم صلِّ على النبي محمد ﷺ - أدنى صيغة، من صلى عليه مرة صلى الله عليه عشرا",
+    "count": 100,
+    "sub": "أدنى صلاة عليه ﷺ - يُكثر في كل وقت"
+  },
+  {
+    "cat": "الصلاة على النبي ﷺ",
+    "text": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+    "transliteration": "Allahumma salli wa sallim ala Nabiyyina Muhammad",
+    "meaning": "اللهم صل وسلم على نبينا محمد ﷺ - من صلى عليّ عشراً صلى الله عليه مئة",
+    "count": 100,
+    "sub": "من صلّى عليّ عشراً صلى الله عليه مئة"
+  },
+  {
+    "cat": "الصلاة على النبي ﷺ",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    "transliteration": "Allahumma salli ala Muhammad wa ala ali Muhammad kama sallayta ala Ibrahim wa ala ali Ibrahim innaka Hamidun Majid, Allahumma barik ala Muhammad wa ala ali Muhammad kama barakta ala Ibrahim wa ala ali Ibrahim innaka Hamidun Majid",
+    "meaning": "الصلاة الإبراهيمية الكاملة (الأفضل) - أكمل صيغ الصلاة على النبي ﷺ في التشهد",
+    "count": 33,
+    "sub": "الصلاة الإبراهيمية - أفضل ما ورد في البخاري ومسلم"
+  },
+  {
+    "cat": "الصلاة على النبي ﷺ",
+    "text": "صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ",
+    "transliteration": "Salla-llahu alayhi wa sallam",
+    "meaning": "الصلاة والسلام على النبي ﷺ - تضاعف الصلاة عليه يوم الجمعة مئة مرة أو أكثر",
+    "count": 100,
+    "sub": "يوم الجمعة تضاعف الصلاة على النبي ﷺ"
+  },
+  {
+    "cat": "التهليل والتكبير",
+    "text": "لَا إِلَهَ إِلَّا اللهُ",
+    "transliteration": "La ilaha illa-llah",
+    "meaning": "أفضل الذكر وأعلى كلمة في الإيمان، يُدخل الجنة ويُكفر الذنوب",
+    "count": 100,
+    "sub": "أفضل الذكر - حديث البخاري ومسلم"
+  },
+  {
+    "cat": "التهليل والتكبير",
+    "text": "اللهُ أَكْبَرُ كَبِيرًا وَالْحَمْدُ لِلَّهِ كَثِيرًا وَسُبْحَانَ اللهِ بُكْرَةً وَأَصِيلًا",
+    "transliteration": "Allahu akbar kabiran wal-hamdu lillahi kathiran wa subhana-llahi bukratan wa asila",
+    "meaning": "الله أكبر كبيرًا والحمد كثيرًا وسبحان الله بكرة وأصيلاً - من ذكر اليوم والليلة",
+    "count": 33,
+    "sub": "من ذِكر اليوم والليلة"
+  },
+  {
+    "cat": "التهليل والتكبير",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    "transliteration": "La ilaha illa-llah wahdahu la sharika lah, lahu al-mulku wa lahul-hamd, yuhyi wa yumit wa huwa ala kulli shay'in qadir",
+    "meaning": "لا إله إلا الله وحده، يحيي ويميت - عشر مرات صباحاً ومساءً",
+    "count": 10,
+    "sub": "عشر مرات صباحًا ومساءً"
+  },
+  {
+    "cat": "التسبيح",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ",
+    "transliteration": "Subhana-llahi wa bihamdihi",
+    "meaning": "من قالها مئة مرة غُفرت ذنوبه وإن كانت كالزبد البحر، وتُغرس له نخلة في الجنة",
+    "count": 100,
+    "sub": "من قالها مئة مرة غُفرت ذنوبه"
+  },
+  {
+    "cat": "التسبيح",
+    "text": "سُبْحَانَ اللهِ الْعَظِيمِ وَبِحَمْدِهِ",
+    "transliteration": "Subhana-llahi al-Azim wa bihamdihi",
+    "meaning": "غُرست له نخلة في الجنة، وتُكفر الخطايا",
+    "count": 33,
+    "sub": "غُرست له نخلة في الجنة"
+  },
+  {
+    "cat": "التسبيح",
+    "text": "سُبْحَانَ اللهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ",
+    "transliteration": "Subhan-Allah, Alhamdulillah, La ilaha illa-llah, Allahu Akbar",
+    "meaning": "أحب الكلام إلى الله الأربعة، تُملأ به الموازين",
+    "count": 33,
+    "sub": "أحب الكلام إلى الله"
+  },
+  {
+    "cat": "التسبيح",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ وَرِضَا نَفْسِهِ وَزِنَةَ عَرْشِهِ وَمِدَادَ كَلِمَاتِهِ",
+    "transliteration": "Subhana-llahi wa bihamdihi adada khalqihi wa rida nafsihi wa zinata arshihi wa midada kalimatihi",
+    "meaning": "ثلاث مرات تعدل أكثر من كل ذكر آخر في ذلك اليوم",
+    "count": 3,
+    "sub": "ثلاث مرات تعدل أكثر من ذلك"
+  },
+  {
+    "cat": "التسبيح",
+    "text": "سُبْحَانَ رَبِّيَ الْعَظِيمِ",
+    "transliteration": "Subhana Rabbiyal Azim",
+    "meaning": "تسبيح في الركوع (يُكرر ثلاثاً أو أكثر)",
+    "count": 33,
+    "sub": "تسبيح الركوع"
+  },
+  {
+    "cat": "التسبيح",
+    "text": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+    "transliteration": "Subhana Rabbiyal A'la",
+    "meaning": "تسبيح في السجود (يُكرر ثلاثاً أو أكثر)",
+    "count": 33,
+    "sub": "تسبيح السجود"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
+    "transliteration": "Asbahna wa asbahal mulku lillah, wal-hamdu lillah",
+    "meaning": "نبدأ الصباح بذكر الله والحمد له، ونشهد أن الملك لله وحده",
+    "count": 1,
+    "sub": "قل حين تصبح"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+    "transliteration": "Allahumma bika asbahna wa bika amsayna wa bika nahya wa bika namutu wa ilaykan-nushur",
+    "meaning": "كل أمورنا بيد الله، يحيي ويميت وإليه النشور",
+    "count": 1,
+    "sub": "قل حين تصبح"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+    "transliteration": "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana abduka...",
+    "meaning": "سيد الاستغفار — من قالها موقنًا دخل الجنة (من النهار أو الليل)",
+    "count": 1,
+    "sub": "سيد الاستغفار - حديث البخاري"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+    "transliteration": "Audhu billahi mina ash-Shaytani ar-Rajim",
+    "meaning": "أستعيذ بالله من الشيطان الرجيم - حفظ من وسوسة الشيطان",
+    "count": 3,
+    "sub": "حفظ من الشيطان"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ",
+    "transliteration": "Bismillahi ar-Rahmani ar-Rahim",
+    "meaning": "افتتاح اليوم بسم الله - بركة في كل عمل",
+    "count": 3,
+    "sub": "افتتاح اليوم بسم الله"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ",
+    "transliteration": "Allahumma inni asbahtu ush-hiduka wa ush-hidu hamalata arshika...",
+    "meaning": "أربع مرات صباحًا: أعتق ربعه من النار",
+    "count": 4,
+    "sub": "أربع مرات تعتق ربع صاحبها من النار"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
+    "transliteration": "Allahumma afini fi badani, Allahumma afini fi sam'i, Allahumma afini fi basari",
+    "meaning": "طلب العافية في الجسد والحواس - ثلاث مرات",
+    "count": 3,
+    "sub": "ثلاث مرات"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+    "transliteration": "Allahumma inni as'aluka al-afiyata fid-dunya wal-akhirah",
+    "meaning": "من أجمع الدعاء للعافية في الدارين",
+    "count": 3,
+    "sub": "دعاء العافية في الدنيا والآخرة"
+  },
+  {
+    "cat": "أذكار الصباح",
+    "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",
+    "transliteration": "Allahumma inni audhu bika minal hammi wal-hazan...",
+    "meaning": "دعاء كامل لدفع الهم والحزن والدين والكسل - يُذهب الهم ويوسع الرزق",
+    "count": 1,
+    "sub": "دعاء الهم والحزن والدين"
+  },
+  {
+    "cat": "أذكار المساء",
+    "text": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ",
+    "transliteration": "Amsayna wa amsal mulku lillah wal-hamdu lillah",
+    "meaning": "نبدأ المساء بذكر الله والحمد له",
+    "count": 1,
+    "sub": "قل حين تمسي"
+  },
+  {
+    "cat": "أذكار المساء",
+    "text": "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
+    "transliteration": "Allahumma bika amsayna wa bika asbahna wa bika nahya wa bika namutu wa ilaykal-masir",
+    "meaning": "المساء كله بيد الله",
+    "count": 1,
+    "sub": "قل حين تمسي"
+  },
+  {
+    "cat": "أذكار المساء",
+    "text": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
+    "transliteration": "Allahumma afini fi badani, Allahumma afini fi sam'i, Allahumma afini fi basari",
+    "meaning": "طلب العافية في الجسد والحواس",
+    "count": 3,
+    "sub": "ثلاث مرات"
+  },
+  {
+    "cat": "أذكار المساء",
+    "text": "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ",
+    "transliteration": "Allahumma inni amsaytu ush-hiduka wa ush-hidu hamalata arshika...",
+    "meaning": "أربع مرات مساءً: أعتق ربعه من النار",
+    "count": 4,
+    "sub": "أربع مرات تعتق ربع صاحبها من النار"
+  },
+  {
+    "cat": "أذكار المساء",
+    "text": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    "transliteration": "Audhu bi kalimatillahit-tammati min sharri ma khalaq",
+    "meaning": "من قالها ثلاثاً لم يضره سُمّ ولا سم تلك الليلة",
+    "count": 3,
+    "sub": "ثلاث مرات حين تمسي"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Bismika Allahumma amutu wa ahya",
+    "meaning": "بسم الله ننام ونستيقظ - يُقال عند الاضطجاع",
+    "count": 1,
+    "sub": "قل حين تأوي إلى فراشك"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "سُبْحَانَ اللهِ",
+    "transliteration": "Subhana-llah",
+    "meaning": "التسبيح قبل النوم (33 مرة)",
+    "count": 33,
+    "sub": "قبل النوم"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "الْحَمْدُ لِلَّهِ",
+    "transliteration": "Alhamdulillah",
+    "meaning": "الحمد قبل النوم (33 مرة)",
+    "count": 33,
+    "sub": "قبل النوم"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "اللهُ أَكْبَرُ",
+    "transliteration": "Allahu Akbar",
+    "meaning": "خير لك من خادم (34 مرة لإكمال المائة)",
+    "count": 34,
+    "sub": "قبل النوم — خير لك من خادم"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
+    "transliteration": "Allahumma qini adhabaka yawma tab'athu ibadak",
+    "meaning": "ثلاث مرات قبل النوم - حفظ من عذاب القيامة",
+    "count": 3,
+    "sub": "ثلاث مرات قبل النوم"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ",
+    "transliteration": "Allahumma aslamtu nafsi ilayk wa fawwadtu amri ilayk wa alja'tu zahri ilayk",
+    "meaning": "التسليم التام لله عند النوم - ثم نم على وضوء",
+    "count": 1,
+    "sub": "قل حين تأوي إلى فراشك ثم نم على وضوء"
+  },
+  {
+    "cat": "أذكار النوم",
+    "text": "اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Allahumma bismika amutu wa ahya",
+    "meaning": "باسمك اللهم أموت وأحيا - من أذكار النوم الثابتة",
+    "count": 1,
+    "sub": "عند الاضطجاع"
+  },
+  {
+    "cat": "الحوقلة والاستعانة",
+    "text": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "La hawla wa la quwwata illa billah",
+    "meaning": "كنز من كنوز الجنة، يُعين على كل أمر صعب",
+    "count": 100,
+    "sub": "كنز من كنوز الجنة"
+  },
+  {
+    "cat": "الحوقلة والاستعانة",
+    "text": "حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ",
+    "transliteration": "Hasbunallahu wa ni'mal Wakil",
+    "meaning": "قالها إبراهيم عليه السلام في النار فكانت برداً وسلاماً",
+    "count": 100,
+    "sub": "قالها إبراهيم في النار"
+  },
+  {
+    "cat": "الحوقلة والاستعانة",
+    "text": "حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+    "transliteration": "Hasbiyallahu la ilaha illa huwa, alayhi tawakkaltu wa huwa Rabbul arshil azim",
+    "meaning": "سبع مرات صباحًا ومساءً - كفاية وتوكل كامل",
+    "count": 7,
+    "sub": "سبع مرات صباحًا ومساءً"
+  },
+  {
+    "cat": "الحوقلة والاستعانة",
+    "text": "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ",
+    "transliteration": "Ya Hayyu ya Qayyum, bi rahmatika astaghith",
+    "meaning": "من أسماء الله الحسنى (الحي القيوم) - يُغيث من كل ضيق",
+    "count": 40,
+    "sub": "من أسماء الله الحسنى"
+  },
+  {
+    "cat": "الحوقلة والاستعانة",
+    "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ",
+    "transliteration": "Allahumma inni audhu bika minal hammi wal-hazan",
+    "meaning": "دعاء الكرب والضيق - يُذهب الهم والحزن",
+    "count": 7,
+    "sub": "دعاء الكرب والضيق"
+  },
+  {
+    "cat": "الحوقلة والاستعانة",
+    "text": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي",
+    "transliteration": "Allahumma inni zalamtu nafsi zulman kathiran wa la yaghfirudh-dhunuba illa anta...",
+    "meaning": "دعاء أبي بكر الصديق رضي الله عنه - مغفرة شاملة",
+    "count": 3,
+    "sub": "دعاء أبي بكر الصديق رضي الله عنه"
+  },
+  {
+    "cat": "الدعاء والتوسل",
+    "text": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الْغَفُورُ",
+    "transliteration": "Rabbi ighfir li wa tub alayya innaka anta at-Tawwabul Ghafur",
+    "meaning": "كان النبي ﷺ يقولها مئة مرة في المجلس - توبة ومغفرة",
+    "count": 100,
+    "sub": "كان النبي ﷺ يقولها في المجلس"
+  },
+  {
+    "cat": "الدعاء والتوسل",
+    "text": "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ دِقَّهُ وَجِلَّهُ",
+    "transliteration": "Allahumma ighfir li dhanbi kullahu diqqahu wa jillahu",
+    "meaning": "المغفرة الشاملة لكل الذنوب الصغيرة والكبيرة",
+    "count": 33,
+    "sub": "المغفرة الشاملة"
+  },
+  {
+    "cat": "الدعاء والتوسل",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ",
+    "transliteration": "Allahumma inni as'aluka al-afwa wal-afiyah",
+    "meaning": "من أجمع الدعاء - عفو و عافية في الدين والدنيا والآخرة",
+    "count": 33,
+    "sub": "من أجمع الدعاء"
+  },
+  {
+    "cat": "الدعاء والتوسل",
+    "text": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    "transliteration": "Rabbana atina fid-dunya hasanah wa fil-akhirati hasanah wa qina adhaban-nar",
+    "meaning": "أكثر الدعاء الذي كان يدعو به النبي ﷺ - حسنة الدنيا والآخرة",
+    "count": 10,
+    "sub": "أكثر الدعاء الذي كان يدعو به النبي ﷺ"
+  },
+  {
+    "cat": "الدعاء والتوسل",
+    "text": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
+    "transliteration": "Subhanakallahumma wa bihamdika, ashhadu an la ilaha illa anta, astaghfiruka wa atubu ilayk",
+    "meaning": "كفارة المجلس - تُكفر ما وقع في المجلس من لغو",
+    "count": 3,
+    "sub": "كفارة المجلس"
+  },
+  {
+    "cat": "الدعاء والتوسل",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+    "transliteration": "Allahumma inni as'alukal jannata wa audhu bika minan-nar",
+    "meaning": "من سأل الله الجنة ثلاثاً قالت الجنة: اللهم أدخله الجنة",
+    "count": 3,
+    "sub": "الجنة تسأل الله أن يدخله"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    "transliteration": "Bismillahil-ladhi la yadurru ma'a ismihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-alim",
+    "meaning": "من قالها ثلاثاً لم يضره شيء ذلك اليوم أو الليلة",
+    "count": 3,
+    "sub": "من قالها ثلاثاً لم يضره شيء"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    "transliteration": "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+    "meaning": "دعاء يونس عليه السلام في بطن الحوت - يُفرج الكرب",
+    "count": 40,
+    "sub": "دعاء يونس عليه السلام"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "اللهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+    "transliteration": "Allahu la ilaha illa huwal-Hayyul-Qayyum, la ta'khudhuhu sinatun wa la nawm",
+    "meaning": "آية الكرسي — أعظم آية في القرآن الكريم، حفظ من الشيطان وبركة في الرزق",
+    "count": 1,
+    "sub": "أعظم آية في كتاب الله"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "قُلْ هُوَ اللهُ أَحَدٌ",
+    "transliteration": "Qul huwa-llahu ahad",
+    "meaning": "تعدل ثلث القرآن الكريم - ثلاث مرات صباحاً ومساءً",
+    "count": 3,
+    "sub": "تعدل ثلث القرآن"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+    "transliteration": "Qul audhu bi Rabbil-Falaq",
+    "meaning": "المعوذة الأولى — حفظ من كل شر",
+    "count": 3,
+    "sub": "ثلاث مرات صباحاً ومساءً"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+    "transliteration": "Qul audhu bi Rabbin-Nas",
+    "meaning": "المعوذة الثانية — حفظ من وسواس الشياطين",
+    "count": 3,
+    "sub": "ثلاث مرات صباحاً ومساءً"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "رَبِّ أَعُوذُ بِكَ مِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَعُوذُ بِكَ رَبِّ أَنْ يَحْضُرُونِ",
+    "transliteration": "Rabbi audhu bika min hamazatish-shayatin wa audhu bika Rabbi an yahdurun",
+    "meaning": "الاستعاذة من همزات الشياطين",
+    "count": 3,
+    "sub": "الاستعاذة من الشياطين"
+  },
+  {
+    "cat": "آيات وأدعية",
+    "text": "رَبِّ زِدْنِي عِلْمًا",
+    "transliteration": "Rabbi zidni ilma",
+    "meaning": "الدعاء بزيادة العلم - يُكرر للبركة في العلم",
+    "count": 33,
+    "sub": "الدعاء بزيادة العلم"
+  },
+  {
+    "cat": "الشكر والثناء",
+    "text": "اللَّهُمَّ لَكَ الْحَمْدُ كُلُّهُ وَلَكَ الشُّكْرُ كُلُّهُ",
+    "transliteration": "Allahumma lakal hamdu kulluhu wa lakas shukru kulluhu",
+    "meaning": "شكر الله على نعمه - يزيد النعم",
+    "count": 10,
+    "sub": "شكر الله على نعمه"
+  },
+  {
+    "cat": "الشكر والثناء",
+    "text": "الْحَمْدُ لِلَّهِ حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ",
+    "transliteration": "Alhamdulillahi hamdan kathiran tayyiban mubarakan fih",
+    "meaning": "ملء الموازين يوم القيامة",
+    "count": 33,
+    "sub": "ملء الموازين"
+  },
+  {
+    "cat": "الشكر والثناء",
+    "text": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+    "transliteration": "Allahumma a'inni ala dhikrika wa shukrika wa husni ibadatik",
+    "meaning": "وصية النبي ﷺ لمعاذ بن جبل - أعظم وصية",
+    "count": 3,
+    "sub": "وصية النبي ﷺ لمعاذ"
+  },
+  {
+    "cat": "الشكر والثناء",
+    "text": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
+    "transliteration": "Alhamdulillahil-ladhi at'amana wa saqana wa ja'alana muslimin",
+    "meaning": "الحمد بعد الطعام والشراب - شكر على النعمة",
+    "count": 1,
+    "sub": "قل بعد الطعام والشراب"
+  },
+  {
+    "cat": "الرزق والبركة",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ رِزْقًا طَيِّبًا وَعِلْمًا نَافِعًا وَعَمَلًا مُتَقَبَّلًا",
+    "transliteration": "Allahumma inni as'aluka rizqan tayyiban wa ilman nafi'an wa amalan mutaqabbala",
+    "meaning": "دعاء الرزق والعلم والعمل - يُبارك في الرزق",
+    "count": 3,
+    "sub": "دعاء الرزق والعلم"
+  },
+  {
+    "cat": "الرزق والبركة",
+    "text": "اللَّهُمَّ بَارِكْ لِي فِيمَا رَزَقْتَنِي وَقِنِي عَذَابَكَ",
+    "transliteration": "Allahumma barik li fima razaqtani wa qini adhabak",
+    "meaning": "طلب البركة في الرزق وحفظ من العذاب",
+    "count": 3,
+    "sub": "طلب البركة في الرزق"
+  },
+  {
+    "cat": "الرزق والبركة",
+    "text": "تَوَكَّلْتُ عَلَى اللهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "Tawakkaltu alallah wa la hawla wa la quwwata illa billah",
+    "meaning": "التوكل الكامل على الله - يكفي العبد",
+    "count": 7,
+    "sub": "التوكل على الله"
+  },
+  {
+    "cat": "الرزق والبركة",
+    "text": "اللَّهُمَّ يَسِّرْ وَلَا تُعَسِّرْ وَتَمِّمْ بِالْخَيْرِ",
+    "transliteration": "Allahumma yassir wa la tu'assir wa tammim bil-khayr",
+    "meaning": "دعاء التيسير في الأمور والرزق",
+    "count": 3,
+    "sub": "دعاء التيسير في الأمور"
+  },
+  {
+    "cat": "الرزق والبركة",
+    "text": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+    "transliteration": "Allahumma akfini bihalalika an haramika wa aghnini bifadlika amman siwaka",
+    "meaning": "دعاء قضاء الدين وسعة الرزق - يكفي بحلاله ويغني عن حرامه",
+    "count": 1,
+    "sub": "دعاء قضاء الدين والرزق الحلال"
+  }
+]

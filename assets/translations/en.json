@@ -186,5 +186,18 @@
     "skip": "Skip",
     "lets_start": "Start Now",
     "next": "Next"
+  },
+  "tasbih": {
+    "selectTitle": "Select Dhikr",
+    "selectSubtitle": "Tap on a dhikr to start tasbih",
+    "search": "Search for dhikr...",
+    "all": "All",
+    "noResults": "No results found",
+    "totalBeads": "Target Count",
+    "current": "Current Count",
+    "reset": "Reset Counter",
+    "sessionLog": "Sessions Log",
+    "totalCount": "Total today: {total}",
+    "noSessions": "No sessions recorded today"
   }
 }

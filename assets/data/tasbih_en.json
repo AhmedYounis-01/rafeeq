@@ -1,0 +1,594 @@
+[
+  {
+    "cat": "After Prayer",
+    "text": "أَسْتَغْفِرُ اللهَ",
+    "transliteration": "Astaghfiru-llah",
+    "meaning": "I seek forgiveness from Allah, said three times. It is among the first things legislated right after the salam, it expiates sins and opens the doors of mercy.",
+    "count": 3,
+    "sub": "After completing the obligatory prayer - Hadith of Thawban in Muslim"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "اللهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
+    "transliteration": "Allahumma anta as-Salam wa minka as-salam, tabarakta ya Dhal-Jalali wal-Ikram",
+    "meaning": "O Allah, You are the Peace and from You comes peace. Blessed are You, O Possessor of Majesty and Honor. It is said after the istighfar and completes the dhikr after prayer, bringing inner peace.",
+    "count": 1,
+    "sub": "After saying Astaghfirullah three times - Hadith of Thawban in Muslim"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "سُبْحَانَ اللهِ",
+    "transliteration": "Subhana-llah",
+    "meaning": "Glory be to Allah, exalted is He above all imperfections and defects.",
+    "count": 33,
+    "sub": "After every obligatory prayer - Hadith of the people of the dwellings in Bukhari and Muslim"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "الْحَمْدُ لِلَّهِ",
+    "transliteration": "Alhamdulillah",
+    "meaning": "All praise is due to Allah for all His apparent and hidden blessings; it fills the scales on the Day of Judgment.",
+    "count": 33,
+    "sub": "After every obligatory prayer - Hadith of the people of the dwellings"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "اللهُ أَكْبَرُ",
+    "transliteration": "Allahu Akbar",
+    "meaning": "Allah is Greater than everything; it completes the one hundred along with tasbih and tahmid.",
+    "count": 34,
+    "sub": "After every obligatory prayer - Hadith of the people of the dwellings"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ",
+    "transliteration": "Subhana-llahi wa bihamdihi, Subhana-llahi al-Azim",
+    "meaning": "Light on the tongue, heavy on the scales; it expiates sins and raises ranks.",
+    "count": 33,
+    "sub": "Light on the tongue, heavy on the scales - Hadith in Bukhari"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    "transliteration": "La ilaha illa-llah wahdahu la sharika lah, lahu al-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir",
+    "meaning": "There is no true god except Allah alone, with no partner; to Him belongs the dominion, to Him belongs all praise, and He is over all things competent - equivalent to freeing four slaves from the children of Ismail.",
+    "count": 10,
+    "sub": "Equivalent to freeing four from the children of Ismail - after every prayer"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "أَسْتَغْفِرُ اللهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ",
+    "transliteration": "Astaghfiru-llaha al-Azeem wa atubu ilayh",
+    "meaning": "I seek forgiveness from Allah the Almighty and repent to Him - whoever seeks forgiveness, Allah will forgive him even if his sins were like the foam of the sea.",
+    "count": 100,
+    "sub": "Whoever seeks forgiveness, Allah will forgive him - can be repeated after prayer or at any time"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    "transliteration": "La ilaha illa-llah wahdahu la sharika lah, lahu al-mulku wa lahul-hamd, yuhyi wa yumitu wa huwa ala kulli shay'in qadir",
+    "meaning": "He gives life and causes death, in His hand is all good, and He is over all things competent - especially said ten times after Maghrib and Fajr.",
+    "count": 10,
+    "sub": "Ten times after Maghrib and Fajr prayers"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "La hawla wa la quwwata illa billah",
+    "meaning": "There is no power nor might except with Allah - a treasure from the treasures of Paradise, added after the tahlil in some narrations.",
+    "count": 1,
+    "sub": "After the main dhikr after prayer - Hadith of Ibn az-Zubayr in Muslim"
+  },
+  {
+    "cat": "After Prayer",
+    "text": "آيَةُ الْكُرْسِيِّ",
+    "transliteration": "Ayat al-Kursi",
+    "meaning": "Allah - there is no deity except Him, the Ever-Living, the Sustainer of existence... (full Ayat al-Kursi) - the greatest verse in the Quran; whoever recites it after every prayer will not be prevented from entering Paradise except by death.",
+    "count": 1,
+    "sub": "After every obligatory prayer"
+  },
+  {
+    "cat": "Salawat",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ",
+    "transliteration": "Allahumma salli ala Muhammad",
+    "meaning": "O Allah, send blessings upon Muhammad ﷺ - the minimal form; whoever sends blessings upon him once, Allah sends blessings upon him ten times.",
+    "count": 100,
+    "sub": "The minimal blessing upon him ﷺ - increase it at all times"
+  },
+  {
+    "cat": "Salawat",
+    "text": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+    "transliteration": "Allahumma salli wa sallim ala Nabiyyina Muhammad",
+    "meaning": "O Allah, send peace and blessings upon our Prophet Muhammad ﷺ - whoever blesses me ten times, Allah blesses him one hundred times.",
+    "count": 100,
+    "sub": "Whoever blesses me ten times, Allah blesses him one hundred times"
+  },
+  {
+    "cat": "Salawat",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    "transliteration": "Allahumma salli ala Muhammad wa ala ali Muhammad kama sallayta ala Ibrahim wa ala ali Ibrahim innaka Hamidun Majid, Allahumma barik ala Muhammad wa ala ali Muhammad kama barakta ala Ibrahim wa ala ali Ibrahim innaka Hamidun Majid",
+    "meaning": "The complete Ibrahimi Salawat (the best) - the most perfect form of sending blessings upon the Prophet ﷺ as used in the tashahhud.",
+    "count": 33,
+    "sub": "The Ibrahimi Salawat - the best that is reported in Bukhari and Muslim"
+  },
+  {
+    "cat": "Salawat",
+    "text": "صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ",
+    "transliteration": "Salla-llahu alayhi wa sallam",
+    "meaning": "Allah's peace and blessings be upon him - blessings upon the Prophet are multiplied on Friday (one hundred times or more).",
+    "count": 100,
+    "sub": "On Friday the blessings upon the Prophet are multiplied"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ",
+    "transliteration": "La ilaha illa-llah",
+    "meaning": "The best of all remembrance and the highest word of faith; it enters one into Paradise and expiates sins.",
+    "count": 100,
+    "sub": "The best of all remembrance - Hadith in Bukhari and Muslim"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "اللهُ أَكْبَرُ كَبِيرًا وَالْحَمْدُ لِلَّهِ كَثِيرًا وَسُبْحَانَ اللهِ بُكْرَةً وَأَصِيلًا",
+    "transliteration": "Allahu akbar kabiran wal-hamdu lillahi kathiran wa subhana-llahi bukratan wa asila",
+    "meaning": "Allah is the Greatest, abundant praise to Allah, glory be to Him morning and evening - from the remembrances of day and night.",
+    "count": 33,
+    "sub": "From the remembrances of day and night"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    "transliteration": "La ilaha illa-llah wahdahu la sharika lah, lahu al-mulku wa lahul-hamd, yuhyi wa yumit wa huwa ala kulli shay'in qadir",
+    "meaning": "There is no god but Allah alone; He gives life and causes death - ten times in the morning and evening.",
+    "count": 10,
+    "sub": "Ten times in the morning and evening"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ",
+    "transliteration": "Subhana-llahi wa bihamdihi",
+    "meaning": "Whoever says it one hundred times, his sins are forgiven even if they were like the foam of the sea, and a palm tree is planted for him in Paradise.",
+    "count": 100,
+    "sub": "Whoever says it one hundred times, his sins are forgiven"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ اللهِ الْعَظِيمِ وَبِحَمْدِهِ",
+    "transliteration": "Subhana-llahi al-Azim wa bihamdihi",
+    "meaning": "A palm tree is planted for him in Paradise, and it expiates sins.",
+    "count": 33,
+    "sub": "A palm tree is planted for him in Paradise"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ اللهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ",
+    "transliteration": "Subhan-Allah, Alhamdulillah, La ilaha illa-llah, Allahu Akbar",
+    "meaning": "The four most beloved words to Allah; the scales are filled with them.",
+    "count": 33,
+    "sub": "The most beloved words to Allah"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ وَرِضَا نَفْسِهِ وَزِنَةَ عَرْشِهِ وَمِدَادَ كَلِمَاتِهِ",
+    "transliteration": "Subhana-llahi wa bihamdihi adada khalqihi wa rida nafsihi wa zinata arshihi wa midada kalimatihi",
+    "meaning": "Three times equals more than all other remembrance that day.",
+    "count": 3,
+    "sub": "Three times equals more than all other remembrance"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ رَبِّيَ الْعَظِيمِ",
+    "transliteration": "Subhana Rabbiyal Azim",
+    "meaning": "Tasbih during ruku' (bowing) - repeat three times or more.",
+    "count": 33,
+    "sub": "Tasbih of Ruku'"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+    "transliteration": "Subhana Rabbiyal A'la",
+    "meaning": "Tasbih during sujood (prostration) - repeat three times or more.",
+    "count": 33,
+    "sub": "Tasbih of Sujood"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
+    "transliteration": "Asbahna wa asbahal mulku lillah, wal-hamdu lillah",
+    "meaning": "We have entered the morning and sovereignty belongs to Allah alone, and all praise is due to Allah.",
+    "count": 1,
+    "sub": "Say when you enter the morning"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+    "transliteration": "Allahumma bika asbahna wa bika amsayna wa bika nahya wa bika namutu wa ilaykan-nushur",
+    "meaning": "All our affairs are in the hand of Allah; He gives life, causes death, and to Him is the resurrection.",
+    "count": 1,
+    "sub": "Say when you enter the morning"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+    "transliteration": "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana abduka...",
+    "meaning": "The Master of Istighfar — whoever says it with certainty enters Paradise (during the day or night).",
+    "count": 1,
+    "sub": "The Master of Istighfar - Hadith in Bukhari"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+    "transliteration": "Audhu billahi mina ash-Shaytani ar-Rajim",
+    "meaning": "I seek refuge in Allah from the accursed devil - protection from the whispers of Satan.",
+    "count": 3,
+    "sub": "Protection from the devil"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ",
+    "transliteration": "Bismillahi ar-Rahmani ar-Rahim",
+    "meaning": "Begin your day with the name of Allah - brings barakah in every action.",
+    "count": 3,
+    "sub": "Begin your day with the name of Allah"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ",
+    "transliteration": "Allahumma inni asbahtu ush-hiduka wa ush-hidu hamalata arshika...",
+    "meaning": "Said four times in the morning: it frees a quarter of the person from the Hellfire.",
+    "count": 4,
+    "sub": "Four times: frees a quarter from the Hellfire"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
+    "transliteration": "Allahumma afini fi badani, Allahumma afini fi sam'i, Allahumma afini fi basari",
+    "meaning": "O Allah, grant me well-being in my body, hearing, and sight - said three times.",
+    "count": 3,
+    "sub": "Three times"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+    "transliteration": "Allahumma inni as'aluka al-afiyata fid-dunya wal-akhirah",
+    "meaning": "One of the most comprehensive supplications for well-being in both worlds.",
+    "count": 3,
+    "sub": "Supplication for well-being in both worlds"
+  },
+  {
+    "cat": "Morning Adhkar",
+    "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",
+    "transliteration": "Allahumma inni audhu bika minal hammi wal-hazan...",
+    "meaning": "A comprehensive supplication to remove anxiety, sorrow, debt, laziness, and weakness - it removes worry and expands provision.",
+    "count": 1,
+    "sub": "Supplication for anxiety, sorrow, and debt"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ",
+    "transliteration": "Amsayna wa amsal mulku lillah wal-hamdu lillah",
+    "meaning": "We have entered the evening and sovereignty belongs to Allah, and all praise is due to Allah.",
+    "count": 1,
+    "sub": "Say when you enter the evening"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
+    "transliteration": "Allahumma bika amsayna wa bika asbahna wa bika nahya wa bika namutu wa ilaykal-masir",
+    "meaning": "The entire evening is in the hand of Allah.",
+    "count": 1,
+    "sub": "Say when you enter the evening"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
+    "transliteration": "Allahumma afini fi badani, Allahumma afini fi sam'i, Allahumma afini fi basari",
+    "meaning": "O Allah, grant me well-being in my body, hearing, and sight.",
+    "count": 3,
+    "sub": "Three times"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ",
+    "transliteration": "Allahumma inni amsaytu ush-hiduka wa ush-hidu hamalata arshika...",
+    "meaning": "Said four times in the evening: it frees a quarter of the person from the Hellfire.",
+    "count": 4,
+    "sub": "Four times: frees a quarter from the Hellfire"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    "transliteration": "Audhu bi kalimatillahit-tammati min sharri ma khalaq",
+    "meaning": "Whoever says it three times in the evening, no poison or venom will harm him that night.",
+    "count": 3,
+    "sub": "Three times when entering the evening"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Bismika Allahumma amutu wa ahya",
+    "meaning": "In Your name, O Allah, I die and I live - said when lying down to sleep.",
+    "count": 1,
+    "sub": "Say when you lie down to sleep"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "سُبْحَانَ اللهِ",
+    "transliteration": "Subhana-llah",
+    "meaning": "Glory be to Allah - before sleep (33 times).",
+    "count": 33,
+    "sub": "Before sleeping"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "الْحَمْدُ لِلَّهِ",
+    "transliteration": "Alhamdulillah",
+    "meaning": "All praise is due to Allah - before sleep (33 times).",
+    "count": 33,
+    "sub": "Before sleeping"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "اللهُ أَكْبَرُ",
+    "transliteration": "Allahu Akbar",
+    "meaning": "Allah is the Greatest - better for you than a servant (34 times to complete one hundred).",
+    "count": 34,
+    "sub": "Before sleep — better for you than a servant"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
+    "transliteration": "Allahumma qini adhabaka yawma tab'athu ibadak",
+    "meaning": "Three times before sleeping - protection from the punishment on the Day of Resurrection.",
+    "count": 3,
+    "sub": "Three times before sleeping"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ",
+    "transliteration": "Allahumma aslamtu nafsi ilayk wa fawwadtu amri ilayk wa alja'tu zahri ilayk",
+    "meaning": "Complete submission to Allah before sleep - then sleep in a state of wudu.",
+    "count": 1,
+    "sub": "Say when you lie down to sleep, then sleep upon wudu"
+  },
+  {
+    "cat": "Sleep Adhkar",
+    "text": "اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Allahumma bismika amutu wa ahya",
+    "meaning": "In Your name, O Allah, I die and I live - from the established sleep adhkar.",
+    "count": 1,
+    "sub": "When lying down"
+  },
+  {
+    "cat": "Seeking Help",
+    "text": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "La hawla wa la quwwata illa billah",
+    "meaning": "There is no power nor might except with Allah - a treasure from the treasures of Paradise; it helps in every difficult matter.",
+    "count": 100,
+    "sub": "A treasure from the treasures of Paradise"
+  },
+  {
+    "cat": "Seeking Help",
+    "text": "حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ",
+    "transliteration": "Hasbunallahu wa ni'mal Wakil",
+    "meaning": "Allah is sufficient for us and the best Disposer of affairs - Ibrahim (peace be upon him) said it in the fire and it became coolness and peace.",
+    "count": 100,
+    "sub": "Said by Ibrahim in the fire"
+  },
+  {
+    "cat": "Seeking Help",
+    "text": "حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+    "transliteration": "Hasbiyallahu la ilaha illa huwa, alayhi tawakkaltu wa huwa Rabbul arshil azim",
+    "meaning": "Seven times in the morning and evening - complete sufficiency and reliance.",
+    "count": 7,
+    "sub": "Seven times in the morning and evening"
+  },
+  {
+    "cat": "Seeking Help",
+    "text": "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ",
+    "transliteration": "Ya Hayyu ya Qayyum, bi rahmatika astaghith",
+    "meaning": "From the Beautiful Names of Allah (The Ever-Living, The Self-Sustaining) - it brings relief from every distress.",
+    "count": 40,
+    "sub": "From the Beautiful Names of Allah"
+  },
+  {
+    "cat": "Seeking Help",
+    "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ",
+    "transliteration": "Allahumma inni audhu bika minal hammi wal-hazan",
+    "meaning": "Supplication for distress and anxiety - it removes worry and sorrow.",
+    "count": 7,
+    "sub": "Supplication for distress and anxiety"
+  },
+  {
+    "cat": "Seeking Help",
+    "text": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي",
+    "transliteration": "Allahumma inni zalamtu nafsi zulman kathiran wa la yaghfirudh-dhunuba illa anta...",
+    "meaning": "The supplication of Abu Bakr as-Siddiq (may Allah be pleased with him) - comprehensive forgiveness.",
+    "count": 3,
+    "sub": "The supplication of Abu Bakr as-Siddiq"
+  },
+  {
+    "cat": "Supplication",
+    "text": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الْغَفُورُ",
+    "transliteration": "Rabbi ighfir li wa tub alayya innaka anta at-Tawwabul Ghafur",
+    "meaning": "The Prophet ﷺ used to say it one hundred times in a sitting - repentance and forgiveness.",
+    "count": 100,
+    "sub": "The Prophet ﷺ would say it one hundred times in a gathering"
+  },
+  {
+    "cat": "Supplication",
+    "text": "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ دِقَّهُ وَجِلَّهُ",
+    "transliteration": "Allahumma ighfir li dhanbi kullahu diqqahu wa jillahu",
+    "meaning": "Comprehensive forgiveness for all sins, small and great.",
+    "count": 33,
+    "sub": "Comprehensive forgiveness for all sins"
+  },
+  {
+    "cat": "Supplication",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ",
+    "transliteration": "Allahumma inni as'aluka al-afwa wal-afiyah",
+    "meaning": "One of the most comprehensive supplications - pardon and well-being in religion, worldly life, and the Hereafter.",
+    "count": 33,
+    "sub": "One of the most comprehensive supplications"
+  },
+  {
+    "cat": "Supplication",
+    "text": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    "transliteration": "Rabbana atina fid-dunya hasanah wa fil-akhirati hasanah wa qina adhaban-nar",
+    "meaning": "The supplication most frequently made by the Prophet ﷺ - goodness in this world and the Hereafter.",
+    "count": 10,
+    "sub": "The most frequent supplication of the Prophet ﷺ"
+  },
+  {
+    "cat": "Supplication",
+    "text": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
+    "transliteration": "Subhanakallahumma wa bihamdika, ashhadu an la ilaha illa anta, astaghfiruka wa atubu ilayk",
+    "meaning": "Expiation of the gathering - it expiates any vain talk that occurred in the gathering.",
+    "count": 3,
+    "sub": "Expiation of the gathering"
+  },
+  {
+    "cat": "Supplication",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+    "transliteration": "Allahumma inni as'alukal jannata wa audhu bika minan-nar",
+    "meaning": "Whoever asks Allah for Paradise three times, Paradise itself says: O Allah, admit him to Paradise.",
+    "count": 3,
+    "sub": "Paradise itself asks Allah to admit him"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    "transliteration": "Bismillahil-ladhi la yadurru ma'a ismihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-alim",
+    "meaning": "Whoever says it three times, nothing will harm him that day or night.",
+    "count": 3,
+    "sub": "Whoever says it three times, nothing will harm him"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    "transliteration": "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+    "meaning": "The supplication of Prophet Yunus (peace be upon him) from inside the whale - it relieves distress.",
+    "count": 40,
+    "sub": "The supplication of Prophet Yunus from inside the whale"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "اللهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+    "transliteration": "Allahu la ilaha illa huwal-Hayyul-Qayyum, la ta'khudhuhu sinatun wa la nawm",
+    "meaning": "Ayat al-Kursi — the greatest verse in the Quran; protection from the devil and barakah in provision.",
+    "count": 1,
+    "sub": "The greatest verse in the Book of Allah"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "قُلْ هُوَ اللهُ أَحَدٌ",
+    "transliteration": "Qul huwa-llahu ahad",
+    "meaning": "It equals one third of the Quran - three times in the morning and evening.",
+    "count": 3,
+    "sub": "Equals one third of the Quran"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+    "transliteration": "Qul audhu bi Rabbil-Falaq",
+    "meaning": "The first Mu'awwidhah — protection from all evil.",
+    "count": 3,
+    "sub": "Three times in the morning and evening"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+    "transliteration": "Qul audhu bi Rabbin-Nas",
+    "meaning": "The second Mu'awwidhah — protection from the whispers of devils.",
+    "count": 3,
+    "sub": "Three times in the morning and evening"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "رَبِّ أَعُوذُ بِكَ مِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَعُوذُ بِكَ رَبِّ أَنْ يَحْضُرُونِ",
+    "transliteration": "Rabbi audhu bika min hamazatish-shayatin wa audhu bika Rabbi an yahdurun",
+    "meaning": "Seeking refuge from the evil whisperings of the devils.",
+    "count": 3,
+    "sub": "Seeking refuge from the whisperings of devils"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "رَبِّ زِدْنِي عِلْمًا",
+    "transliteration": "Rabbi zidni ilma",
+    "meaning": "My Lord, increase me in knowledge - repeat for barakah in knowledge.",
+    "count": 33,
+    "sub": "Supplication to increase in knowledge"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "اللَّهُمَّ لَكَ الْحَمْدُ كُلُّهُ وَلَكَ الشُّكْرُ كُلُّهُ",
+    "transliteration": "Allahumma lakal hamdu kulluhu wa lakas shukru kulluhu",
+    "meaning": "Thanking Allah for His countless blessings - it increases the blessings.",
+    "count": 10,
+    "sub": "Thanking Allah for His countless blessings"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "الْحَمْدُ لِلَّهِ حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ",
+    "transliteration": "Alhamdulillahi hamdan kathiran tayyiban mubarakan fih",
+    "meaning": "It fills the scales on the Day of Judgment.",
+    "count": 33,
+    "sub": "Fills the scales on the Day of Judgment"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+    "transliteration": "Allahumma a'inni ala dhikrika wa shukrika wa husni ibadatik",
+    "meaning": "The advice of the Prophet ﷺ to Mu'adh ibn Jabal - the greatest advice.",
+    "count": 3,
+    "sub": "The advice of the Prophet ﷺ to Mu'adh"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
+    "transliteration": "Alhamdulillahil-ladhi at'amana wa saqana wa ja'alana muslimin",
+    "meaning": "All praise to Allah who fed us, gave us drink, and made us Muslims - said after eating and drinking.",
+    "count": 1,
+    "sub": "Say after eating and drinking"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ رِزْقًا طَيِّبًا وَعِلْمًا نَافِعًا وَعَمَلًا مُتَقَبَّلًا",
+    "transliteration": "Allahumma inni as'aluka rizqan tayyiban wa ilman nafi'an wa amalan mutaqabbala",
+    "meaning": "Supplication for pure provision, beneficial knowledge, and accepted deeds - it brings barakah in rizq.",
+    "count": 3,
+    "sub": "Supplication for provision, knowledge and deeds"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ بَارِكْ لِي فِيمَا رَزَقْتَنِي وَقِنِي عَذَابَكَ",
+    "transliteration": "Allahumma barik li fima razaqtani wa qini adhabak",
+    "meaning": "Seeking blessings in what Allah has provided and protection from punishment.",
+    "count": 3,
+    "sub": "Seeking blessings in provision"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "تَوَكَّلْتُ عَلَى اللهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "Tawakkaltu alallah wa la hawla wa la quwwata illa billah",
+    "meaning": "Complete reliance upon Allah - it suffices the servant.",
+    "count": 7,
+    "sub": "Complete reliance upon Allah"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ يَسِّرْ وَلَا تُعَسِّرْ وَتَمِّمْ بِالْخَيْرِ",
+    "transliteration": "Allahumma yassir wa la tu'assir wa tammim bil-khayr",
+    "meaning": "Supplication for ease in all affairs and provision.",
+    "count": 3,
+    "sub": "Supplication for ease in all affairs"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+    "transliteration": "Allahumma akfini bihalalika an haramika wa aghnini bifadlika amman siwaka",
+    "meaning": "Supplication for paying off debt and abundant halal provision - it suffices with what is halal and enriches from what is haram.",
+    "count": 1,
+    "sub": "Supplication for paying off debt and halal provision"
+  }
+]
