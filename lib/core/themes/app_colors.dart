@@ -28,6 +28,14 @@ class AppColors {
   static const Color textSecondary = Color(0xFF6D6D6D);
   static const Color textSecondaryDark = Color(0xFFB0B0B0);
 
+  // Light Mode - Bottom Sheet
+  static const Color bottomSheetLight = Color(0xFFF8F6F0);
+  static const Color surfaceContainerLowLight = Color(0xFFF8F6F0);
+
+  // Dark Mode - Bottom Sheet
+  static const Color bottomSheetDark = Color(0xFF1C1B17);
+  static const Color surfaceContainerLowDark = Color(0xFF1C1B17);
+
   // Contextual Getters (Match the code usage)
   static Color getPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? primaryDark : primary;

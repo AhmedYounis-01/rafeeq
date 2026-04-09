@@ -129,6 +129,19 @@ ThemeData getDarkTheme() {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     ),
 
+    // Bottom Sheet Theme
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: Colors.transparent,
+      modalBackgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      modalElevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      clipBehavior: Clip.antiAlias,
+    ),
+
     extensions: [
       const StatusColors(
         success: AppColors.success,
