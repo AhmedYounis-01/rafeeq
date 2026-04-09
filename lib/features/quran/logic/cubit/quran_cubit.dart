@@ -30,7 +30,7 @@ const List<Map<String, String>> kReciters = [
   {'id': 'Hudhaify_128kbps', 'name': 'علي الحذيفي'},
   {'id': 'Minshawy_Murattal_128kbps', 'name': 'محمد صديق المنشاوي'},
   {'id': 'Husary_128kbps', 'name': 'محمود خليل الحصري'},
-  {'id': 'Ahmed_ibn_Ali_al-Ajamy_128kbps', 'name': 'أحمد العجمي'},
+  {'id': 'Nasser_Alqatami_128kbps', 'name': 'ناصر القطامي'},
   {'id': 'Muhammad_Jibreel_128kbps', 'name': 'محمد جبريل'},
   {'id': 'Muhammad_Ayyoub_128kbps', 'name': 'محمد أيوب'},
 ];
