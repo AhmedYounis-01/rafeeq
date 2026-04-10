@@ -1009,7 +1009,7 @@ class _LockGlowPainter extends CustomPainter {
 
 class _OrnamentalRingPainter extends CustomPainter {
   final bool isDark;
-  const _OrnamentalRingPainter({required this.isDark});
+    const _OrnamentalRingPainter({required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
