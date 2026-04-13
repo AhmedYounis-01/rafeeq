@@ -139,10 +139,12 @@
     "azkar_title": "Adhkar & Supplications",
     "ruqiah_title": "Ruqiah Shareia",
     "dua_title": "Names of Allah",
-    "dua": {
-      "verse": "{ And to Allah belong the best names, so invoke Him by them }"
-    },
+    "dua_header": "{ And to Allah belong the best names, so invoke Him by them }",
     "seerah_title": "Seerah Nabawiah",
+    "headers": {
+      "azkar": "Daily Adhkar",
+      "dua": "Supplications"
+    },
     "azkar": {
       "morning": "Morning Adhkar",
       "evening": "Evening Adhkar",
@@ -151,29 +153,28 @@
       "waking_up": "Waking Up Adhkar",
       "entering_home": "Entering Home Adhkar",
       "leaving_home": "Leaving Home Adhkar",
-      "food": "Food Adhkar",
+      "travel": "Travel Adhkar",
       "wudu": "Wudu Adhkar",
       "adhan": "Adhan Adhkar",
       "mosque": "Mosque Adhkar",
-      "travel": "Travel Adhkar",
-      "rain": "Rain Adhkar",
-      "fear": "Fear & Anxiety Adhkar",
-      "sickness": "Sickness Adhkar",
-      "distress": "Distress & Worry Adhkar",
-      "repentance": "Repentance Adhkar",
-      "sustenance": "Sustenance Adhkar",
-      "work": "Work Adhkar",
-      "market": "Market Adhkar",
-      "meeting_people": "Meeting People Adhkar",
-      "children_sleep": "Children Sleep Adhkar",
-      "protection": "Protection Adhkar",
       "friday": "Friday Adhkar",
-      "hajj": "Hajj & Umrah Adhkar",
+      "protection": "Protection Adhkar",
+      "food": "Food & Drink Adhkar"
+    },
+    "dua": {
       "quran_completion": "Quran Completion Dua",
-      "istikhara": "Istikhara Prayer",
-      "qunoot": "Qunoot Dua",
+      "istikhara": "Istikhara Dua",
+      "sustenance": "Provision & Blessing Duas",
+      "study": "Study & Success Duas",
       "parents": "Dua for Parents",
-      "general": "General Duas"
+      "distress": "Distress & Worry Dua",
+      "fear": "Fear & Anxiety Dua",
+      "sickness": "Sickness & Healing Dua",
+      "tranquility": "Tranquility & Peace Of Mind Dua",
+      "forgiveness": "Forgiveness & Repentance Dua",
+      "rain": "Rain Dua",
+      "children": "Dua for Children",
+      "hajj": "Hajj & Umrah Duas"
     }
   },
   "onboarding": {

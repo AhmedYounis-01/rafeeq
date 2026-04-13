@@ -145,7 +145,7 @@
   {
     "cat": "أذكار المساء",
     "catEn": "Evening Adhkar",
-    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...",
+    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
     "transliteration": "Allahu la ilaha illa Huwa, Al-Hayyul-Qayyum...",
     "meaning": "Allah! There is no deity except Him, the Ever-Living, the Sustainer of all existence...",
     "meaningAr": "آية الكرسي — حفظ من الشيطان حتى الصباح",
@@ -167,7 +167,7 @@
   {
     "cat": "أذكار المساء",
     "catEn": "Evening Adhkar",
-    "text": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ...",
+    "text": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
     "transliteration": "Qul a'udhu birabbil-falaq...",
     "meaning": "Say, I seek refuge in the Lord of daybreak...",
     "meaningAr": "سورة الفلق — للتحصين في المساء",
@@ -178,7 +178,7 @@
   {
     "cat": "أذكار المساء",
     "catEn": "Evening Adhkar",
-    "text": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ...",
+    "text": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ",
     "transliteration": "Qul a'udhu birabbin-nas...",
     "meaning": "Say, I seek refuge in the Lord of mankind...",
     "meaningAr": "سورة الناس — للتحصين في المساء",
@@ -310,7 +310,7 @@
   {
     "cat": "أذكار بعد الصلاة",
     "catEn": "After Prayer Adhkar",
-    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
     "transliteration": "Allahu la ilaha illa Huwa, Al-Hayyul-Qayyum...",
     "meaning": "Allah! There is no deity except Him, the Ever-Living, the Sustainer of all existence...",
     "meaningAr": "آية الكرسي — من قرأها دبر كل صلاة لم يمنعه من دخول الجنة إلا الموت",
@@ -376,7 +376,7 @@
   {
     "cat": "أذكار النوم",
     "catEn": "Sleep Adhkar",
-    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
     "transliteration": "Allahu la ilaha illa Huwa, Al-Hayyul-Qayyum...",
     "meaning": "Allah! There is no deity except Him, the Ever-Living...",
     "meaningAr": "آية الكرسي — من قرأها عند نومه حفظه الله وجاره",
@@ -539,7 +539,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الطعام",
+    "cat": "أذكار الطعام والشراب",
     "catEn": "Food Adhkar",
     "text": "بِسْمِ اللهِ",
     "transliteration": "Bismillah",
@@ -550,7 +550,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الطعام",
+    "cat": "أذكار الطعام والشراب",
     "catEn": "Food Adhkar",
     "text": "اللَّهُمَّ بَارِكْ لَنَا فِيهِ وَأَطْعِمْنَا خَيْرًا مِنْهُ",
     "transliteration": "Allahumma barik lana fihi wa at'imna khayran minh",
@@ -561,7 +561,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الطعام",
+    "cat": "أذكار الطعام والشراب",
     "catEn": "Food Adhkar",
     "text": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
     "transliteration": "Alhamdu lillahil-ladhi at'amana wa saqana wa ja'alana muslimin",
@@ -572,7 +572,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الطعام",
+    "cat": "أذكار الطعام والشراب",
     "catEn": "Food Adhkar",
     "text": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا، وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
     "transliteration": "Alhamdu lillahil-ladhi at'amani hadha wa razaqanihi min ghayri hawlin minni wa la quwwah",
@@ -583,7 +583,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الطعام",
+    "cat": "أذكار الطعام والشراب",
     "catEn": "Food Adhkar",
     "text": "اللَّهُمَّ أَطْعِمْ مَنْ أَطْعَمَنِي وَاسْقِ مَنْ سَقَانِي",
     "transliteration": "Allahumma at'im man at'amani wasqi man saqani",
@@ -638,7 +638,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الأذان",
+    "cat": "أذكار سماع الأذان",
     "catEn": "Adhan Adhkar",
     "text": "يُرَدِّدُ مِثْلَ مَا يَقُولُ الْمُؤَذِّنُ إِلَّا فِي: حَيَّ عَلَى الصَّلَاةِ وَحَيَّ عَلَى الْفَلَاحِ فَيَقُولُ: لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
     "transliteration": "Repeat after the Mu'adhin except for Hayya 'alas-salah and Hayya 'alal-falah, say: La hawla wa la quwwata illa billah",
@@ -649,7 +649,7 @@
     "subEn": "During Adhan"
   },
   {
-    "cat": "أذكار الأذان",
+    "cat": "أذكار سماع الأذان",
     "catEn": "Adhan Adhkar",
     "text": "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ",
     "transliteration": "Allahumma Rabba hadhihid-da'watit-tammati was-salatil-qa'imati, ati Muhammadanil-wasilata wal-fadilata wab'athhu maqaman mahmudan alladhi wa'adtah",
@@ -660,7 +660,7 @@
     "subEn": "After Adhan"
   },
   {
-    "cat": "أذكار الأذان",
+    "cat": "أذكار سماع الأذان",
     "catEn": "Adhan Adhkar",
     "text": "وَأَنَا أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ، رَضِيتُ بِاللهِ رَبًّا وَبِمُحَمَّدٍ رَسُولًا وَبِالإِسْلَامِ دِينًا",
     "transliteration": "Wa-ana ashhadu an la ilaha illallahu wahdahu la sharika lahu wa-anna Muhammadan 'abduhu wa-rasuluh. Raditu billahi Rabban wa bi-Muhammadin rasulan wa bil-Islami dinan.",
@@ -739,7 +739,7 @@
   {
     "cat": "أذكار السفر",
     "catEn": "Travel Adhkar",
-    "text": "اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا...",
+    "text": "اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
     "transliteration": "Allahu Akbar (x3), Subhanal-ladhi sakhkhara lana hadha...",
     "meaning": "Allah is the Greatest (x3), Glory be to Him who subjected this to us...",
     "meaningAr": "التكبير ثلاثاً عند الركوب",
@@ -1089,7 +1089,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الرزق",
+    "cat": "أدعية الرزق والبركة",
     "catEn": "Provision Adhkar",
     "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
     "transliteration": "Allahumma inni as'aluka 'ilman nafi'an wa rizqan tayyiban wa 'amalan mutaqabbalan",
@@ -1100,7 +1100,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الرزق",
+    "cat": "أدعية الرزق والبركة",
     "catEn": "Provision Adhkar",
     "text": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
     "transliteration": "Allahummak-fini bi-halalika 'an haramika, wa aghnini bifadlika 'amman siwak",
@@ -1111,7 +1111,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الرزق",
+    "cat": "أدعية الرزق والبركة",
     "catEn": "Provision Adhkar",
     "text": "أَسْتَغْفِرُ اللهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
     "transliteration": "Astaghfirullahal-'azim alladhi la ilaha illa Huwal-Hayyul-Qayyum wa atubu ilayh",
@@ -1122,7 +1122,7 @@
     "subEn": "70 Times"
   },
   {
-    "cat": "أذكار الرزق",
+    "cat": "أدعية الرزق والبركة",
     "catEn": "Provision Adhkar",
     "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ أَنْ تَرْزُقَنِي رِزْقًا حَلَالًا طَيِّبًا مُبَارَكًا",
     "transliteration": "Allahumma inni as'aluka an tarzuqani rizqan halalan tayyiban mubarakan",
@@ -1133,7 +1133,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الرزق",
+    "cat": "أدعية الرزق والبركة",
     "catEn": "Provision Adhkar",
     "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ",
     "transliteration": "Subhanallahi wa bihamdih, Subhanallahil-'azim",
@@ -1300,7 +1300,7 @@
   {
     "cat": "أذكار النوم للأطفال",
     "catEn": "Kids' Sleep Adhkar",
-    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
     "transliteration": "Allahu la ilaha illa Huwa, Al-Hayyul-Qayyum...",
     "meaning": "Allah! There is no deity except Him, the Ever-Living...",
     "meaningAr": "آية الكرسي — تحصين الطفل ليلاً من الشياطين",
@@ -1322,7 +1322,7 @@
   {
     "cat": "أذكار التحصين",
     "catEn": "Protection Adhkar",
-    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
     "transliteration": "Allahu la ilaha illa Huwa, Al-Hayyul-Qayyum...",
     "meaning": "Allah! There is no deity except Him, the Ever-Living...",
     "meaningAr": "آية الكرسي — درع التحصين الأعظم",
@@ -1496,7 +1496,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الدراسة والامتحان",
+    "cat": "أذكار الدراسة والتوفيق",
     "catEn": "Study & Exam Adhkar",
     "text": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا",
     "transliteration": "Allahumma la sahla illa ma ja'altahu sahlan, wa Anta taj'alul-hazna idha shi'ta sahla",
@@ -1507,7 +1507,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الدراسة والامتحان",
+    "cat": "أذكار الدراسة والتوفيق",
     "catEn": "Study & Exam Adhkar",
     "text": "رَبِّ زِدْنِي عِلْمًا",
     "transliteration": "Rabbi zidni 'ilma",
@@ -1518,7 +1518,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الدراسة والامتحان",
+    "cat": "أذكار الدراسة والتوفيق",
     "catEn": "Study & Exam Adhkar",
     "text": "رَبِّ اشْرَحْ لِي صَدْرِي ۝ وَيَسِّرْ لِي أَمْرِي ۝ وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي ۝ يَفْقَهُوا قَوْلِي",
     "transliteration": "Rabbish-rah li sadri, wa yassir li amri, wahlul 'uqdatan min lisani yafqahu qawli",
@@ -1529,7 +1529,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الدراسة والامتحان",
+    "cat": "أذكار الدراسة والتوفيق",
     "catEn": "Study & Exam Adhkar",
     "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
     "transliteration": "Allahumma inni as'aluka 'ilman nafi'an wa rizqan tayyiban wa 'amalan mutaqabbalan",
@@ -1540,7 +1540,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الدراسة والامتحان",
+    "cat": "أذكار الدراسة والتوفيق",
     "catEn": "Study & Exam Adhkar",
     "text": "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي، وَعَلِّمْنِي مَا يَنْفَعُنِي، وَزِدْنِي عِلْمًا",
     "transliteration": "Allahumma infa'ni bima 'allamtani, wa 'allimni ma yanfa'uni, wa zidni 'ilma",
@@ -1551,7 +1551,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الدراسة والامتحان",
+    "cat": "أذكار الدراسة والتوفيق",
     "catEn": "Study & Exam Adhkar",
     "text": "سُبْحَانَكَ لَا عِلْمَ لَنَا إِلَّا مَا عَلَّمْتَنَا إِنَّكَ أَنتَ الْعَلِيمُ الْحَكِيمُ",
     "transliteration": "Subhanaka la 'ilma lana illa ma 'allamtana innaka Antal-'Alimul-Hakim",
@@ -1562,7 +1562,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الاستخارة",
+    "cat": "دعاء الاستخارة",
     "catEn": "Istikhara Adhkar",
     "text": "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ وَتَعْلَمُ وَلَا أَعْلَمُ وَأَنْتَ عَلَّامُ الْغُيُوبِ، اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي ثُمَّ بَارِكْ لِي فِيهِ، وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ وَاقْدُرْ لِي الْخَيْرَ حَيْثُ كَانَ ثُمَّ أَرْضِنِي بِهِ",
     "transliteration": "Allahumma inni astakhiruka bi'ilmika wa astaqdiruka biqudratika wa as'aluka min fadlikal-'azim...",
@@ -1573,7 +1573,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الاستخارة",
+    "cat": "دعاء الاستخارة",
     "catEn": "Istikhara Adhkar",
     "text": "اللَّهُمَّ خِرْ لِي وَاخْتَرْ لِي",
     "transliteration": "Allahumma khir li wakhtar li",
@@ -1584,7 +1584,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الاستخارة",
+    "cat": "دعاء الاستخارة",
     "catEn": "Istikhara Adhkar",
     "text": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
     "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
@@ -1595,7 +1595,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار الاستخارة",
+    "cat": "دعاء الاستخارة",
     "catEn": "Istikhara Adhkar",
     "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالسَّدَادَ",
     "transliteration": "Allahumma inni as'alukal-huda was-sadad",
@@ -1606,7 +1606,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار السكينة والراحة",
+    "cat": "دعاء السكينة وراحة البال",
     "catEn": "Tranquility Adhkar",
     "text": "أَلَا بِذِكْرِ اللهِ تَطْمَئِنُّ الْقُلُوبُ",
     "transliteration": "Ala bidhikrillahi tatma'innul-qulub",
@@ -1617,7 +1617,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار السكينة والراحة",
+    "cat": "دعاء السكينة وراحة البال",
     "catEn": "Tranquility Adhkar",
     "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ",
     "transliteration": "Subhanallahi wa bihamdih, Subhanallahil-'azim",
@@ -1628,7 +1628,7 @@
     "subEn": "100 Times"
   },
   {
-    "cat": "أذكار السكينة والراحة",
+    "cat": "دعاء السكينة وراحة البال",
     "catEn": "Tranquility Adhkar",
     "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku walahul-hamd wa Huwa 'ala kulli shay'in Qadir",
@@ -1639,7 +1639,7 @@
     "subEn": "100 Times"
   },
   {
-    "cat": "أذكار السكينة والراحة",
+    "cat": "دعاء السكينة وراحة البال",
     "catEn": "Tranquility Adhkar",
     "text": "اللَّهُمَّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
     "transliteration": "Allahumm-ash-rah li sadri wa yassir li amri",
@@ -1650,7 +1650,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار السكينة والراحة",
+    "cat": "دعاء السكينة وراحة البال",
     "catEn": "Tranquility Adhkar",
     "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ قَلْبًا سَلِيمًا وَلِسَانًا صَادِقًا",
     "transliteration": "Allahumma inni as'aluka qalban saliman wa lisanan sadiqan",
@@ -1661,7 +1661,7 @@
     "subEn": "Once"
   },
   {
-    "cat": "أذكار السكينة والراحة",
+    "cat": "دعاء السكينة وراحة البال",
     "catEn": "Tranquility Adhkar",
     "text": "حَسْبِيَ اللهُ وَنِعْمَ الْوَكِيلُ، نِعْمَ الْمَوْلَى وَنِعْمَ النَّصِيرُ",
     "transliteration": "Hasbiyallahu wa ni'mal-wakil, ni'mal-mawla wa ni'man-nasir",
