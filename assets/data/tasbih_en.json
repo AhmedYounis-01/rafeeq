@@ -590,5 +590,269 @@
     "meaning": "Supplication for paying off debt and abundant halal provision - it suffices with what is halal and enriches from what is haram.",
     "count": 1,
     "sub": "Supplication for paying off debt and halal provision"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبُّوحٌ قُدُّوسٌ رَبُّ الْمَلَائِكَةِ وَالرُّوحِ",
+    "transliteration": "Subbuhun Quddusun Rabbul-mala'ikati war-Ruh",
+    "meaning": "Most Glorious, Most Holy, Lord of the angels and the Spirit - said in ruku' and sujood, from the glorifications of the angels.",
+    "count": 33,
+    "sub": "From the glorifications of the angels - said in ruku' and sujood"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ ذِي الْجَبَرُوتِ وَالْمَلَكُوتِ وَالْكِبْرِيَاءِ وَالْعَظَمَةِ",
+    "transliteration": "Subhana dhil-Jabaruti wal-Malakuti wal-Kibriya'i wal-Azamah",
+    "meaning": "Glory be to the Owner of might, sovereignty, grandeur, and majesty - said in ruku' and sujood.",
+    "count": 10,
+    "sub": "From the adhkar of ruku' and sujood - Hadith in Abu Dawud and Nasa'i"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَكَ اللَّهُمَّ رَبَّنَا وَبِحَمْدِكَ اللَّهُمَّ اغْفِرْ لِي",
+    "transliteration": "Subhanakallahumma Rabbana wa bihamdika, Allahumma ighfir li",
+    "meaning": "The Prophet ﷺ used to say this frequently in his ruku' and sujood in compliance with the Quran's command.",
+    "count": 10,
+    "sub": "The Prophet ﷺ used to say it frequently in ruku' and sujood"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ سُبْحَانَ اللهِ الْعَظِيمِ أَسْتَغْفِرُ اللهَ",
+    "transliteration": "Subhana-llahi wa bihamdihi Subhana-llahil-Azim Astaghfiru-llah",
+    "meaning": "Combining tasbih and istighfar - light on the tongue, heavy on the scales, together with seeking forgiveness.",
+    "count": 33,
+    "sub": "Combining tasbih and istighfar"
+  },
+  {
+    "cat": "Tasbih",
+    "text": "سُبْحَانَ اللهِ مِلْءَ السَّمَاوَاتِ وَمِلْءَ الْأَرْضِ وَمِلْءَ مَا شِئْتَ مِنْ شَيْءٍ بَعْدُ",
+    "transliteration": "Subhana-llahi mil'as-samawati wa mil'al-ardi wa mil'a ma shi'ta min shay'in ba'd",
+    "meaning": "Glorification that fills the heavens and the earth - from the dhikr when rising from ruku'.",
+    "count": 3,
+    "sub": "From the dhikr when rising from ruku'"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "اللهُ أَكْبَرُ اللهُ أَكْبَرُ لَا إِلَهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ اللهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ",
+    "transliteration": "Allahu Akbar Allahu Akbar la ilaha illa-llah, wa-llahu Akbar Allahu Akbar wa lillahil-hamd",
+    "meaning": "Takbirat of Eid and the blessed days - fills the heart with faith and glorification.",
+    "count": 33,
+    "sub": "Takbirat of Eid and the days of Tashriq"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ الْمَلِكُ الْحَقُّ الْمُبِينُ",
+    "transliteration": "La ilaha illa-llahul-Malikul-Haqqul-Mubin",
+    "meaning": "There is no god but Allah, the True King, the Manifest - tahlil with the attributes of Allah the King.",
+    "count": 100,
+    "sub": "Tahlil with the attributes of Allah"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَلَا نَعْبُدُ إِلَّا إِيَّاهُ لَهُ النِّعْمَةُ وَلَهُ الْفَضْلُ وَلَهُ الثَّنَاءُ الْحَسَنُ",
+    "transliteration": "La ilaha illa-llah wa la na'budu illa iyyah, lahun-ni'matu wa lahul-fadlu wa lahuth-thana'ul-hasan",
+    "meaning": "Said when leaving prayer - Hadith of Ibn az-Zubayr in Muslim.",
+    "count": 1,
+    "sub": "When leaving prayer - Hadith in Muslim"
+  },
+  {
+    "cat": "Tahleel & Takbeer",
+    "text": "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ أَنْجَزَ وَعْدَهُ وَنَصَرَ عَبْدَهُ وَهَزَمَ الْأَحْزَابَ وَحْدَهُ",
+    "transliteration": "La ilaha illa-llahu wahdah, anjaza wa'dah, wa nasara abdah, wa hazamal-ahzaba wahdah",
+    "meaning": "The Prophet's ﷺ supplication on Safa, Marwa, and Arafat - three times.",
+    "count": 3,
+    "sub": "The Prophet's ﷺ supplication on Safa and Marwa"
+  },
+  {
+    "cat": "Salawat",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ عَبْدِكَ وَرَسُولِكَ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَبَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَآلِ إِبْرَاهِيمَ",
+    "transliteration": "Allahumma salli ala Muhammadin abdika wa rasulika kama sallayta ala Ibrahim...",
+    "meaning": "Another version of the Ibrahimi Salawat from the narration of Abu Humayd as-Sa'idi in Bukhari.",
+    "count": 33,
+    "sub": "Narration of Abu Humayd as-Sa'idi in Bukhari"
+  },
+  {
+    "cat": "Salawat",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَأَزْوَاجِهِ وَذُرِّيَّتِهِ كَمَا صَلَّيْتَ عَلَى آلِ إِبْرَاهِيمَ وَبَارِكْ عَلَى مُحَمَّدٍ وَأَزْوَاجِهِ وَذُرِّيَّتِهِ كَمَا بَارَكْتَ عَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    "transliteration": "Allahumma salli ala Muhammadin wa azwajihi wa dhurriyyatihi...",
+    "meaning": "A form that includes the Prophet's ﷺ wives and offspring - from the narration of Abu Humayd in Bukhari and Muslim.",
+    "count": 10,
+    "sub": "From the narration of Abu Humayd in Bukhari and Muslim"
+  },
+  {
+    "cat": "Salawat",
+    "text": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَسَلِّمْ تَسْلِيمًا",
+    "transliteration": "Allahumma salli ala Muhammad an-Nabiyyil-Ummi wa ala alihi wa sallim taslima",
+    "meaning": "A form mentioning the attribute of the unlettered Prophet ﷺ with complete salutation.",
+    "count": 100,
+    "sub": "Blessings upon the unlettered Prophet ﷺ"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",
+    "transliteration": "Allahumma inni audhu bika minal hammi wal-hazan...",
+    "meaning": "A comprehensive supplication to remove anxiety, sorrow, debt, laziness and weakness in the evening.",
+    "count": 1,
+    "sub": "Supplication for anxiety, sorrow and debt - evening"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+    "transliteration": "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana abduka...",
+    "meaning": "The Master of Istighfar in the evening — whoever says it with certainty and dies that night enters Paradise.",
+    "count": 1,
+    "sub": "The Master of Istighfar - evening - Hadith in Bukhari"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي",
+    "transliteration": "Allahumma inni as'alukal afiyata fid-dunya wal-akhirah...",
+    "meaning": "Comprehensive supplication for well-being in religion, worldly life, family and wealth.",
+    "count": 1,
+    "sub": "Comprehensive supplication for well-being - evening"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    "transliteration": "Bismillahil-ladhi la yadurru ma'a ismihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-alim",
+    "meaning": "Whoever says it three times, nothing will harm him that evening or night.",
+    "count": 3,
+    "sub": "Three times when entering the evening"
+  },
+  {
+    "cat": "Evening Adhkar",
+    "text": "رَضِيتُ بِاللهِ رَبًّا وَبِالْإِسْلَامِ دِينًا وَبِمُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا",
+    "transliteration": "Raditu billahi Rabban wa bil-Islami dinan wa bi Muhammadin salla-llahu alayhi wa sallama nabiyya",
+    "meaning": "Whoever says it three times in the evening, it is a right upon Allah to please him on the Day of Judgment.",
+    "count": 3,
+    "sub": "Three times in the evening"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
+    "transliteration": "Allahumma ma asbaha bi min ni'matin aw bi ahadin min khalqika faminka wahdaka...",
+    "meaning": "Whoever says it in the morning has completed the gratitude of his day.",
+    "count": 1,
+    "sub": "Completing the gratitude of the day - Hadith in Abu Dawud"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "الْحَمْدُ لِلَّهِ عَلَى كُلِّ حَالٍ",
+    "transliteration": "Alhamdulillahi ala kulli hal",
+    "meaning": "All praise is due to Allah in every condition, in prosperity and adversity.",
+    "count": 10,
+    "sub": "Praise in every condition"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ",
+    "transliteration": "Alhamdulillahil-ladhi bi ni'matihi tatimmus-salihat",
+    "meaning": "Said when something pleasing happens - from the adhkar of joy and blessings.",
+    "count": 10,
+    "sub": "When something pleasing happens - Hadith in Ibn Majah"
+  },
+  {
+    "cat": "Gratitude",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ وَرَحْمَتِكَ فَإِنَّهُ لَا يَمْلِكُهَا إِلَّا أَنْتَ",
+    "transliteration": "Allahumma inni as'aluka min fadlika wa rahmatika fa innahu la yamlikuha illa ant",
+    "meaning": "Asking Allah for His bounty and mercy, for none possesses them except Him.",
+    "count": 3,
+    "sub": "Asking Allah for His bounty and mercy"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَعَمَلًا مُتَقَبَّلًا وَشِفَاءً مِنْ كُلِّ دَاءٍ",
+    "transliteration": "Allahumma inni as'aluka ilman nafi'an wa rizqan wasi'an wa amalan mutaqabbalan wa shifa'an min kulli da'",
+    "meaning": "A comprehensive dua for the best of this world and the Hereafter: knowledge, provision, accepted deeds, and healing.",
+    "count": 3,
+    "sub": "Comprehensive dua for the best of both worlds"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ ارْزُقْنِي حُبَّكَ وَحُبَّ مَنْ يُحِبُّكَ وَحُبَّ عَمَلٍ يُقَرِّبُنِي إِلَى حُبِّكَ",
+    "transliteration": "Allahumma arzuqni hubbaka wa hubba man yuhibbuka wa hubba amalin yuqarribuni ila hubbik",
+    "meaning": "Supplication for the love of Allah and the love of those who love Him - one of the greatest provisions.",
+    "count": 7,
+    "sub": "Supplication for the love of Allah - Hadith in Tirmidhi"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَارْزُقْنِي وَعَافِنِي",
+    "transliteration": "Allahumma ighfir li warhamni wahdini warzuqni wa afini",
+    "meaning": "A comprehensive dua between the two prostrations: forgiveness, mercy, guidance, provision, and well-being.",
+    "count": 10,
+    "sub": "Dua between the two prostrations - Hadith in Abu Dawud"
+  },
+  {
+    "cat": "Provision & Blessing",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
+    "transliteration": "Allahumma inni as'alukal-huda wat-tuqa wal-afafa wal-ghina",
+    "meaning": "The Prophet's ﷺ supplication seeking guidance, piety, chastity, and self-sufficiency.",
+    "count": 7,
+    "sub": "From the Prophet's ﷺ supplications - Hadith in Muslim"
+  },
+  {
+    "cat": "Supplication",
+    "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الثَّبَاتَ فِي الْأَمْرِ وَالْعَزِيمَةَ عَلَى الرُّشْدِ",
+    "transliteration": "Allahumma inni as'alukat-thabata fil-amri wal-azimata alar-rushd",
+    "meaning": "Supplication seeking steadfastness and determination upon guidance in all matters.",
+    "count": 3,
+    "sub": "Supplication for steadfastness and guidance"
+  },
+  {
+    "cat": "Supplication",
+    "text": "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
+    "transliteration": "Ya Muqallibal-qulubi thabbit qalbi ala dinik",
+    "meaning": "The most frequent supplication of the Prophet ﷺ - asking for the heart to remain steadfast on faith.",
+    "count": 33,
+    "sub": "The most frequent dua of the Prophet ﷺ - Hadith in Tirmidhi"
+  },
+  {
+    "cat": "Supplication",
+    "text": "اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي",
+    "transliteration": "Allahumma ihdini wa saddidni",
+    "meaning": "A concise supplication seeking guidance and correctness in all matters.",
+    "count": 10,
+    "sub": "Supplication for guidance and correctness - Hadith in Muslim"
+  },
+  {
+    "cat": "Supplication",
+    "text": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي",
+    "transliteration": "Rabbishrahli sadri wa yassirli amri wahlul uqdatan min lisani yafqahu qawli",
+    "meaning": "The supplication of Prophet Musa (peace be upon him) - for expanding the chest, easing affairs, and eloquent speech.",
+    "count": 3,
+    "sub": "The supplication of Prophet Musa - Surah Taha"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ وَقَالُوا سَمِعْنَا وَأَطَعْنَا غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ",
+    "transliteration": "Amanar-Rasulu bima unzila ilayhi min Rabbihi wal-mu'minun...",
+    "meaning": "The last verses of Surah al-Baqarah - whoever recites them at night, they will suffice him.",
+    "count": 1,
+    "sub": "Last verses of Surah al-Baqarah - whoever recites them at night, they suffice him"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+    "transliteration": "Rabbana la tu'akhidhna in nasina aw akhta'na...",
+    "meaning": "Continuation of the last verses of Surah al-Baqarah - Allah said: I have done so.",
+    "count": 1,
+    "sub": "Last verses of al-Baqarah - Allah said: I have done so"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+    "transliteration": "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin waj'alna lil-muttaqina imama",
+    "meaning": "The supplication of the servants of the Most Merciful in Surah al-Furqan - for the righteousness of family and offspring.",
+    "count": 10,
+    "sub": "Supplication of the servants of the Most Merciful - Surah al-Furqan"
+  },
+  {
+    "cat": "Quranic Duas",
+    "text": "رَبِّ هَبْ لِي مِنْ لَدُنْكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ",
+    "transliteration": "Rabbi hab li min ladunka dhurriyyatan tayyibah innaka sami'ud-du'a'",
+    "meaning": "The supplication of Prophet Zakariya (peace be upon him) asking for righteous offspring - Surah Ali Imran.",
+    "count": 10,
+    "sub": "Supplication of Prophet Zakariya - Surah Ali Imran"
   }
 ]

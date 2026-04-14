@@ -39,17 +39,17 @@ class OnboardingScreenState extends State<OnboardingScreen>
     OnboardingItem(
       titleKey: 'onboarding.page1_title',
       descriptionKey: 'onboarding.page1_desc',
-      imagePath: Assets.images.onboarding1.path,
+      imagePath: Assets.images.onboarding2.path,
     ),
     OnboardingItem(
       titleKey: 'onboarding.page2_title',
       descriptionKey: 'onboarding.page2_desc',
-      imagePath: Assets.images.onboarding2.path,
+      imagePath: Assets.images.good2.path,
     ),
     OnboardingItem(
       titleKey: 'onboarding.page3_title',
       descriptionKey: 'onboarding.page3_desc',
-      imagePath: Assets.images.onboarding3.path,
+      imagePath: Assets.images.good1.path,
     ),
   ];
 
