@@ -98,7 +98,7 @@
     "back": "Back",
     "no_sensor": "Compass not supported",
     "no_sensor_details": "This device does not have a compass sensor. Please use a real device to determine the Qibla direction.",
-    "calibration_hint": "Move your phone in a figure-8 pattern to calibrate",
+    "calibration_hint": "Place your device in a horizontal position and away from metals and electronics for accurate results",
     "qibla_direction": "Qibla Direction",
     "accuracy_far": "Far",
     "accuracy_close": "Close",
@@ -109,7 +109,9 @@
     "location_error_title": "Location Required",
     "enable_location_desc": "To accurately determine the Qibla direction, please enable location services",
     "sensor_error_title": "Compass Unavailable",
-    "sensor_error_desc": "Your device does not have a compass sensor. Please use a device that supports this feature."
+    "sensor_error_desc": "Your device does not have a compass sensor. Please use a device that supports this feature.",
+    "detecting": "Detecting Qibla...",
+    "almost_there": "Almost there"
   },
   "quran": {
     "title": "Holy Quran",

@@ -124,6 +124,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/onboarding3.png
   AssetGenImage get onboarding3 =>
       const AssetGenImage('assets/images/san3.jpeg');
+  /// File path: assets/images/location_off.svg
+  AssetGenImage get locationOff =>
+      const AssetGenImage('assets/images/location_off.svg');
 
   /// List of all assets
   List<AssetGenImage> get values => [
