@@ -36,8 +36,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: onboarding,
-    // initialLocation: '/home', // Changed from splash
+    initialLocation: home, // Changed from splash
     redirect: (context, state) {
       final hasSeenOnboarding = StorageManager.instance.hasSeenOnboarding();
       final isGoingToOnboarding = state.uri.toString() == onboarding;

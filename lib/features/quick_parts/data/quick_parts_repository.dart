@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:rafeeq/features/quick_parts/data/models/dhikr_item.dart';
-import 'package:rafeeq/features/quick_parts/data/models/seerah_item.dart';
 import 'package:rafeeq/features/quick_parts/data/models/asma_allah_item.dart';
 
 enum QuickPartType { azkar, ruqiah, dua }
@@ -12,7 +11,6 @@ class QuickPartsRepository {
 
   // In-memory cache
   final Map<QuickPartType, List<DhikrItem>> _dhikrCache = {};
-  List<SeerahItem>? _seerahCache;
   List<AsmaAllahItem>? _asmaAllahCache;
 
   static const _paths = {
@@ -42,16 +40,6 @@ class QuickPartsRepository {
     return items;
   }
 
-  Future<List<SeerahItem>> loadSeerah() async {
-    if (_seerahCache != null) return _seerahCache!;
-
-    final jsonStr = await rootBundle.loadString('assets/data/seerah.json');
-    final List<dynamic> jsonList = json.decode(jsonStr);
-    final items = jsonList.map((e) => SeerahItem.fromJson(e)).toList();
-    _seerahCache = items;
-    return items;
-  }
-
   /// Groups dhikr items by category (preserves JSON order).
   Map<String, List<DhikrItem>> groupByCategory(
     List<DhikrItem> items,
@@ -60,19 +48,6 @@ class QuickPartsRepository {
     final map = <String, List<DhikrItem>>{};
     for (final item in items) {
       final key = isArabic ? item.cat : item.catEn;
-      map.putIfAbsent(key, () => []).add(item);
-    }
-    return map;
-  }
-
-  /// Groups seerah items by category.
-  Map<String, List<SeerahItem>> groupSeerahByCategory(
-    List<SeerahItem> items,
-    bool isArabic,
-  ) {
-    final map = <String, List<SeerahItem>>{};
-    for (final item in items) {
-      final key = isArabic ? item.category : item.categoryEn;
       map.putIfAbsent(key, () => []).add(item);
     }
     return map;

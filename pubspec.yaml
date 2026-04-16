@@ -27,17 +27,19 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+# Core Flutter dependencies
 dependencies:
   adhan: ^2.0.0+1
   cupertino_icons: ^1.0.8
   dio: ^5.9.1
   easy_localization: ^3.0.8
+  equatable: ^2.0.8
   flutter:
     sdk: flutter
-  flutter_native_splash: ^2.4.0
   flutter_advanced_drawer: ^1.5.0
   flutter_bloc: ^9.1.1
   flutter_map: ^7.0.2
+  flutter_native_splash: ^2.4.0
   flutter_qiblah: ^3.2.0
   flutter_screenutil: ^5.9.3
   flutter_secure_storage: ^10.0.0
@@ -52,14 +54,20 @@ dependencies:
   quran: ^1.4.1
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
+  syncfusion_flutter_pdfviewer: ^33.1.49
   table_calendar: ^3.2.0
 
+# Dev dependencies
 dev_dependencies:
   build_runner: ^2.4.6
+
+  # Code generation (flutter_gen)
   flutter_gen_runner: ^5.4.0
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
+
+# Generated assets configuration
 flutter_gen:
   output: assets/images/
 # For information on the generic Dart part of this file, see the
@@ -76,6 +84,7 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/data/
+    - assets/pdfs/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -103,7 +112,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
 flutter_native_splash:
   color: "#FFFFFF"
   image: assets/images/rafeeq_logo.png
