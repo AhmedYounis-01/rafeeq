@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,12 +51,24 @@ void main() async {
   }
 
   runApp(
-    EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('ar')],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
-      startLocale: const Locale('ar'),
-      child: const Rafeeq(),
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => EasyLocalization(
+        supportedLocales: const [Locale('en'), Locale('ar')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en'),
+        startLocale: const Locale('ar'),
+        child: const Rafeeq(),
+      ),
     ),
   );
+  // runApp(
+  //   EasyLocalization(
+  //     supportedLocales: const [Locale('en'), Locale('ar')],
+  //     path: 'assets/translations',
+  //     fallbackLocale: const Locale('en'),
+  //     startLocale: const Locale('ar'),
+  //     child: const Rafeeq(),
+  //   ),
+  // );
 }

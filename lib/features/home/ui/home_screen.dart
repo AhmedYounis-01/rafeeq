@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // ✅ تحميل مواقيت الصلاة بشكل lazy لما الـ HomeScreen يتبني لأول مرة
     context.read<PrayerTimeCubit>().loadPrayerTimes();
   }
 
@@ -36,38 +35,36 @@ class _HomeScreenState extends State<HomeScreen> {
     final isTablet = HomeScreen.isTablet(context);
     return BlocProvider(
       create: (_) => TimerCubit(),
-      child: Column(
-        children: [
-          SafeArea(child: CustomAppBar(title: "home.app_name".tr())),
-          Expanded(
-            child: Builder(
-              builder: (context) => RefreshIndicator(
-                onRefresh: () async {
-                  HapticFeedback.mediumImpact();
-                  await context.read<PrayerTimeCubit>().loadPrayerTimes(
-                    isManual: true,
-                  );
-                },
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isTablet
-                        ? MediaQuery.of(context).size.width * 0.06
-                        : 0,
-                  ),
-                  children: [
-                    const HomePrayerHeader(),
-                    SizedBox(height: isTablet ? 20 : 16.h),
-                    const PrayerTime(),
-                    SizedBox(height: isTablet ? 20 : 16.h),
-                    const QuickParts(),
-                    SizedBox(height: isTablet ? 40 : 50.h),
-                  ],
-                ),
-              ),
+      child: Builder(
+        builder: (context) => RefreshIndicator(
+          onRefresh: () async {
+            HapticFeedback.mediumImpact();
+            await context.read<PrayerTimeCubit>().loadPrayerTimes(
+              isManual: true,
+            );
+          },
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.symmetric(
+              horizontal: isTablet
+                  ? MediaQuery.of(context).size.width * 0.06
+                  : 0,
             ),
+            children: [
+              SafeArea(
+                bottom: false,
+                child: CustomAppBar(title: "home.app_name".tr()),
+              ),
+              SizedBox(height: isTablet ? 20 : 16.h),
+              const HomePrayerHeader(),
+              SizedBox(height: isTablet ? 20 : 16.h),
+              const PrayerTime(),
+              SizedBox(height: isTablet ? 20 : 16.h),
+              const QuickParts(),
+              SizedBox(height: isTablet ? 105.h : 95.h),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

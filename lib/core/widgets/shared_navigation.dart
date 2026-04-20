@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // FILE: core/widgets/shared_navigation.dart
 // ═══════════════════════════════════════════════════════════════════════════
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -15,7 +16,6 @@ import 'responsive_layout.dart';
 import 'custom_drawer.dart';
 
 // ─── Controller Provider ──────────────────────────────────────────────────────
-// نمرر الـ controller عبر InheritedWidget عشان CustomAppBar يوصله بدون prop drilling
 class AdvancedDrawerControllerProvider extends InheritedWidget {
   final AdvancedDrawerController drawerController;
 
@@ -55,7 +55,6 @@ class _NavCfg {
 }
 
 // ─── SharedNavigation ─────────────────────────────────────────────────────────
-// StatefulWidget عشان نحتفظ بـ AdvancedDrawerController
 class SharedNavigation extends StatefulWidget {
   final Widget child;
   final int currentIndex;
@@ -71,7 +70,6 @@ class SharedNavigation extends StatefulWidget {
 }
 
 class _SharedNavigationState extends State<SharedNavigation> {
-  // controller واحد للـ drawer — يتشارك مع CustomAppBar عبر Provider
   final _drawerController = AdvancedDrawerController();
 
   @override
@@ -82,7 +80,6 @@ class _SharedNavigationState extends State<SharedNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ يسجل dependency على locale عشان يعمل rebuild فوراً عند تغيير اللغة
     final _ = context.locale;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
@@ -100,7 +97,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
     );
   }
 
-  // ─── Desktop: wide sidebar ──────────────────────────────────────────────────
+  // ─── Desktop ────────────────────────────────────────────────────────────────
   Widget _buildDesktopLayout(BuildContext context) {
     final cfg = _NavCfg(context);
     return AdvancedDrawerControllerProvider(
@@ -128,7 +125,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
     );
   }
 
-  // ─── Tablet: collapsed sidebar ──────────────────────────────────────────────
+  // ─── Tablet ─────────────────────────────────────────────────────────────────
   Widget _buildTabletLayout(BuildContext context) {
     final cfg = _NavCfg(context);
     return AdvancedDrawerControllerProvider(
@@ -156,7 +153,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
     );
   }
 
-  // ─── Mobile: AdvancedDrawer + bottom nav ────────────────────────────────────
+  // ─── Mobile ──────────────────────────────────────────────────────────────────
   Widget _buildMobileLayout(BuildContext context, bool isRtl) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cfg = _NavCfg(context);
@@ -165,22 +162,14 @@ class _SharedNavigationState extends State<SharedNavigation> {
       drawerController: _drawerController,
       child: AdvancedDrawer(
         controller: _drawerController,
-
-        // ✅ RTL: الدرور يفتح من اليمين
         rtlOpening: isRtl,
-
-        // ─── تأثيرات بصرية ──────────────────────────────────────────────
         animationCurve: Curves.easeInOutCubic,
         animationDuration: const Duration(milliseconds: 340),
         animateChildDecoration: true,
-        openScale: 0.92, // كان 0.88 — كلما قرب من 1.0 كلما قل ظهور الخلفية
+        openScale: 0.92,
         openRatio: 0.72,
         disabledGestures: false,
-
-        // ─── الخلفية خلف الدرور ─────────────────────────────────────────
         backdrop: Container(color: Theme.of(context).scaffoldBackgroundColor),
-
-        // ─── تأثير على الـ child عند الفتح ──────────────────────────────
         childDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -191,21 +180,18 @@ class _SharedNavigationState extends State<SharedNavigation> {
             ),
           ],
         ),
-
-        // ─── محتوى الدرور ───────────────────────────────────────────────
         drawer: const CustomDrawer(),
-
-        // ✅ الحل — استخدم اللون الحقيقي للشاشة
         child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: widget.child,
+          extendBody: true,
           bottomNavigationBar: _buildBottomNavigation(context, cfg),
         ),
       ),
     );
   }
 
-  // ─── Side Navigation (desktop/tablet) ───────────────────────────────────────
+  // ─── Side Navigation ────────────────────────────────────────────────────────
   Widget _buildSideNavigation(
     BuildContext context,
     _NavCfg cfg, {
@@ -213,7 +199,6 @@ class _SharedNavigationState extends State<SharedNavigation> {
   }) {
     return Column(
       children: [
-        // ── Header ──
         Container(
           height: cfg.headerH,
           padding: EdgeInsets.symmetric(horizontal: isExpanded ? 16.0 : 8.0),
@@ -253,10 +238,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
             ],
           ),
         ),
-
         Divider(height: 1, color: context.colorScheme.outlineVariant),
-
-        // ── Nav Items ──
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -273,47 +255,92 @@ class _SharedNavigationState extends State<SharedNavigation> {
             }).toList(),
           ),
         ),
-
         if (isExpanded) _UserProfile(cfg: cfg),
       ],
     );
   }
 
-  // ─── Bottom Navigation ───────────────────────────────────────────────────────
+  // ─── Bottom Navigation ──────────────────────────────────────────────────────
   Widget _buildBottomNavigation(BuildContext context, _NavCfg cfg) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colorScheme.surface,
-        border: Border(
-          top: BorderSide(color: context.colorScheme.outlineVariant, width: 1),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: SizedBox(
-          height: cfg.bottomNavH,
-          // ✅ Row يعكس ترتيب العناصر تلقائياً مع Directionality
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: NavigationItemData.items.asMap().entries.map((entry) {
-              final item = entry.value;
-              final isSelected = entry.key == widget.currentIndex;
-              return _BottomNavItem(
-                item: item,
-                isSelected: isSelected,
-                cfg: cfg,
-                onTap: () => _onNavigationTap(context, item.route),
-              );
-            }).toList(),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final fadeColor = isDark
+        ? Theme.of(context).scaffoldBackgroundColor
+        : Theme.of(context).scaffoldBackgroundColor;
+
+    return Stack(
+      children: [
+        // ✅ الـ gradient الشفاف من الجنبين وتحت
+        Positioned.fill(
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    fadeColor.withValues(alpha: 0.0),
+                    fadeColor.withValues(alpha: 0.85),
+                  ],
+                  stops: const [0.0, 1.0],
+                ),
+              ),
+            ),
           ),
         ),
-      ),
+
+        // ✅ الـ bottom nav نفسه بدون تغيير
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                height: cfg.bottomNavH + 10,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.35)
+                      : Colors.white.withValues(alpha: 0.55),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.white.withValues(alpha: 0.6),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.3 : 0.08,
+                      ),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: NavigationItemData.items.asMap().entries.map((
+                      entry,
+                    ) {
+                      final item = entry.value;
+                      final isSelected = entry.key == widget.currentIndex;
+                      return _BottomNavItem(
+                        item: item,
+                        isSelected: isSelected,
+                        cfg: cfg,
+                        onTap: () => _onNavigationTap(context, item.route),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -443,23 +470,26 @@ class _BottomNavItem extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(cfg.radius),
-          child: SizedBox.expand(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: AnimatedScale(
+            duration: const Duration(milliseconds: 200),
+            scale: isSelected ? 1.05 : 1.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isSelected ? 14.0 : 4.0,
-                    vertical: 3.0,
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 22,
+                    vertical: 6,
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.navSelected.withValues(alpha: 0.12)
+                        ? context.colorScheme.primary.withValues(alpha: 0.15)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: SvgPicture.asset(
                     isSelected ? item.icon : item.iconOutlined,
@@ -467,22 +497,20 @@ class _BottomNavItem extends StatelessWidget {
                     height: cfg.iconSize,
                     colorFilter: ColorFilter.mode(
                       isSelected
-                          ? AppColors.navSelected
-                          : AppColors.navUnselected.withValues(alpha: 0.7),
+                          ? context.colorScheme.primary
+                          : AppColors.navUnselected.withValues(alpha: 0.9),
                       BlendMode.srcIn,
                     ),
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   item.label.tr(),
                   style: TextStyle(
-                    fontSize: cfg.labelFont,
-                    fontWeight: isSelected
-                        ? FontWeight.w700
-                        : FontWeight.normal,
+                    fontSize: cfg.labelFont - 1,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     color: isSelected
-                        ? AppColors.navSelected
+                        ? context.colorScheme.primary
                         : AppColors.navUnselected,
                   ),
                   textAlign: TextAlign.center,

@@ -222,7 +222,7 @@ class PrayerTime extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton.icon(
+              ElevatedButton(
                 onPressed: () async {
                   final result = await showDialog<Map<String, dynamic>>(
                     context: context,
@@ -237,12 +237,11 @@ class PrayerTime extends StatelessWidget {
                     );
                   }
                 },
-                icon: const Icon(Icons.map),
-                label: Text("home.select_from_map".tr()),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.colorScheme.primary,
                   foregroundColor: Colors.white,
                 ),
+                child: Text("home.select_from_map".tr()),
               ),
               if (permanent) ...[
                 const SizedBox(width: 8),

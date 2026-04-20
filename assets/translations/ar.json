@@ -28,7 +28,7 @@
     "current_time": "الوقت الحالي",
     "loading_location": "جاري تحديد الموقع...",
     "select_location": "تحديد الموقع",
-    "select_from_map": "تحديد من الخريطة",
+    "select_from_map": "اضغط هنا لتحديد موقعك",
     "unknown_location": "الموقع غير محدد",
     "saved_location": "موقع محفوظ",
     "search_city_hint": "ابحث عن المدينة (مجاني)...",
@@ -201,6 +201,7 @@
     "reset": "إعادة ضبط العداد",
     "sessionLog": "سجل الجلسات",
     "totalCount": "إجمالي التسبيحات اليوم: {total}",
-    "noSessions": "لا يوجد سجل جلسات لليوم"
+    "noSessions": "لا يوجد سجل جلسات لليوم",
+    "times": "{count} مرة"
   }
 }

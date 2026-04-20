@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qcf_quran_plus/qcf_quran_plus.dart'
     hide getPageData, getPageNumber;
@@ -313,22 +314,25 @@ class _QuranScreenState extends State<QuranScreen>
               HapticFeedback.lightImpact();
             },
             behavior: HitTestBehavior.opaque,
-            child: ValueListenableBuilder<List<HighlightVerse>>(
-              valueListenable: _cubit.highlightsNotifier,
-              builder: (_, highlights, _) => QuranPageView(
-                pageController: _pageController,
-                isDarkMode: isDark,
-                isTajweed: false,
-                highlights: highlights,
-                onPageChanged: (pageNumber) {
-                  _cubit.onPageChanged(pageNumber);
-                  HapticFeedback.lightImpact();
-                },
-                onLongPress: (surah, ayah, details) {
-                  HapticFeedback.mediumImpact();
-                  _cubit.fetchTafsir(surah, ayah);
-                  _showTafsirSheet(isDark, cfg);
-                },
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 75.h),
+              child: ValueListenableBuilder<List<HighlightVerse>>(
+                valueListenable: _cubit.highlightsNotifier,
+                builder: (_, highlights, _) => QuranPageView(
+                  pageController: _pageController,
+                  isDarkMode: isDark,
+                  isTajweed: false,
+                  highlights: highlights,
+                  onPageChanged: (pageNumber) {
+                    _cubit.onPageChanged(pageNumber);
+                    HapticFeedback.lightImpact();
+                  },
+                  onLongPress: (surah, ayah, details) {
+                    HapticFeedback.mediumImpact();
+                    _cubit.fetchTafsir(surah, ayah);
+                    _showTafsirSheet(isDark, cfg);
+                  },
+                ),
               ),
             ),
           ),
@@ -365,7 +369,7 @@ class _QuranScreenState extends State<QuranScreen>
           // Audio player
           if (state.audioStatus.isActive)
             Positioned(
-              bottom: MediaQuery.of(context).padding.bottom + 12,
+              bottom: MediaQuery.of(context).padding.bottom + 85.h,
               left: 14,
               right: 14,
               child: Center(
@@ -381,13 +385,16 @@ class _QuranScreenState extends State<QuranScreen>
       ),
 
       floatingActionButton: state.showOverlay
-          ? FloatingActionButton(
-              backgroundColor: _cardColor(isDark),
-              child: Icon(Icons.menu_book_rounded, color: _goldColor(isDark)),
-              onPressed: () {
-                _cubit.hideOverlay();
-                _showPageOptions(state, isDark, cfg);
-              },
+          ? Padding(
+              padding: EdgeInsets.only(bottom: 80.h),
+              child: FloatingActionButton(
+                backgroundColor: _cardColor(isDark),
+                child: Icon(Icons.menu_book_rounded, color: _goldColor(isDark)),
+                onPressed: () {
+                  _cubit.hideOverlay();
+                  _showPageOptions(state, isDark, cfg);
+                },
+              ),
             )
           : null,
     );
@@ -666,6 +673,7 @@ class _QuranScreenState extends State<QuranScreen>
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       barrierColor: colorScheme.scrim.withValues(alpha: 0.4),
       constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
@@ -727,6 +735,7 @@ class _QuranScreenState extends State<QuranScreen>
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
@@ -755,6 +764,7 @@ class _QuranScreenState extends State<QuranScreen>
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
@@ -861,6 +871,7 @@ class _QuranScreenState extends State<QuranScreen>
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),
@@ -900,6 +911,7 @@ class _QuranScreenState extends State<QuranScreen>
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       constraints: BoxConstraints(maxWidth: cfg.maxSheetWidth),

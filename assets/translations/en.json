@@ -28,7 +28,7 @@
     "current_time": "Current time",
     "loading_location": "Detecting location...",
     "select_location": "Select Location",
-    "select_from_map": "Select from Map",
+    "select_from_map": "Tap here to set location",
     "unknown_location": "Location unknown",
     "saved_location": "Saved location",
     "search_city_hint": "Search city (Free)...",
@@ -201,6 +201,7 @@
     "reset": "Reset Counter",
     "sessionLog": "Sessions Log",
     "totalCount": "Total today: {total}",
-    "noSessions": "No sessions recorded today"
+    "noSessions": "No sessions recorded today",
+    "times": "{count} times"
   }
 }
