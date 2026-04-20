@@ -26,7 +26,6 @@ class _AsmaAllahScreenState extends State<AsmaAllahScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = AppColors.getPrimary(context);
-    final isArabic = context.locale.languageCode == 'ar';
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,

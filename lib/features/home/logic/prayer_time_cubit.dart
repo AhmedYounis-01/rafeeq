@@ -1,5 +1,5 @@
 import 'package:adhan/adhan.dart';
-import 'package:flutter/material.dart';
+import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafeeq/core/services/location_service.dart';
 import 'package:geolocator/geolocator.dart';
@@ -47,7 +47,10 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
           await _fetchWithPermission(isManual: isManual, stopwatch: watch);
           return;
         } catch (e) {
-          debugPrint('Automatic fetch failed, falling back to saved: $e');
+          AppLogger.warning(
+            'Automatic fetch failed, falling back to saved',
+            tag: 'PrayerTimeCubit',
+          );
         }
       }
 
@@ -73,7 +76,11 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
         );
       }
     } catch (e) {
-      debugPrint('PrayerTimeCubit Error: $e');
+      AppLogger.error(
+        'PrayerTimeCubit Error',
+        error: e,
+        tag: 'PrayerTimeCubit',
+      );
       emit(PrayerTimeError('حدث خطأ: $e'));
     }
   }
@@ -153,8 +160,9 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
         nextPrayerTime: result['nextPrayerTime'] as DateTime,
       ),
     );
-    debugPrint(
+    AppLogger.log(
       'Performance: Prayer times loaded in ${stopwatch.elapsedMilliseconds}ms',
+      tag: 'PrayerTimeCubit',
     );
   }
 

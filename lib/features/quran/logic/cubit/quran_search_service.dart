@@ -90,8 +90,9 @@ class _QuranSearchService {
   static void _entry(List<dynamic> args) {
     final out = args[0] as SendPort;
     final token = args[1] as RootIsolateToken?;
-    if (token != null)
+    if (token != null) {
       BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+    }
 
     final inp = ReceivePort();
     out.send(inp.sendPort); // hand back our receive port
@@ -127,16 +128,18 @@ class _QuranSearchService {
       // ── Reference lookup: "2:255" or "2-255" ─────────────────────────
       final rm = RegExp(r'^(\d+)[:\-](\d+)$').firstMatch(q);
       if (rm != null) {
-        final s_raw = int.tryParse(rm.group(1)!);
-        final a_raw = int.tryParse(rm.group(2)!);
+        final sRaw = int.tryParse(rm.group(1)!);
+        final aRaw = int.tryParse(rm.group(2)!);
         final resp = <dynamic>[id, 1]; // always done in one shot
-        if (s_raw != null && a_raw != null && s_raw >= 1 && s_raw <= 114) {
-          final cnt = getVerseCount(s_raw);
-          if (a_raw >= 1 && a_raw <= cnt) {
+        if (sRaw != null && aRaw != null && sRaw >= 1 && sRaw <= 114) {
+          final cnt = getVerseCount(sRaw);
+          if (aRaw >= 1 && aRaw <= cnt) {
             // O(1) lookup: compute offset into flat index
             int off = 0;
-            for (int x = 1; x < s_raw; x++) off += getVerseCount(x);
-            final e = idx[off + a_raw - 1];
+            for (int x = 1; x < sRaw; x++) {
+              off += getVerseCount(x);
+            }
+            final e = idx[off + aRaw - 1];
             resp.addAll([e.s, e.a, e.nm, e.t]);
           }
         }

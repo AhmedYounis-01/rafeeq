@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.symmetric(
               horizontal: isTablet
-                  ? MediaQuery.of(context).size.width * 0.06
+                  ? MediaQuery.of(context).size.width * 0.02
                   : 0,
             ),
             children: [

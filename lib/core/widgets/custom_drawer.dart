@@ -216,8 +216,9 @@ class CustomDrawer extends StatelessWidget {
                   "drawer.light".tr(),
                   !isDark,
                   () {
-                    if (isDark)
+                    if (isDark) {
                       context.read<ThemeCubit>().setTheme(ThemeMode.light);
+                    }
                   },
                   Icons.wb_sunny_rounded,
                 ),
@@ -228,8 +229,9 @@ class CustomDrawer extends StatelessWidget {
                   "drawer.dark".tr(),
                   isDark,
                   () {
-                    if (!isDark)
+                    if (!isDark) {
                       context.read<ThemeCubit>().setTheme(ThemeMode.dark);
+                    }
                   },
                   Icons.nightlight_round,
                 ),

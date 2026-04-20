@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,21 +16,24 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  debugPrint(
+  AppLogger.log(
     'Startup: WidgetsBinding initialized in ${watch.elapsedMilliseconds}ms',
+    tag: 'STARTUP',
   );
 
   // Initialize easy_localization and StorageManager in parallel
   final initWatch = Stopwatch()..start();
   await EasyLocalization.ensureInitialized();
-  debugPrint(
+  AppLogger.log(
     'Startup: EasyLocalization initialized in ${initWatch.elapsedMilliseconds}ms',
+    tag: 'STARTUP',
   );
 
   initWatch.reset();
   await StorageManager.instance.init();
-  debugPrint(
+  AppLogger.log(
     'Startup: StorageManager initialized in ${initWatch.elapsedMilliseconds}ms',
+    tag: 'STARTUP',
   );
 
   Bloc.observer = MyBlocObserver();
@@ -46,7 +50,11 @@ void main() async {
       );
     } catch (e) {
       // Some Android 8.0 devices throw if the activity isn't fullscreen
-      debugPrint('setPreferredOrientations failed: $e');
+      AppLogger.error(
+        'setPreferredOrientations failed',
+        error: e,
+        tag: 'STARTUP',
+      );
     }
   }
 

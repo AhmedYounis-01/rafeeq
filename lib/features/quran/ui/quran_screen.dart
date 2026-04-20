@@ -2315,7 +2315,9 @@ class _EqBarsState extends State<_EqBars> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    for (final c in _ctrls) c.dispose();
+    for (final c in _ctrls) {
+      c.dispose();
+    }
     super.dispose();
   }
 

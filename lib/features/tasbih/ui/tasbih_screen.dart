@@ -636,7 +636,7 @@ class _SelectionScreenState extends State<_SelectionScreen>
               onSelect: widget.onSelect,
             ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          SliverToBoxAdapter(child: SizedBox(height: 110.h)),
         ],
       ),
     );
@@ -870,7 +870,7 @@ class _DhikrSelectionCard extends StatelessWidget {
                 children: [
                   Text(
                     isRtl ? d.text : d.transliteration,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textDirection: isRtl
                         ? TextDirection.rtl
@@ -889,29 +889,6 @@ class _DhikrSelectionCard extends StatelessWidget {
                                 ? AppColors.textPrimaryDark
                                 : AppColors.textPrimary,
                             weight: FontWeight.bold,
-                          ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    isRtl ? d.transliteration : d.text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: isRtl
-                        ? TextDirection.ltr
-                        : TextDirection.rtl,
-                    style: isRtl
-                        ? _TS.amiri(
-                            cfg.labelFont,
-                            isDark
-                                ? AppColors.textSecondaryDark
-                                : AppColors.textSecondary,
-                          )
-                        : _TS.amiriQuran(
-                            cfg.dhikrFont * 0.7,
-                            isDark
-                                ? AppColors.textSecondaryDark
-                                : AppColors.textSecondary,
-                            height: 1.4,
                           ),
                   ),
                 ],
@@ -1024,114 +1001,124 @@ class _CounterScreen extends StatelessWidget {
 
           SliverFillRemaining(
             hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  // Dhikr Card
-                  _CounterDhikrCard(
-                    dhikr: dhikr,
-                    isRtl: isRtl,
-                    textColor: textColor,
-                    subtextColor: subtextColor,
-                    primary: primary,
-                    isDark: isDark,
-                    cfg: cfg,
-                    onNext: onNext,
-                    onPrev: onPrev,
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Stats Row
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _StatBox(
-                            label: 'tasbih.totalBeads'.tr(),
-                            value: '$_target',
-                            primary: primary,
-                            isDark: isDark,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _StatBox(
-                            label: 'tasbih.current'.tr(),
-                            value: '$count',
-                            primary: primary,
-                            isDark: isDark,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Tap Button
-                  Expanded(
-                    child: Center(
-                      child: _TapButton(
-                        onTap: onTap,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: cfg.isTablet ? 600 : double.infinity,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      // Dhikr Card
+                      _CounterDhikrCard(
+                        dhikr: dhikr,
+                        isRtl: isRtl,
+                        textColor: textColor,
+                        subtextColor: subtextColor,
                         primary: primary,
-                        count: count,
-                        target: _target,
-                        completed: completed,
                         isDark: isDark,
+                        cfg: cfg,
+                        onNext: onNext,
+                        onPrev: onPrev,
                       ),
-                    ),
-                  ),
 
-                  // Subtitle
-                  if (dhikr.sub.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                      child: Text(
-                        dhikr.sub,
-                        textAlign: TextAlign.center,
-                        maxLines: 8,
-                        style: _TS.amiri(
-                          cfg.labelFont,
-                          subtextColor.withValues(alpha: 0.6),
-                          style: FontStyle.italic,
-                          height: 1.4,
+                      const SizedBox(height: 24),
+
+                      // Stats Row
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _StatBox(
+                                label: 'tasbih.totalBeads'.tr(),
+                                value: '$_target',
+                                primary: primary,
+                                isDark: isDark,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _StatBox(
+                                label: 'tasbih.current'.tr(),
+                                value: '$count',
+                                primary: primary,
+                                isDark: isDark,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
 
-                  // Reset Button
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton.icon(
-                        onPressed: onReset,
-                        icon: const Icon(Icons.refresh_rounded, size: 20),
-                        label: Text(
-                          'tasbih.reset'.tr(),
-                          style: _TS.amiriBold(cfg.labelFont + 3, Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primary,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                      // Tap Button
+                      Expanded(
+                        child: Center(
+                          child: _TapButton(
+                            onTap: onTap,
+                            primary: primary,
+                            count: count,
+                            target: _target,
+                            completed: completed,
+                            isDark: isDark,
                           ),
-                          elevation: 0,
                         ),
                       ),
-                    ),
-                  ),
 
-                  // Bottom Padding for Nav Bar
-                  SizedBox(height: 70.h),
-                ],
+                      // Subtitle
+                      if (dhikr.sub.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                          child: Text(
+                            dhikr.sub,
+                            textAlign: TextAlign.center,
+                            maxLines: 8,
+                            style: _TS.amiri(
+                              cfg.labelFont,
+                              subtextColor.withValues(alpha: 0.6),
+                              style: FontStyle.italic,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+
+                      // Reset Button
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: ElevatedButton.icon(
+                            onPressed: onReset,
+                            icon: const Icon(Icons.refresh_rounded, size: 20),
+                            label: Text(
+                              'tasbih.reset'.tr(),
+                              style: _TS.amiriBold(
+                                cfg.labelFont + 3,
+                                Colors.white,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 0,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Bottom Padding for Nav Bar
+                      SizedBox(height: 110.h),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -1422,7 +1409,7 @@ class _TapButtonState extends State<_TapButton>
                   tween: Tween(begin: 0, end: progress.clamp(0.0, 1.0)),
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOut,
-                  builder: (_, val, __) => CircularProgressIndicator(
+                  builder: (_, val, _) => CircularProgressIndicator(
                     value: val,
                     strokeWidth: 5,
                     backgroundColor: widget.primary.withValues(alpha: 0.08),
@@ -1655,7 +1642,8 @@ class _SessionLogSheet extends StatelessWidget {
                             ),
                           ),
                           subtitle: Text(
-                            'tasbih.times'.tr(
+                            tr(
+                              'tasbih.times',
                               namedArgs: {'count': '${s.count}'},
                             ),
                             style: _TS.amiri(cfg.labelFont, primary),

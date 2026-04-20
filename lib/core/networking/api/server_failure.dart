@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:rafeeq/core/helpers/app_logger.dart';
 
 /// Server Failure Handler for Supabase Backend
 ///
@@ -52,12 +52,12 @@ class ServerFailure {
   static ServerFailure fromDioException(DioException exception) {
     final response = exception.response?.data;
 
-    debugPrint('DioException details:');
-    debugPrint('Type: ${exception.type}');
-    debugPrint('Message: ${exception.message}');
-    debugPrint('Response data: $response');
-    debugPrint('Status code: ${exception.response?.statusCode}');
-    debugPrint('Headers: ${exception.response?.headers}');
+    AppLogger.log('DioException details:', tag: 'API');
+    AppLogger.log('Type: ${exception.type}', tag: 'API');
+    AppLogger.log('Message: ${exception.message}', tag: 'API');
+    AppLogger.log('Response data: $response', tag: 'API');
+    AppLogger.log('Status code: ${exception.response?.statusCode}', tag: 'API');
+    AppLogger.log('Headers: ${exception.response?.headers}', tag: 'API');
 
     // Handle Supabase RPC function error response
     if (response is Map<String, dynamic>) {

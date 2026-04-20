@@ -1,3 +1,4 @@
+import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
@@ -110,10 +111,10 @@ class LocationService {
         return (city, country);
       }
     } catch (e) {
-      print('Geocoding Error: $e');
+      AppLogger.error('Geocoding Error', error: e, tag: 'LocationService');
     }
     // Fallback if geocoding fails
-    return ('${lat.toStringAsFixed(2)}', '${lon.toStringAsFixed(2)}');
+    return ((lat.toStringAsFixed(2)), (lon.toStringAsFixed(2)));
   }
 
   /// Opens app settings (for permissions)

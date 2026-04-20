@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 import 'dart:isolate';
 
 import 'package:flutter/services.dart';
@@ -8,12 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:meta/meta.dart';
 import 'package:qcf_quran_plus/qcf_quran_plus.dart'
     hide getPageData, getPageNumber;
 import 'package:quran/quran.dart'
     hide getSurahNameArabic, getJuzNumber, getVerseCount, getVerse;
 import 'package:rafeeq/core/constants/app_constants.dart';
+import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:rafeeq/features/quran/data/tafsir_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -136,7 +135,7 @@ class QuranCubit extends Cubit<QuranState> {
         );
       }
     } catch (e) {
-      debugPrint('Tafsir fetch error: $e');
+      AppLogger.error('Tafsir fetch error', error: e, tag: 'QuranCubit');
       if (!isClosed) {
         tafsirNotifier.value = tafsirNotifier.value?.copyWith(
           isLoading: false,
@@ -175,8 +174,9 @@ class QuranCubit extends Cubit<QuranState> {
       final fontWatch = Stopwatch()..start();
       _loadFontsInBackground(
         onReady: () {
-          debugPrint(
+          AppLogger.log(
             'Performance: Quran fonts loaded in ${fontWatch.elapsedMilliseconds}ms',
+            tag: 'QuranCubit',
           );
           emit(
             QuranReady(
@@ -195,8 +195,9 @@ class QuranCubit extends Cubit<QuranState> {
           token: RootIsolateToken.instance,
         ),
       );
-      debugPrint(
+      AppLogger.log(
         'Performance: QuranCubit initialized in ${watch.elapsedMilliseconds}ms',
+        tag: 'QuranCubit',
       );
     } catch (e) {
       emit(QuranError('حدث خطأ أثناء التهيئة: $e'));
@@ -215,7 +216,7 @@ class QuranCubit extends Cubit<QuranState> {
           if (!isClosed) onReady();
         })
         .catchError((e) {
-          debugPrint('Font loading error: $e');
+          AppLogger.error('Font loading error', error: e, tag: 'QuranCubit');
           if (!isClosed) onReady();
         });
   }

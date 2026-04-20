@@ -8,39 +8,50 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 
 // ─── Responsive Config ────────────────────────────────────────────────────────
 class _QiblaConfig {
+  final BuildContext context;
   final double shortestSide;
-  _QiblaConfig(BuildContext context)
+  _QiblaConfig(this.context)
     : shortestSide = MediaQuery.of(context).size.shortestSide;
 
   bool get isTablet => shortestSide >= 600;
 
-  double get kaabaPrefixSize => (shortestSide * 0.12).clamp(40.0, 80.0);
-  double get arrowSize => (shortestSide * 0.09).clamp(32.0, 56.0);
-  double get qiblaMarkerSize => (shortestSide * 0.11).clamp(38.0, 64.0);
-  double get labelFontSize => (shortestSide * 0.045).clamp(16.0, 24.0);
-  double get bodyFontSize => (shortestSide * 0.037).clamp(13.0, 19.0);
-  double get iconSize => (shortestSide * 0.06).clamp(22.0, 34.0);
-  double get btnHeight => (shortestSide * 0.13).clamp(48.0, 64.0);
-  double get hPad => isTablet ? shortestSide * 0.06 : 24.0;
+  // Sizes scale based on screen size, but we ensure they feel solid on tablets.
+  double get kaabaSize => isTablet ? 150 : 70.w;
+  double get arrowSize => isTablet ? 80 : 48.w;
+  double get qiblaMarkerSize => isTablet ? 100 : 60.w;
+  double get labelFontSize => isTablet ? 24 : 18.sp;
+  double get bodyFontSize => isTablet ? 18 : 15.sp;
+  double get iconSize => isTablet ? 36 : 28.sp;
+  double get btnHeight => isTablet ? 64 : 54.h;
+  double get hPad => isTablet ? shortestSide * 0.08 : 32.w;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 double _calculateOffset(double deviceDirection, double qiblahDirection) {
   double diff = qiblahDirection - deviceDirection;
-  while (diff > 180) diff -= 360;
-  while (diff < -180) diff += 360;
+  while (diff > 180) {
+    diff -= 360;
+  }
+  while (diff < -180) {
+    diff += 360;
+  }
   return diff;
 }
 
 double _angleDiff(double target, double current) {
   double d = target - current;
-  while (d > math.pi) d -= 2 * math.pi;
-  while (d < -math.pi) d += 2 * math.pi;
+  while (d > math.pi) {
+    d -= 2 * math.pi;
+  }
+  while (d < -math.pi) {
+    d += 2 * math.pi;
+  }
   return d;
 }
 
@@ -114,32 +125,16 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cfg = _QiblaConfig(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDark
-              ? [
-                  const Color(0xFF0A1F17),
-                  const Color(0xFF081812),
-                  const Color(0xFF05100C),
-                ]
-              : [
-                  const Color(0xFFF5FAF7),
-                  const Color(0xFFEDF5F0),
-                  const Color(0xFFE8F2EB),
-                ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: SafeArea(
+    return Scaffold(
+      backgroundColor: AppColors.background(context),
+      body: SafeArea(
         child: Column(
           children: [
             // ── Top Bar ──
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: cfg.isTablet ? 16 : 8,
-                vertical: 4,
+                horizontal: cfg.hPad / 2,
+                vertical: 8.h,
               ),
               child: Row(
                 children: [
@@ -161,20 +156,25 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
             _CalibrationBanner(notifier: _calibNotifier, isDark: isDark),
             // ── Main Content ──
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: _checkLocationStatus,
-                color: AppColors.getPrimary(context),
-                backgroundColor: isDark
-                    ? const Color(0xFF0A1F17)
-                    : AppColors.white,
-                child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: _buildCompassSection(isDark, cfg),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: cfg.isTablet ? 850 : double.infinity,
+                  ),
+                  child: RefreshIndicator(
+                    onRefresh: _checkLocationStatus,
+                    color: AppColors.getPrimary(context),
+                    backgroundColor: AppColors.cardBackground(context),
+                    child: CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      slivers: [
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: _buildCompassSection(isDark, cfg),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -347,40 +347,40 @@ class _CalibrationBanner extends StatelessWidget {
           duration: const Duration(milliseconds: 400),
           opacity: isUnstable ? 1.0 : 0.0,
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            margin: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 8.0.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 12.0.h),
             decoration: BoxDecoration(
               color: isDark
                   ? Colors.black.withValues(alpha: 0.6)
                   : AppColors.white.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16.0.r),
               border: Border.all(
                 color: AppColors.warning.withValues(alpha: 0.8),
-                width: 1.2,
+                width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.warning.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.rotate_90_degrees_ccw_outlined,
                   color: AppColors.warning,
-                  size: 18,
+                  size: 20.0.sp,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 10.0.w),
                 Flexible(
                   child: Text(
                     "qibla.calibration_hint".tr(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.warning,
-                      fontSize: 12,
+                      fontSize: 14.0.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -650,7 +650,6 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
             ),
             const SizedBox(height: 20),
             Text(
-              // تم إضافة المفتاح الناقص في الترجمة
               "qibla.detecting".tr(),
               style: TextStyle(
                 color: isDark ? Colors.white54 : Colors.black45,
@@ -664,13 +663,13 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
 
     return Column(
       children: [
-        SizedBox(height: cfg.isTablet ? 24 : 16),
+        SizedBox(height: cfg.isTablet ? 32 : 16),
 
-        // ── أيقونة الكعبة (static - لا تتغير) ──
+        // ── أيقونة الكعبة (static) ──
         Image.asset(
           Assets.images.kaaba.path,
-          height: cfg.kaabaPrefixSize,
-          width: cfg.kaabaPrefixSize,
+          height: cfg.kaabaSize,
+          width: cfg.kaabaSize,
         ),
         const SizedBox(height: 4),
 
@@ -692,7 +691,6 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // ── Progress Arc: يستمع للـ offsetNotifier فقط ──
                     RepaintBoundary(
                       child: ValueListenableBuilder<double>(
                         valueListenable: _offsetNotifier,
@@ -710,16 +708,12 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
                         },
                       ),
                     ),
-
-                    // ── Ornamental Ring (static - لا تتغير) ──
                     RepaintBoundary(
                       child: CustomPaint(
                         size: Size.infinite,
                         painter: _OrnamentalRingPainter(isDark: isDark),
                       ),
                     ),
-
-                    // ── Lock Glow: يستمع للـ isLockedNotifier فقط ──
                     ValueListenableBuilder<bool>(
                       valueListenable: _isLockedNotifier,
                       builder: (_, isLocked, _) => isLocked
@@ -737,13 +731,10 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
                             )
                           : const SizedBox.shrink(),
                     ),
-
-                    // ── Compass Disk: يستمع للـ compassAngleNotifier فقط ──
                     ValueListenableBuilder<double>(
                       valueListenable: _compassAngleNotifier,
                       builder: (_, angle, child) =>
                           Transform.rotate(angle: angle, child: child),
-                      // child ثابت لا يُعاد بناؤه مع كل rotation
                       child: LayoutBuilder(
                         builder: (_, constraints) {
                           final outerSize = constraints.maxWidth;
@@ -758,17 +749,23 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
                                   shape: BoxShape.circle,
                                   gradient: RadialGradient(
                                     colors: isDark
-                                        ? const [
-                                            Color(0xFF1E583A),
-                                            Color(0xFF0F2D1E),
-                                            Color(0xFF0D2519),
-                                            Color(0xFF081A12),
+                                        ? [
+                                            const Color(
+                                              0xFF1E583A,
+                                            ).withValues(alpha: 0.8),
+                                            const Color(
+                                              0xFF0F2D1E,
+                                            ).withValues(alpha: 0.6),
+                                            AppColors.backgroundCardDark,
+                                            AppColors.backgroundDark,
                                           ]
-                                        : const [
-                                            Color(0xFFE8F5EC),
-                                            Color(0xFFD4ECD8),
-                                            Color(0xFFC0E3C6),
-                                            Color(0xFFB0D9B7),
+                                        : [
+                                            const Color(0xFFE8F5EC),
+                                            const Color(
+                                              0xFFD4ECD8,
+                                            ).withValues(alpha: 0.8),
+                                            AppColors.backgroundCard,
+                                            AppColors.backgroundLight,
                                           ],
                                     stops: const [0.0, 0.4, 0.8, 1.0],
                                   ),
@@ -800,86 +797,33 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
                                 isDark: isDark,
                                 cfg: cfg,
                               ),
-                              RepaintBoundary(
-                                child: CustomPaint(
-                                  size: Size(
-                                    innerDiskSize * 0.72,
-                                    innerDiskSize * 0.72,
-                                  ),
-                                  painter: _CompassNeedlePainter(
-                                    isDark: isDark,
-                                  ),
-                                ),
-                              ),
                             ],
                           );
                         },
                       ),
                     ),
-
-                    // ── Qibla Marker: يستمع للـ qiblaAngleNotifier ──
                     ValueListenableBuilder<double>(
                       valueListenable: _qiblaAngleNotifier,
                       builder: (_, angle, _) => Transform.rotate(
                         angle: angle,
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          // isLockedNotifier في داخل عشان الـ shadow يتحدث لما يتقفل
-                          child: ValueListenableBuilder<bool>(
-                            valueListenable: _isLockedNotifier,
-                            builder: (_, isLocked, _) => AnimatedBuilder(
-                              animation: _pulseAnim,
-                              builder: (_, child) => Transform.scale(
-                                scale: isLocked ? 1.0 : _pulseAnim.value,
-                                child: child,
-                              ),
-                              child: Container(
-                                width: cfg.qiblaMarkerSize,
-                                height: cfg.qiblaMarkerSize,
-                                margin: const EdgeInsets.only(top: 8),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isDark
-                                      ? AppColors.white
-                                      : const Color(0xFFFAF8F0),
-                                  border: Border.all(color: accent, width: 2.5),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: accent.withValues(
-                                        alpha: isLocked ? 0.9 : 0.5,
-                                      ),
-                                      blurRadius: isLocked ? 20 : 10,
-                                      spreadRadius: isLocked ? 4 : 1,
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: isDark ? 0.6 : 0.15,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Container(
-                                  margin: const EdgeInsets.all(3),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF014D28),
-                                  ),
-                                  child: ClipOval(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(6),
-                                      child: Image.asset(
-                                        Assets.images.kaaba.path,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                        child: AnimatedBuilder(
+                          animation: _pulseAnim,
+                          builder: (_, child) => Transform.scale(
+                            scale: _pulseAnim.value,
+                            child: child,
+                          ),
+                          child: Icon(
+                            Icons.location_on_rounded,
+                            color: accent,
+                            size: cfg.qiblaMarkerSize,
                           ),
                         ),
+                      ),
+                    ),
+                    RepaintBoundary(
+                      child: CustomPaint(
+                        size: Size.infinite,
+                        painter: _CompassNeedlePainter(isDark: isDark),
                       ),
                     ),
                   ],
@@ -889,51 +833,27 @@ class _QiblaCompassWidgetState extends State<_QiblaCompassWidget>
           ),
         ),
 
-        // ── Lock / Near Banner: يستمع للـ notifiers فقط ──
+        // ── الحالة ──
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: cfg.hPad, vertical: 12),
+          padding: EdgeInsets.only(bottom: 110.h, top: 20),
           child: ValueListenableBuilder<bool>(
             valueListenable: _isLockedNotifier,
-            builder: (_, isLocked, _) => ValueListenableBuilder<double>(
-              valueListenable: _offsetNotifier,
-              builder: (_, offset, _) {
-                final absOff = offset.abs();
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  transitionBuilder: (child, anim) => FadeTransition(
-                    opacity: anim,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 0.3),
-                        end: Offset.zero,
-                      ).animate(anim),
-                      child: child,
-                    ),
-                  ),
-                  child: isLocked
-                      ? _StatusBanner(
-                          key: const ValueKey('locked'),
-                          icon: Icons.check_circle_rounded,
-                          label: "qibla.qibla_locked".tr(),
-                          color: AppColors.getPrimary(context),
-                          cfg: cfg,
-                        )
-                      : absOff <= 15
-                      ? _StatusBanner(
-                          key: const ValueKey('near'),
-                          icon: Icons.my_location_rounded,
-                          label: "qibla.almost_there".tr(),
-                          color: accent,
-                          cfg: cfg,
-                        )
-                      : const SizedBox(key: ValueKey('empty'), height: 0),
-                );
-              },
+            builder: (_, isLocked, child) => isLocked
+                ? _StatusBanner(
+                    icon: Icons.check_circle_rounded,
+                    label: "qibla.on_target".tr(),
+                    color: const Color(0xFF2E7D32),
+                    cfg: cfg,
+                  )
+                : child!,
+            child: _StatusBanner(
+              icon: Icons.explore_outlined,
+              label: "qibla.searching".tr(),
+              color: accent,
+              cfg: cfg,
             ),
           ),
         ),
-
-        const SizedBox(height: 16),
       ],
     );
   }
@@ -947,7 +867,6 @@ class _StatusBanner extends StatelessWidget {
   final _QiblaConfig cfg;
 
   const _StatusBanner({
-    super.key,
     required this.icon,
     required this.label,
     required this.color,
@@ -957,20 +876,17 @@ class _StatusBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: cfg.isTablet ? 14 : 11,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 2),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: color, size: cfg.iconSize),
-          const SizedBox(width: 10),
+          SizedBox(width: 12.0.w),
           Text(
             label,
             style: TextStyle(
@@ -985,7 +901,7 @@ class _StatusBanner extends StatelessWidget {
   }
 }
 
-// ─── Direction Labels (const-friendly) ────────────────────────────────────────
+// ─── Direction Labels ─────────────────────────────────────────────────────────
 class _DirectionLabels extends StatelessWidget {
   final double size;
   final bool isDark;
@@ -999,44 +915,39 @@ class _DirectionLabels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = TextStyle(
-      color: isDark ? AppColors.white : const Color(0xFF2D5F3F),
+    final style = TextStyle(
+      color: isDark ? Colors.white60 : Colors.black45,
+      fontSize: cfg.isTablet ? 20 : 14,
       fontWeight: FontWeight.bold,
-      fontSize: (size * 0.055).clamp(13.0, 18.0),
-      letterSpacing: 1.2,
     );
-    return RepaintBoundary(
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: const Alignment(0, -0.68),
-              child: Text(
-                'N',
-                style: base.copyWith(
-                  color: AppColors.getPrimary(context),
-                  fontSize: (base.fontSize ?? 14) + 2,
-                ),
-              ),
-            ),
-            Align(
-              alignment: const Alignment(0.68, 0),
-              child: Text('E', style: base),
-            ),
-            Align(
-              alignment: const Alignment(0, 0.68),
-              child: Text('S', style: base),
-            ),
-            Align(
-              alignment: const Alignment(-0.68, 0),
-              child: Text('W', style: base),
-            ),
-          ],
+
+    return Stack(
+      children: [
+        Positioned(
+          top: size * 0.12,
+          left: 0,
+          right: 0,
+          child: Center(child: Text("N", style: style)),
         ),
-      ),
+        Positioned(
+          bottom: size * 0.12,
+          left: 0,
+          right: 0,
+          child: Center(child: Text("S", style: style)),
+        ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: size * 0.12,
+          child: Center(child: Text("W", style: style)),
+        ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          right: size * 0.12,
+          child: Center(child: Text("E", style: style)),
+        ),
+      ],
     );
   }
 }
@@ -1050,21 +961,23 @@ class _NoSensorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(cfg.hPad),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Spacer(),
             Container(
-              padding: EdgeInsets.all(cfg.isTablet ? 32 : 24),
+              padding: EdgeInsets.all(cfg.isTablet ? 48 : 24),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.secondary.withValues(alpha: 0.1),
               ),
               child: Icon(
                 Icons.sensors_off_rounded,
-                size: cfg.isTablet ? 80 : 64,
+                size: cfg.isTablet ? 120 : 72,
                 color: isDark ? AppColors.secondaryDark : AppColors.secondary,
               ),
             ),
@@ -1074,7 +987,7 @@ class _NoSensorView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: isDark ? AppColors.white : AppColors.textPrimary,
-                fontSize: cfg.labelFontSize,
+                fontSize: cfg.labelFontSize + 2,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -1084,10 +997,11 @@ class _NoSensorView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: isDark ? Colors.white54 : AppColors.textSecondary,
-                fontSize: cfg.bodyFontSize,
+                fontSize: cfg.bodyFontSize + 1,
                 height: 1.6,
               ),
             ),
+            const Spacer(),
           ],
         ),
       ),
@@ -1110,83 +1024,84 @@ class _LocationErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: cfg.hPad),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FittedBox(
-            fit: BoxFit.cover,
-            child: SvgPicture.asset(
+
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(cfg.hPad),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            SvgPicture.asset(
               Assets.images.locationOff.path,
-              width: cfg.isTablet ? 250 : 200,
-              height: cfg.isTablet ? 250 : 200,
+              width: cfg.isTablet ? 520 : 250.w,
+              fit: BoxFit.contain,
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "qibla.location_error_title".tr(),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isDark ? AppColors.white : AppColors.textPrimary,
-              fontSize: cfg.labelFontSize + 2,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isDark ? Colors.white60 : AppColors.textSecondary,
-              fontSize: cfg.bodyFontSize,
-              height: 1.6,
-            ),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: cfg.btnHeight,
-            child: ElevatedButton(
-              onPressed: onEnable,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.getPrimary(context),
-                foregroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
+            SizedBox(height: cfg.isTablet ? 40 : 24),
+            Text(
+              "qibla.location_error_title".tr(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isDark ? AppColors.white : AppColors.textPrimary,
+                fontSize: cfg.labelFontSize + 4,
+                fontWeight: FontWeight.bold,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.location_on_rounded, size: cfg.iconSize),
-                  const SizedBox(width: 8),
-                  Text(
-                    "qibla.activate".tr(),
-                    style: TextStyle(
-                      fontSize: cfg.bodyFontSize + 2,
-                      fontWeight: FontWeight.bold,
-                    ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isDark ? Colors.white60 : AppColors.textSecondary,
+                fontSize: cfg.bodyFontSize + 2,
+                height: 1.6,
+              ),
+            ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              height: cfg.btnHeight + (cfg.isTablet ? 10 : 0),
+              child: ElevatedButton(
+                onPressed: onEnable,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.getPrimary(context),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ],
+                  elevation: 4,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "qibla.activate".tr(),
+                      style: TextStyle(
+                        fontSize: cfg.isTablet ? 22 : 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(Icons.location_on, size: cfg.isTablet ? 28 : 20),
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 30),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-// ─── Custom Painters ──────────────────────────────────────────────────────────
+// ─── Painters ─────────────────────────────────────────────────────────────────
+
 class _ProgressArcPainter extends CustomPainter {
   final double progress;
   final Color color;
   final bool isDark;
 
-  const _ProgressArcPainter({
+  _ProgressArcPainter({
     required this.progress,
     required this.color,
     required this.isDark,
@@ -1195,80 +1110,56 @@ class _ProgressArcPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 4;
+    final radius = size.width / 2;
 
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = isDark
-            ? AppColors.white.withValues(alpha: 0.06)
-            : AppColors.black.withValues(alpha: 0.06)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 6
-        ..strokeCap = StrokeCap.round,
+    final basePaint = Paint()
+      ..color = isDark
+          ? Colors.white.withValues(alpha: 0.05)
+          : Colors.black.withValues(alpha: 0.05)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4;
+
+    canvas.drawCircle(center, radius, basePaint);
+
+    final sweepAngle = 2 * math.pi * progress;
+    final arcPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      sweepAngle,
+      false,
+      arcPaint,
     );
-
-    if (progress > 0) {
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        -math.pi / 2,
-        2 * math.pi * progress,
-        false,
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 6
-          ..strokeCap = StrokeCap.round,
-      );
-    }
-
-    if (progress > 0.02) {
-      final headAngle = -math.pi / 2 + 2 * math.pi * progress;
-      canvas.drawCircle(
-        Offset(
-          center.dx + math.cos(headAngle) * radius,
-          center.dy + math.sin(headAngle) * radius,
-        ),
-        5,
-        Paint()
-          ..color = color.withValues(alpha: 0.5)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
-      );
-    }
   }
 
   @override
   bool shouldRepaint(covariant _ProgressArcPainter old) =>
-      old.progress != progress || old.color != color || old.isDark != isDark;
+      old.progress != progress || old.isDark != isDark;
 }
 
 class _LockGlowPainter extends CustomPainter {
   final double intensity;
   final bool isDark;
 
-  const _LockGlowPainter({required this.intensity, required this.isDark});
+  _LockGlowPainter({required this.intensity, required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 * 0.88;
-    final glowColor = isDark ? AppColors.primaryDark : AppColors.primary;
+    final radius = size.width / 2;
 
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = glowColor.withValues(alpha: 0.08 + 0.18 * intensity)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 18 + 14 * intensity),
-    );
-    canvas.drawCircle(
-      center,
-      radius * 0.75,
-      Paint()
-        ..color = glowColor.withValues(alpha: 0.05 + 0.1 * intensity)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
-    );
+    final glowPaint = Paint()
+      ..color = (isDark ? const Color(0xFF2E7D32) : const Color(0xFF4CAF50))
+          .withValues(alpha: 0.15 * intensity)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 20 * intensity);
+
+    canvas.drawCircle(center, radius + (15 * intensity), glowPaint);
+    canvas.drawCircle(center, radius + (5 * intensity), glowPaint);
   }
 
   @override
@@ -1278,91 +1169,32 @@ class _LockGlowPainter extends CustomPainter {
 
 class _OrnamentalRingPainter extends CustomPainter {
   final bool isDark;
-
-  const _OrnamentalRingPainter({required this.isDark});
+  _OrnamentalRingPainter({required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final outerRadius = size.width / 2;
-    final innerRadius = outerRadius * 0.84;
-    final baseColor = isDark
-        ? const Color(0xFF1B7A4A)
-        : const Color(0xFF3A9D6A);
+    final radius = size.width * 0.44;
 
-    canvas.drawCircle(
-      center,
-      outerRadius,
-      Paint()
-        ..color = baseColor.withValues(alpha: 0.15)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
-    );
-
-    final petalPaint = Paint()
-      ..color = baseColor.withValues(alpha: isDark ? 0.4 : 0.25)
-      ..style = PaintingStyle.fill;
-
-    const petalCount = 16;
-    for (int i = 0; i < petalCount; i++) {
-      final angle = (i * (360 / petalCount)) * (math.pi / 180);
-      final p1 = Offset(
-        center.dx + math.cos(angle - 0.1) * (innerRadius * 1.05),
-        center.dy + math.sin(angle - 0.1) * (innerRadius * 1.05),
-      );
-      final p2 = Offset(
-        center.dx + math.cos(angle + 0.1) * (innerRadius * 1.05),
-        center.dy + math.sin(angle + 0.1) * (innerRadius * 1.05),
-      );
-      final pTip = Offset(
-        center.dx + math.cos(angle) * outerRadius,
-        center.dy + math.sin(angle) * outerRadius,
-      );
-      final path = Path()
-        ..moveTo(p1.dx, p1.dy)
-        ..quadraticBezierTo(
-          center.dx + math.cos(angle) * (outerRadius * 0.9),
-          center.dy + math.sin(angle) * (outerRadius * 0.9),
-          pTip.dx,
-          pTip.dy,
-        )
-        ..quadraticBezierTo(
-          center.dx + math.cos(angle) * (outerRadius * 0.9),
-          center.dy + math.sin(angle) * (outerRadius * 0.9),
-          p2.dx,
-          p2.dy,
-        )
-        ..close();
-      canvas.drawPath(path, petalPaint);
-    }
-
-    final arcPaint = Paint()
-      ..color = baseColor.withValues(alpha: isDark ? 0.2 : 0.15)
+    final paint = Paint()
+      ..color = isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.06)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.0;
 
-    for (int i = 0; i < 12; i++) {
-      final startAngle = (i * 30 - 15) * (math.pi / 180);
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: outerRadius * 0.95),
-        startAngle,
-        30 * (math.pi / 180),
-        false,
-        arcPaint,
+    canvas.drawCircle(center, radius, paint);
+
+    for (int i = 0; i < 8; i++) {
+      final angle = (i * 45) * (math.pi / 180);
+      canvas.drawCircle(
+        Offset(
+          center.dx + math.cos(angle) * radius,
+          center.dy + math.sin(angle) * radius,
+        ),
+        3,
+        paint,
       );
-    }
-
-    final dotPaint = Paint()
-      ..color = baseColor.withValues(alpha: isDark ? 0.4 : 0.3)
-      ..style = PaintingStyle.fill;
-
-    for (int i = 0; i < 72; i++) {
-      final angle = (i * 5) * (math.pi / 180);
-      final pt = Offset(
-        center.dx + math.cos(angle) * (outerRadius * 0.92),
-        center.dy + math.sin(angle) * (outerRadius * 0.92),
-      );
-      canvas.drawCircle(pt, (i % 6 == 0) ? 2.5 : 1.2, dotPaint);
     }
   }
 
@@ -1373,40 +1205,38 @@ class _OrnamentalRingPainter extends CustomPainter {
 
 class _CompassTicksPainter extends CustomPainter {
   final bool isDark;
-
-  const _CompassTicksPainter({required this.isDark});
+  _CompassTicksPainter({required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
-    final tickColor = isDark ? AppColors.white : const Color(0xFF2D5F3F);
 
-    for (int i = 0; i < 360; i += 5) {
+    final paint = Paint()
+      ..color = isDark ? Colors.white24 : Colors.black12
+      ..strokeCap = StrokeCap.round;
+
+    for (int i = 0; i < 360; i += 2) {
       final angle = i * (math.pi / 180);
-      final isMajor = i % 90 == 0;
-      final isMinor = i % 30 == 0;
-      final innerR = isMajor
-          ? radius - 12
-          : (isMinor ? radius - 8 : radius - 5);
+      final bool isMajor = i % 30 == 0;
+      final bool isMedium = i % 10 == 0;
+
+      final double tickLen = isMajor ? 14 : (isMedium ? 8 : 4);
+      paint.strokeWidth = isMajor ? 2.0 : 1.0;
+      paint.color = isMajor
+          ? (isDark ? Colors.white54 : Colors.black54)
+          : (isDark ? Colors.white12 : Colors.black12);
 
       canvas.drawLine(
         Offset(
-          center.dx + math.cos(angle) * innerR,
-          center.dy + math.sin(angle) * innerR,
+          center.dx + math.cos(angle) * (radius - 5),
+          center.dy + math.sin(angle) * (radius - 5),
         ),
         Offset(
-          center.dx + math.cos(angle) * radius,
-          center.dy + math.sin(angle) * radius,
+          center.dx + math.cos(angle) * (radius - 5 - tickLen),
+          center.dy + math.sin(angle) * (radius - 5 - tickLen),
         ),
-        Paint()
-          ..color = isMajor
-              ? tickColor.withValues(alpha: 0.8)
-              : (isMinor
-                    ? tickColor.withValues(alpha: 0.4)
-                    : tickColor.withValues(alpha: 0.15))
-          ..strokeWidth = isMajor ? 2.0 : (isMinor ? 1.2 : 0.5)
-          ..strokeCap = StrokeCap.round,
+        paint,
       );
     }
   }
@@ -1419,81 +1249,16 @@ class _CompassTicksPainter extends CustomPainter {
 class _CompassNeedlePainter extends CustomPainter {
   final bool isDark;
 
-  const _CompassNeedlePainter({required this.isDark});
+  _CompassNeedlePainter({required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final halfW = size.width * 0.06;
-    final len = size.height * 0.42;
+    final len = size.width * 0.38;
+    final halfW = 10.0;
 
-    final primaryGreen = isDark ? AppColors.primaryDark : AppColors.primary;
-    final secondaryGreen = isDark
-        ? const Color(0xFF1B7A4A)
-        : const Color(0xFF3A9D6A);
-    final darkGreen = isDark
-        ? const Color(0xFF0F2D1E)
-        : const Color(0xFF2D7A4A);
-
-    canvas.drawPath(
-      Path()
-        ..moveTo(center.dx, center.dy - len)
-        ..lineTo(center.dx - halfW, center.dy)
-        ..lineTo(center.dx + halfW, center.dy)
-        ..close(),
-      Paint()
-        ..shader =
-            LinearGradient(
-              colors: [primaryGreen, secondaryGreen],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ).createShader(
-              Rect.fromPoints(
-                Offset(center.dx, center.dy - len),
-                Offset(center.dx, center.dy),
-              ),
-            ),
-    );
-
-    canvas.drawPath(
-      Path()
-        ..moveTo(center.dx, center.dy + len)
-        ..lineTo(center.dx - halfW, center.dy)
-        ..lineTo(center.dx + halfW, center.dy)
-        ..close(),
-      Paint()
-        ..shader =
-            LinearGradient(
-              colors: [darkGreen, secondaryGreen],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-            ).createShader(
-              Rect.fromPoints(
-                Offset(center.dx, center.dy),
-                Offset(center.dx, center.dy + len),
-              ),
-            ),
-    );
-
-    canvas.drawPath(
-      Path()
-        ..moveTo(center.dx + len, center.dy)
-        ..lineTo(center.dx, center.dy - halfW)
-        ..lineTo(center.dx, center.dy + halfW)
-        ..close(),
-      Paint()
-        ..shader =
-            LinearGradient(
-              colors: [primaryGreen, secondaryGreen],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ).createShader(
-              Rect.fromPoints(
-                Offset(center.dx, center.dy - halfW),
-                Offset(center.dx + len, center.dy + halfW),
-              ),
-            ),
-    );
+    final darkGreen = const Color(0xFF004D40);
+    final secondaryGreen = const Color(0xFF00897B);
 
     canvas.drawPath(
       Path()

@@ -62,7 +62,7 @@ class PrayerTime extends StatelessWidget {
             vertical: isTablet ? 10 : 8.h,
           ),
           itemCount: prayers.length,
-          separatorBuilder: (_, __) =>
+          separatorBuilder: (_, _) =>
               SizedBox(width: isTablet ? screenW * 0.018 : 12.w),
           itemBuilder: (context, i) {
             final p = prayers[i];
@@ -141,9 +141,9 @@ class PrayerTime extends StatelessWidget {
           vertical: isTablet ? 10 : 8.h,
         ),
         itemCount: 6,
-        separatorBuilder: (_, __) =>
+        separatorBuilder: (_, _) =>
             SizedBox(width: isTablet ? screenW * 0.018 : 12.w),
-        itemBuilder: (_, __) => SizedBox(
+        itemBuilder: (_, _) => SizedBox(
           width: itemW,
           child: Container(
             decoration: BoxDecoration(
