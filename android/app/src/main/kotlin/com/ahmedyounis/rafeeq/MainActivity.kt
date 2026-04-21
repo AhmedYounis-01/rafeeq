@@ -1,4 +1,4 @@
-package com.example.rafeeq
+package com.ahmedyounis.rafeeq
 
 import io.flutter.embedding.android.FlutterActivity
 

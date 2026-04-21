@@ -1,82 +1,51 @@
-import 'dart:io';
-import 'package:rafeeq/core/helpers/app_logger.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'dart:io';
 import 'package:rafeeq/bloc_observer.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
+import 'package:rafeeq/core/services/notification_service.dart';
 import 'package:rafeeq/rafeeq.dart';
 
 void main() async {
-  final watch = Stopwatch()..start();
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsFlutterBinding.ensureInitialized();
 
-  AppLogger.log(
-    'Startup: WidgetsBinding initialized in ${watch.elapsedMilliseconds}ms',
-    tag: 'STARTUP',
-  );
-
-  // Initialize easy_localization and StorageManager in parallel
-  final initWatch = Stopwatch()..start();
+  // Initialize EasyLocalization
   await EasyLocalization.ensureInitialized();
-  AppLogger.log(
-    'Startup: EasyLocalization initialized in ${initWatch.elapsedMilliseconds}ms',
-    tag: 'STARTUP',
-  );
-
-  initWatch.reset();
+  
+  // Initialize Storage
   await StorageManager.instance.init();
-  AppLogger.log(
-    'Startup: StorageManager initialized in ${initWatch.elapsedMilliseconds}ms',
-    tag: 'STARTUP',
-  );
+
+  // Initialize Notifications
+  await NotificationService.instance.init();
+  await NotificationService.instance.scheduleDailyNotifications();
 
   Bloc.observer = MyBlocObserver();
 
+  // Handle orientation
   if (Platform.isAndroid || Platform.isIOS) {
-    final view = WidgetsBinding.instance.platformDispatcher.views.first;
-    final shortSide = view.physicalSize.shortestSide / view.devicePixelRatio;
-
     try {
+      final view = WidgetsBinding.instance.platformDispatcher.views.first;
+      final shortSide = view.physicalSize.shortestSide / view.devicePixelRatio;
       await SystemChrome.setPreferredOrientations(
         shortSide >= 600
             ? DeviceOrientation.values
             : [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
       );
-    } catch (e) {
-      // Some Android 8.0 devices throw if the activity isn't fullscreen
-      AppLogger.error(
-        'setPreferredOrientations failed',
-        error: e,
-        tag: 'STARTUP',
-      );
-    }
+    } catch (_) {}
   }
 
+  // Minimal delay to let the engine breathe
+  await Future.delayed(const Duration(milliseconds: 500));
+
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('ar')],
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en'),
-        startLocale: const Locale('ar'),
-        child: const Rafeeq(),
-      ),
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      startLocale: const Locale('ar'),
+      child: const Rafeeq(),
     ),
   );
-  // runApp(
-  //   EasyLocalization(
-  //     supportedLocales: const [Locale('en'), Locale('ar')],
-  //     path: 'assets/translations',
-  //     fallbackLocale: const Locale('en'),
-  //     startLocale: const Locale('ar'),
-  //     child: const Rafeeq(),
-  //   ),
-  // );
 }

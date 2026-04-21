@@ -12,7 +12,7 @@ class ThemeCubit extends Cubit<ThemeMode> {
     if (index != null && index >= 0 && index < ThemeMode.values.length) {
       return ThemeMode.values[index];
     }
-    return ThemeMode.system;
+    return ThemeMode.light;
   }
 
   Future<void> setTheme(ThemeMode themeMode) async {

@@ -13,14 +13,13 @@ import 'package:rafeeq/features/qibla/ui/qibla_screen.dart';
 import 'package:rafeeq/features/quran/ui/quran_screen.dart';
 import 'package:rafeeq/features/tasbih/ui/tasbih_screen.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
+import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
   static const String onboarding = '/onboarding';
-  static const String signIn = '/signIn';
-  static const String signUp = '/signUp';
 
   // Navigation screens
   static const String home = '/home';
@@ -36,17 +35,23 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: "/home", // Changed from splash
+    initialLocation: "/",
     redirect: (context, state) {
       final hasSeenOnboarding = StorageManager.instance.hasSeenOnboarding();
       final isGoingToOnboarding = state.uri.toString() == onboarding;
+      final isGoingToSplash = state.uri.toString() == "/";
 
-      if (!hasSeenOnboarding && !isGoingToOnboarding) {
+      if (!hasSeenOnboarding && !isGoingToOnboarding && !isGoingToSplash) {
         return onboarding;
       }
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/',
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       ShellRoute(
         builder: (context, state, child) {
           return MainLayout(child: child);

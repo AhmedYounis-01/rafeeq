@@ -4,6 +4,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
@@ -13,6 +14,8 @@ import 'package:intl/intl.dart' as intl;
 import 'package:adhan/adhan.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:rafeeq/core/themes/app_colors.dart';
+import 'package:hijri/hijri_calendar.dart';
 
 class HomePrayerHeader extends StatelessWidget {
   const HomePrayerHeader({super.key});
@@ -41,8 +44,8 @@ class HomePrayerHeader extends StatelessWidget {
             colors: isDark
                 ? [const Color(0xFF061F14), const Color(0xFF0B3D26)]
                 : [
-                    const Color(0xFF4ADE80).withValues(alpha: 0.95),
-                    const Color(0xFF22C55E).withValues(alpha: 0.92),
+                    const Color(0xFF026635), // Deep Emerald
+                    const Color(0xFF028544), // Primary Emerald
                   ],
           ),
           boxShadow: [
@@ -139,24 +142,19 @@ class _Clock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    // في Light: onSurfaceVariant أو primary — حسب ما يناسبك
-    final accentColor = isDark
-        ? colorScheme.secondary
-        : colorScheme.primary; // أو colorScheme.onSurfaceVariant
-
     return BlocBuilder<TimerCubit, TimerState>(
-      buildWhen: (p, c) => p.currentTime != c.currentTime || p.amPm != c.amPm,
       builder: (context, s) {
+        final locale = context.locale.languageCode;
+        final timeStr = intl.DateFormat('hh:mm', locale).format(s.now);
+        final amPmStr = intl.DateFormat('a', locale).format(s.now);
+
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              s.currentTime,
+              timeStr,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: screenW * (isTablet ? 0.14 : 0.18),
@@ -171,9 +169,9 @@ class _Clock extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  s.amPm.toUpperCase(),
+                  amPmStr.toUpperCase(),
                   style: TextStyle(
-                    color: accentColor,
+                    color: AppColors.secondary,
                     fontWeight: FontWeight.w900,
                     fontSize: screenW * (isTablet ? 0.038 : 0.055),
                   ),
@@ -182,7 +180,7 @@ class _Clock extends StatelessWidget {
                   height: 3,
                   width: screenW * 0.03,
                   decoration: BoxDecoration(
-                    color: accentColor,
+                    color: AppColors.secondary,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -285,7 +283,7 @@ class _CalendarBtn extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      showDragHandle: true,
+      showDragHandle: false,
       isScrollControlled: true,
       constraints: BoxConstraints(maxWidth: isTablet ? 600 : double.infinity),
       builder: (_) => _CalendarModal(),
@@ -388,12 +386,12 @@ class _NextPrayerCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(screenW * (isTablet ? 0.018 : 0.022)),
       decoration: BoxDecoration(
-        color: accentColor.withValues(alpha: 0.22),
+        color: AppColors.primary.withValues(alpha: 0.22),
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
-        color: accentColor,
+        color: AppColors.secondary,
         size: screenW * (isTablet ? 0.032 : 0.05),
       ),
     );
@@ -478,7 +476,7 @@ class _CountdownState extends State<_Countdown> {
           child: Text(
             text,
             style: TextStyle(
-              color: accentColor,
+              color: AppColors.secondary,
               fontWeight: FontWeight.w800,
               fontFamily: 'monospace',
               fontSize: screenW * (widget.isTablet ? 0.02 : 0.028),
@@ -510,25 +508,30 @@ class _CalendarModalState extends State<_CalendarModal> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 8, 8),
+            padding: const EdgeInsets.fromLTRB(24, 20, 12, 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "home.calendar_title".tr(),
                   style: TextStyle(
-                    color: isDark ? Colors.white : colorScheme.onSurface,
+                    color: context.theme.colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
-                    fontSize: 20,
+                    fontSize: 22,
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(
-                    Icons.close_rounded,
-                    color: isDark
-                        ? Colors.white60
-                        : colorScheme.onSurfaceVariant,
+                Material(
+                  color: isDark
+                      ? Colors.white10
+                      : Colors.black.withValues(alpha: 0.05),
+                  shape: const CircleBorder(),
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: context.theme.colorScheme.onSurface,
+                      size: 22,
+                    ),
                   ),
                 ),
               ],
@@ -536,51 +539,179 @@ class _CalendarModalState extends State<_CalendarModal> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TableCalendar(
-                firstDay: DateTime.now().subtract(
-                  const Duration(days: 365 * 5),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.backgroundCardDark.withValues(alpha: 0.8)
+                      : AppColors.backgroundCard.withValues(alpha: 0.9),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white10
+                        : Colors.black.withValues(alpha: 0.05),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                lastDay: DateTime.now().add(const Duration(days: 365 * 5)),
-                focusedDay: _focusedDay,
-                locale: context.locale.languageCode,
-                selectedDayPredicate: (d) => isSameDay(_selectedDay, d),
-                onDaySelected: (s, f) => setState(() {
-                  _selectedDay = s;
-                  _focusedDay = f;
-                }),
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                  leftChevronIcon: Icon(
-                    Icons.chevron_left_rounded,
-                    color: colorScheme.primary,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: TableCalendar(
+                    firstDay: DateTime.now().subtract(
+                      const Duration(days: 365 * 5),
+                    ),
+                    lastDay: DateTime.now().add(const Duration(days: 365 * 5)),
+                    focusedDay: _focusedDay,
+                    locale: context.locale.languageCode,
+                    selectedDayPredicate: (d) => isSameDay(_selectedDay, d),
+                    onDaySelected: (s, f) => setState(() {
+                      _selectedDay = s;
+                      _focusedDay = f;
+                    }),
+                    weekendDays: const [DateTime.friday, DateTime.saturday],
+                    calendarBuilders: CalendarBuilders(
+                      defaultBuilder: (context, day, focusedDay) =>
+                          _buildDayCell(day, colorScheme, isDark),
+                      selectedBuilder: (context, day, focusedDay) =>
+                          _buildDayCell(
+                            day,
+                            colorScheme,
+                            isDark,
+                            isSelected: true,
+                          ),
+                      todayBuilder: (context, day, focusedDay) => _buildDayCell(
+                        day,
+                        colorScheme,
+                        isDark,
+                        isToday: true,
+                      ),
+                      outsideBuilder: (context, day, focusedDay) =>
+                          _buildDayCell(
+                            day,
+                            colorScheme,
+                            isDark,
+                            isOutside: true,
+                          ),
+                    ),
+                    daysOfWeekStyle: DaysOfWeekStyle(
+                      weekdayStyle: TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                      weekendStyle: TextStyle(
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                      titleTextStyle: TextStyle(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                      ),
+                      leftChevronIcon: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.chevron_left_rounded,
+                          color: colorScheme.primary,
+                          size: 20,
+                        ),
+                      ),
+                      rightChevronIcon: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.chevron_right_rounded,
+                          color: colorScheme.primary,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                    calendarStyle: const CalendarStyle(
+                      outsideDaysVisible: false,
+                    ),
+                    rowHeight: 52,
                   ),
-                  rightChevronIcon: Icon(
-                    Icons.chevron_right_rounded,
-                    color: colorScheme.primary,
-                  ),
-                ),
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: colorScheme.primary.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  todayTextStyle: TextStyle(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  outsideDaysVisible: false,
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDayCell(
+    DateTime day,
+    ColorScheme colorScheme,
+    bool isDark, {
+    bool isSelected = false,
+    bool isToday = false,
+    bool isOutside = false,
+  }) {
+    final hijriDate = HijriCalendar.fromDate(day);
+    return Container(
+      margin: const EdgeInsets.all(4),
+      alignment: Alignment.center,
+      decoration: isSelected
+          ? BoxDecoration(
+              color: colorScheme.primary,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: colorScheme.primary.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            )
+          : isToday
+          ? BoxDecoration(
+              border: Border.all(color: colorScheme.primary, width: 2),
+              shape: BoxShape.circle,
+            )
+          : null,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '${day.day}',
+            style: TextStyle(
+              color: isSelected
+                  ? Colors.white
+                  : (isOutside
+                        ? (isDark ? Colors.white24 : Colors.black26)
+                        : (isDark ? Colors.white : Colors.black87)),
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            '${hijriDate.hDay}',
+            style: TextStyle(
+              color: isSelected
+                  ? Colors.white.withValues(alpha: 0.7)
+                  : (isOutside
+                        ? (isDark ? Colors.white10 : Colors.black12)
+                        : (isDark ? Colors.white38 : Colors.black38)),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

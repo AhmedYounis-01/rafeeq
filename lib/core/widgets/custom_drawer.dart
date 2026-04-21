@@ -329,6 +329,7 @@ class CustomDrawer extends StatelessWidget {
             countryName: result['country'] as String,
           );
 
+          if (!context.mounted) return;
           final controller = AdvancedDrawerControllerProvider.of(context);
           if (controller != null) controller.hideDrawer();
         }

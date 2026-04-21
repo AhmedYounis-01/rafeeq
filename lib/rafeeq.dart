@@ -8,23 +8,8 @@ import 'package:rafeeq/core/routing/app_router.dart';
 import 'package:rafeeq/core/themes/logic/theme_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
 
-import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
-
-class Rafeeq extends StatefulWidget {
+class Rafeeq extends StatelessWidget {
   const Rafeeq({super.key});
-
-  @override
-  State<Rafeeq> createState() => _RafeeqState();
-}
-
-class _RafeeqState extends State<Rafeeq> {
-  final ValueNotifier<bool> _showSplash = ValueNotifier<bool>(true);
-
-  @override
-  void dispose() {
-    _showSplash.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,37 +25,22 @@ class _RafeeqState extends State<Rafeeq> {
         builder: (context, child) {
           return BlocBuilder<ThemeCubit, ThemeMode>(
             builder: (context, themeMode) {
-              return ValueListenableBuilder<bool>(
-                valueListenable: _showSplash,
-                builder: (context, showSplash, child) {
-                  return MaterialApp.router(
-                    title: AppConstants.appName,
-                    debugShowCheckedModeBanner: false,
-                    localizationsDelegates: context.localizationDelegates,
-                    supportedLocales: context.supportedLocales,
-                    locale: context.locale,
-                    theme: AppTheme.lightTheme,
-                    darkTheme: AppTheme.darkTheme,
-                    themeMode: themeMode,
-                    routerConfig: AppRouter.router,
-                    builder: (context, widget) {
-                      return MediaQuery(
-                        data: MediaQuery.of(
-                          context,
-                        ).copyWith(textScaler: const TextScaler.linear(1.0)),
-                        child: Stack(
-                          children: [
-                            widget!,
-                            if (showSplash)
-                              SplashOverlay(
-                                onComplete: () {
-                                  _showSplash.value = false;
-                                },
-                              ),
-                          ],
-                        ),
-                      );
-                    },
+              return MaterialApp.router(
+                title: AppConstants.appName,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: themeMode,
+                routerConfig: AppRouter.router,
+                builder: (context, widget) {
+                  return MediaQuery(
+                    data: MediaQuery.of(
+                      context,
+                    ).copyWith(textScaler: const TextScaler.linear(1.0)),
+                    child: widget!,
                   );
                 },
               );

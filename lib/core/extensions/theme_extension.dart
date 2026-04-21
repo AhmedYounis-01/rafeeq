@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_toast.dart';
 import '../themes/status_colors.dart';
 import '../themes/app_colors.dart';
 
@@ -30,13 +29,4 @@ extension ThemeExtension on BuildContext {
 
   // Quickly access the Primary Gradient
   LinearGradient get primaryGradient => AppColors.primaryGradient;
-
-  // Show custom toast
-  void showToast({
-    required String title,
-    required String message,
-    ToastType type = ToastType.success,
-  }) {
-    ToastUtils.show(context: this, title: title, message: message, type: type);
-  }
 }

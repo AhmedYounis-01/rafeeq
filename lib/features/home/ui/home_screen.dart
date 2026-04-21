@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const PrayerTime(),
               SizedBox(height: isTablet ? 20 : 16.h),
               const QuickParts(),
-              SizedBox(height: isTablet ? 105.h : 95.h),
+              SizedBox(height: isTablet ? 120.h : 110.h),
             ],
           ),
         ),
@@ -69,59 +69,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// // ─── Mobile Layout ────────────────────────────────────────────────────────────
-// class _MobileLayout extends StatelessWidget {
-//   const _MobileLayout();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView(
-//       physics: const AlwaysScrollableScrollPhysics(),
-//       children: [
-//         const HomePrayerHeader(),
-//         SizedBox(height: 16.h),
-//         const PrayerTime(),
-//         SizedBox(height: 16.h),
-//         const QuickParts(),
-//         SizedBox(height: 50.h),
-//       ],
-//     );
-//   }
-// }
-
-// // ─── Tablet Layout ─────────────────────────────────────────────────────────────
-// class _TabletLayout extends StatelessWidget {
-//   const _TabletLayout();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenW = MediaQuery.of(context).size.width;
-//     final screenH = MediaQuery.of(context).size.height;
-//     final pad = screenW * 0.025; // 2.5% padding جانبي
-
-//     return SingleChildScrollView(
-//       physics: const AlwaysScrollableScrollPhysics(),
-//       padding: EdgeInsets.symmetric(horizontal: pad, vertical: 12),
-//       child: Row(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           // ── العمود الأيمن (58%) ──────────────────────────────────────────
-//           Expanded(
-//             flex: 58,
-//             child: Column(
-//               children: [
-//                 const TabletHeader(),
-//                 SizedBox(height: screenH * 0.02),
-//                 const TabletPrayerGrid(),
-//               ],
-//             ),
-//           ),
-//           SizedBox(width: pad),
-//           // ── العمود الأيسر (42%) ──────────────────────────────────────────
-//           Expanded(flex: 42, child: const TabletQuickParts()),
-//         ],
-//       ),
-//     );
-//   }
-// }

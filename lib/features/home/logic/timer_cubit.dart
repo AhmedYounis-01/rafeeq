@@ -31,12 +31,14 @@ class TimerCubit extends Cubit<TimerState> {
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final now = DateTime.now();
-      final newTime = DateFormat('hh:mm').format(now);
-      final newAmPm = DateFormat('a').format(now);
-
-      if (newTime != state.currentTime || newAmPm != state.amPm) {
-        emit(TimerState(currentTime: newTime, amPm: newAmPm, now: now));
-      }
+      // We emit every second to keep the UI in sync and allow for reactive localization
+      emit(
+        TimerState(
+          currentTime: DateFormat('hh:mm').format(now),
+          amPm: DateFormat('a').format(now),
+          now: now,
+        ),
+      );
     });
   }
 
