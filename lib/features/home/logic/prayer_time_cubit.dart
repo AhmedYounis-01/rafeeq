@@ -34,7 +34,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       bool shouldTryAutomatic =
           !isManualLocation && isAuthorized && serviceEnabled;
 
-      if (isManual && !isManualLocation) {
+      if (isManual) {
         shouldTryAutomatic = true;
       }
 
@@ -46,9 +46,17 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
         try {
           await _fetchWithPermission(isManual: isManual, stopwatch: watch);
           return;
+        } on LocationPermanentlyDeniedException {
+          emit(
+            PrayerTimeLocationDenied(
+              message: 'تم رفض إذن الموقع نهائياً، يرجى تفعيله من الإعدادات',
+              isPermanentlyDenied: true,
+            ),
+          );
+          return;
         } catch (e) {
           AppLogger.warning(
-            'Automatic fetch failed, falling back to saved',
+            'Automatic fetch failed, falling back to saved: $e',
             tag: 'PrayerTimeCubit',
           );
         }

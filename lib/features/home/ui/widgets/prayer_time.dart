@@ -224,17 +224,29 @@ class PrayerTime extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  final result = await showDialog<Map<String, dynamic>>(
-                    context: context,
-                    builder: (_) => const LocationPickerDialog(),
+                  // 1. Try automatic GPS detection first
+                  await context.read<PrayerTimeCubit>().loadPrayerTimes(
+                    isManual: true,
                   );
-                  if (result != null && context.mounted) {
-                    context.read<PrayerTimeCubit>().updateLocationManually(
-                      latitude: result['lat'],
-                      longitude: result['lon'],
-                      cityName: result['city'],
-                      countryName: result['country'],
+
+                  if (!context.mounted) return;
+
+                  // 2. If GPS failed or was denied, show the map picker
+                  final state = context.read<PrayerTimeCubit>().state;
+                  if (state is! PrayerTimeLoaded) {
+                    final result = await showDialog<Map<String, dynamic>>(
+                      context: context,
+                      builder: (_) => const LocationPickerDialog(),
                     );
+
+                    if (result != null && context.mounted) {
+                      context.read<PrayerTimeCubit>().updateLocationManually(
+                        latitude: result['lat'],
+                        longitude: result['lon'],
+                        cityName: result['city'],
+                        countryName: result['country'],
+                      );
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

@@ -47,37 +47,44 @@ class LocationService {
     bool forceRequest = false,
     bool useLastKnownIfAvailable = false,
   }) async {
-    // 1. Check if the device location service is on
-    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw const LocationDeniedException('خدمة الموقع غير مفعّلة على جهازك');
+    // 1. Handle permission first
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      throw const LocationPermanentlyDeniedException();
     }
 
-    // 2. Handle permission
-    LocationPermission permission = await Geolocator.checkPermission();
     if (forceRequest || permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         throw const LocationDeniedException('تم رفض إذن الوصول إلى الموقع');
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      throw const LocationPermanentlyDeniedException();
+      if (permission == LocationPermission.deniedForever) {
+        throw const LocationPermanentlyDeniedException();
+      }
     }
 
     Position? position;
-
-    if (useLastKnownIfAvailable) {
-      position = await getLastKnownPosition();
+    try {
+      // 2. Get position (this triggers GPS resolution on Android if using High accuracy)
+      position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 15),
+        ),
+      );
+    } on LocationServiceDisabledException {
+      throw const LocationDeniedException(
+        'خدمة الموقع غير مفعّلة على جهازك، يرجى تفعيل الـ GPS',
+      );
+    } catch (e) {
+      if (useLastKnownIfAvailable) {
+        position = await getLastKnownPosition();
+      }
+      if (position == null) {
+        rethrow;
+      }
     }
-
-    // 3. Get position if last known is null or not requested
-    position ??= await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.medium, // Medium is usually faster than High
-        timeLimit: Duration(seconds: 10),
-      ),
-    );
 
     // 4. Reverse geocode using geocoding package for better results
     final (city, country) = await _reverseGeocode(
