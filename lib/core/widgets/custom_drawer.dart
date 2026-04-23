@@ -6,8 +6,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/logic/theme_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
-import 'package:rafeeq/core/widgets/location_picker_dialog.dart';
+import 'package:rafeeq/features/home/logic/prayer_time_state.dart';
 import 'package:rafeeq/core/widgets/shared_navigation.dart';
+import 'package:rafeeq/core/helpers/location_helper.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -315,21 +316,11 @@ class CustomDrawer extends StatelessWidget {
     return InkWell(
       onTap: () async {
         HapticFeedback.mediumImpact();
-        final result = await showDialog<Map<String, dynamic>>(
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => const LocationPickerDialog(),
-        );
+        await LocationHelper.showLocationOptions(context);
 
-        if (result != null && context.mounted) {
-          await context.read<PrayerTimeCubit>().updateLocationManually(
-            latitude: result['lat'] as double,
-            longitude: result['lon'] as double,
-            cityName: result['city'] as String,
-            countryName: result['country'] as String,
-          );
-
-          if (!context.mounted) return;
+        // Close drawer if we successfully loaded or manually picked
+        if (context.mounted &&
+            context.read<PrayerTimeCubit>().state is PrayerTimeLoaded) {
           final controller = AdvancedDrawerControllerProvider.of(context);
           if (controller != null) controller.hideDrawer();
         }

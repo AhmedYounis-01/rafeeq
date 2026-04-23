@@ -39,8 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) => RefreshIndicator(
           onRefresh: () async {
             HapticFeedback.mediumImpact();
+            // ✅ Only refresh data using current settings (don't force GPS if we have location)
             await context.read<PrayerTimeCubit>().loadPrayerTimes(
-              isManual: true,
+              isManual: false,
             );
           },
           child: ListView(

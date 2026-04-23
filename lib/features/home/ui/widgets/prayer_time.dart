@@ -2,6 +2,7 @@
 // FILE: features/home/ui/widgets/prayer_time.dart
 // ═══════════════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_state.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:adhan/adhan.dart';
-import 'package:rafeeq/core/widgets/location_picker_dialog.dart';
+import 'package:rafeeq/core/helpers/location_helper.dart';
 import 'package:rafeeq/features/home/ui/widgets/prayer_time_item.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:shimmer/shimmer.dart';
@@ -24,8 +25,12 @@ class PrayerTime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
-      // ✅ نعيد البناء فقط لما يتغير نوع الـ state
-      buildWhen: (prev, curr) => prev.runtimeType != curr.runtimeType,
+      // ✅ Allow rebuild when state changes or when location/times change within Loaded state
+      buildWhen: (prev, curr) =>
+          prev.runtimeType != curr.runtimeType ||
+          (prev is PrayerTimeLoaded &&
+              curr is PrayerTimeLoaded &&
+              prev != curr),
       builder: (context, state) => AnimatedSwitcher(
         duration: const Duration(milliseconds: 400),
         child: _build(context, state),
@@ -223,32 +228,7 @@ class PrayerTime extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () async {
-                  // 1. Try automatic GPS detection first
-                  await context.read<PrayerTimeCubit>().loadPrayerTimes(
-                    isManual: true,
-                  );
-
-                  if (!context.mounted) return;
-
-                  // 2. If GPS failed or was denied, show the map picker
-                  final state = context.read<PrayerTimeCubit>().state;
-                  if (state is! PrayerTimeLoaded) {
-                    final result = await showDialog<Map<String, dynamic>>(
-                      context: context,
-                      builder: (_) => const LocationPickerDialog(),
-                    );
-
-                    if (result != null && context.mounted) {
-                      context.read<PrayerTimeCubit>().updateLocationManually(
-                        latitude: result['lat'],
-                        longitude: result['lon'],
-                        cityName: result['city'],
-                        countryName: result['country'],
-                      );
-                    }
-                  }
-                },
+                onPressed: () => LocationHelper.showLocationOptions(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.colorScheme.primary,
                   foregroundColor: Colors.white,

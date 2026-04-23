@@ -145,7 +145,7 @@ class NotificationService {
       await _scheduleDaily(
         id: entry.id,
         hour: entry.hour,
-        title: 'رفيق 🤍',
+        title: 'رفيق',
         body: body,
         now: now,
       );

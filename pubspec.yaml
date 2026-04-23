@@ -40,12 +40,13 @@ dependencies:
   flutter_advanced_drawer: ^1.5.0
   flutter_bloc: ^9.1.1
   flutter_local_notifications: ^21.0.0
-  flutter_timezone: ^3.0.1
   flutter_map: ^7.0.2
   flutter_qiblah: ^3.2.0
   flutter_screenutil: ^5.9.3
   flutter_secure_storage: ^10.0.0
   flutter_svg: ^2.2.4
+  flutter_timezone: ^3.0.1
+  fluttertoast: ^9.0.0
   geocoding: ^3.0.0
   geolocator: ^14.0.2
   get_it: ^9.2.0
@@ -66,11 +67,11 @@ dependencies:
 
 # Dev dependencies
 dev_dependencies:
-  flutter_launcher_icons: ^0.13.1
   build_runner: ^2.4.6
 
   # Code generation (flutter_gen)
   flutter_gen_runner: ^5.4.0
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter

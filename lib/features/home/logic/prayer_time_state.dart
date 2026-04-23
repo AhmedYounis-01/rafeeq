@@ -1,6 +1,10 @@
 import 'package:adhan/adhan.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class PrayerTimeState {}
+abstract class PrayerTimeState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class PrayerTimeInitial extends PrayerTimeState {}
 
@@ -20,6 +24,15 @@ class PrayerTimeLoaded extends PrayerTimeState {
     required this.nextPrayer,
     required this.nextPrayerTime,
   });
+
+  @override
+  List<Object?> get props => [
+    prayerTimes,
+    cityName,
+    countryName,
+    nextPrayer,
+    nextPrayerTime,
+  ];
 }
 
 class PrayerTimeLocationDenied extends PrayerTimeState {
@@ -30,9 +43,15 @@ class PrayerTimeLocationDenied extends PrayerTimeState {
     required this.message,
     this.isPermanentlyDenied = false,
   });
+
+  @override
+  List<Object?> get props => [message, isPermanentlyDenied];
 }
 
 class PrayerTimeError extends PrayerTimeState {
   final String message;
   PrayerTimeError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

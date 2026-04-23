@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
@@ -16,6 +17,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:rafeeq/core/helpers/location_helper.dart';
 
 class HomePrayerHeader extends StatelessWidget {
   const HomePrayerHeader({super.key});
@@ -204,47 +206,50 @@ class _LocationInfo extends StatelessWidget {
     final fontSize =
         MediaQuery.of(context).size.width * (isTablet ? 0.019 : 0.031);
 
-    return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
-      buildWhen: (prev, curr) =>
-          prev.runtimeType != curr.runtimeType ||
-          (prev is PrayerTimeLoaded &&
-              curr is PrayerTimeLoaded &&
-              (prev.cityName != curr.cityName ||
-                  prev.countryName != curr.countryName)),
-      builder: (context, state) {
-        final loc = state is PrayerTimeLoaded
-            ? "${state.cityName}, ${state.countryName}"
-            : "home.loading_location".tr();
+    return InkWell(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        LocationHelper.showLocationOptions(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+        buildWhen: (prev, curr) => prev != curr,
+        builder: (context, state) {
+          final loc = state is PrayerTimeLoaded
+              ? "${state.cityName}, ${state.countryName}"
+              : "home.loading_location".tr();
 
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.location_on_rounded,
-              color: isDark ? colorScheme.secondary : Colors.white,
-              size:
-                  MediaQuery.of(context).size.width * (isTablet ? 0.025 : 0.04),
-            ),
-            const SizedBox(width: 6),
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth:
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.location_on_rounded,
+                color: isDark ? colorScheme.secondary : Colors.white,
+                size:
                     MediaQuery.of(context).size.width *
-                    (isTablet ? 0.28 : 0.38),
+                    (isTablet ? 0.025 : 0.04),
               ),
-              child: Text(
-                loc,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: isDark ? 0.9 : 0.95),
-                  fontWeight: FontWeight.w600,
-                  fontSize: fontSize,
+              const SizedBox(width: 6),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth:
+                      MediaQuery.of(context).size.width *
+                      (isTablet ? 0.28 : 0.38),
+                ),
+                child: Text(
+                  loc,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: isDark ? 0.9 : 0.95),
+                    fontWeight: FontWeight.w600,
+                    fontSize: fontSize,
+                  ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -267,7 +272,7 @@ class _CalendarBtn extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(isTablet ? 11 : 10),
           child: Icon(
-            Icons.calendar_month_rounded,
+            Icons.calendar_month_outlined,
             color: Colors.white,
             size: iconSize,
           ),
@@ -305,11 +310,7 @@ class _NextPrayerCard extends StatelessWidget {
     final fontSize = screenW * (isTablet ? 0.022 : 0.038);
 
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
-      buildWhen: (prev, curr) =>
-          prev.runtimeType != curr.runtimeType ||
-          (prev is PrayerTimeLoaded &&
-              curr is PrayerTimeLoaded &&
-              prev.nextPrayer != curr.nextPrayer),
+      buildWhen: (prev, curr) => prev != curr,
       builder: (context, state) {
         if (state is! PrayerTimeLoaded) return const SizedBox.shrink();
 
