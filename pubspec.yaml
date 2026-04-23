@@ -72,6 +72,7 @@ dev_dependencies:
   # Code generation (flutter_gen)
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.4
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
@@ -84,6 +85,24 @@ flutter_launcher_icons:
   adaptive_icon_background: "#11100F"
   adaptive_icon_foreground: "assets/images/rafeeq_logo.png"
   remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: "assets/images/rafeeq_logo.png"
+  color_dark: "#11100F"
+  image_dark: "assets/images/rafeeq_logo.png"
+
+  android_12:
+    image: "assets/images/rafeeq_logo.png"
+    icon_background_color: "#FFFFFF"
+    image_dark: "assets/images/rafeeq_logo.png"
+    icon_background_color_dark: "#11100F"
+
+  android: true
+  ios: true
+  android_gravity: center
+  ios_content_mode: center
+  fullscreen: false
 
 # Generated assets configuration
 flutter_gen:
