@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -69,6 +70,12 @@ class NotificationService {
 
     // تهيئة المناطق الزمنية
     tz.initializeTimeZones();
+    try {
+      final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timeZoneName));
+    } catch (_) {
+      // Fallback to UTC if timezone detection fails
+    }
 
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -92,12 +99,24 @@ class NotificationService {
     );
 
     // طلب إذن الإشعارات على Android 13+
+    // طلب إذن الإشعارات وإعداد القنوات للأندرويد
     final androidPlugin = _plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
     if (androidPlugin != null) {
       await androidPlugin.requestNotificationsPermission();
+
+      const channel = AndroidNotificationChannel(
+        'rafeeq_daily_reminders',
+        'تذكيرات رفيق اليومية',
+        description: 'إشعارات يومية للقرآن والأذكار والدعاء',
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+      );
+      await androidPlugin.createNotificationChannel(channel);
+      await androidPlugin.requestExactAlarmsPermission();
     }
 
     _initialized = true;
