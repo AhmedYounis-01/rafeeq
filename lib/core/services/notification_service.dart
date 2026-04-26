@@ -50,17 +50,9 @@ class NotificationService {
 
   // ─────────────── أوقات الإشعارات ومعرّفاتها ───────────────
   static const List<_ScheduleEntry> _schedule = [
-    _ScheduleEntry(id: 100, hour: 7, type: _MsgType.general), // صباح — قرآن
-    _ScheduleEntry(id: 101, hour: 9, type: _MsgType.extra), // ضحى — ذكر
-    _ScheduleEntry(id: 102, hour: 11, type: _MsgType.dua), // قبل الظهر — دعاء
-    _ScheduleEntry(
-      id: 103,
-      hour: 13,
-      type: _MsgType.general,
-    ), // بعد الظهر — قرآن
-    _ScheduleEntry(id: 104, hour: 16, type: _MsgType.extra), // عصر — ذكر
-    _ScheduleEntry(id: 105, hour: 19, type: _MsgType.dua), // مغرب — دعاء
-    _ScheduleEntry(id: 106, hour: 21, type: _MsgType.general), // ليل — قرآن
+    _ScheduleEntry(id: 100, hour: 9, type: _MsgType.general), // صباح — قرآن
+    _ScheduleEntry(id: 101, hour: 13, type: _MsgType.dua), // بعد الظهر — دعاء
+    _ScheduleEntry(id: 102, hour: 21, type: _MsgType.extra), // ليل — ذكر
   ];
 
   // ═══════════════════════ التهيئة ═══════════════════════
