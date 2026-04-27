@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'dart:io';
 import 'package:rafeeq/bloc_observer.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
+import 'package:rafeeq/core/services/adhan_scheduler_service.dart';
 import 'package:rafeeq/core/services/notification_service.dart';
 import 'package:rafeeq/rafeeq.dart';
 
@@ -13,12 +14,17 @@ void main() async {
 
   // Initialize EasyLocalization
   await EasyLocalization.ensureInitialized();
-  
+
   // Initialize Storage
   await StorageManager.instance.init();
 
   // Initialize Notifications
   await NotificationService.instance.init();
+
+  // Schedule Adhan notifications (7 days ahead)
+  await AdhanSchedulerService.instance.scheduleAdhanNotifications();
+
+  // Schedule daily reminders (IDs 100-102 only)
   await NotificationService.instance.scheduleDailyNotifications();
 
   Bloc.observer = MyBlocObserver();

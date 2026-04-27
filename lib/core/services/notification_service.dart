@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
+import 'package:rafeeq/core/services/adhan_scheduler_service.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -99,7 +100,8 @@ class NotificationService {
     if (androidPlugin != null) {
       await androidPlugin.requestNotificationsPermission();
 
-      const channel = AndroidNotificationChannel(
+      // Daily reminders channel
+      const remindersChannel = AndroidNotificationChannel(
         'rafeeq_daily_reminders',
         'تذكيرات رفيق اليومية',
         description: 'إشعارات يومية للقرآن والأذكار والدعاء',
@@ -107,7 +109,20 @@ class NotificationService {
         playSound: true,
         enableVibration: true,
       );
-      await androidPlugin.createNotificationChannel(channel);
+      await androidPlugin.createNotificationChannel(remindersChannel);
+
+      // Adhan channel with custom sound
+      const adhanChannel = AndroidNotificationChannel(
+        'adhan_channel',
+        'إشعارات الأذان',
+        description: 'تشغيل الأذان عند دخول وقت الصلاة',
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+        sound: RawResourceAndroidNotificationSound('adhan'),
+      );
+      await androidPlugin.createNotificationChannel(adhanChannel);
+
       await androidPlugin.requestExactAlarmsPermission();
     }
 
@@ -120,14 +135,21 @@ class NotificationService {
       'Notification tapped: ${response.payload}',
       tag: 'NOTIFICATION',
     );
+
+    // Route adhan taps to the adhan service
+    if (response.payload == 'adhan_tap') {
+      AdhanSchedulerService.instance.handleNotificationTap(response.payload);
+    }
   }
 
   // ═══════════════════════ جدولة الإشعارات ═══════════════════════
 
   /// يلغي كل الإشعارات القديمة ويجدول إشعارات يومية متكررة
   Future<void> scheduleDailyNotifications() async {
-    // إلغاء أي إشعارات قديمة
-    await _plugin.cancelAll();
+    // Cancel only daily reminder IDs (100, 101, 102) — NOT adhan IDs
+    for (final entry in _schedule) {
+      await _plugin.cancel(id: entry.id);
+    }
 
     final now = tz.TZDateTime.now(tz.local);
     final dayOfYear = _dayOfYear(now);

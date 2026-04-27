@@ -1,7 +1,9 @@
 import 'package:adhan/adhan.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rafeeq/core/services/adhan_scheduler_service.dart';
 import 'package:rafeeq/core/services/location_service.dart';
+import 'package:rafeeq/core/utils/prayer_time_calculator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'prayer_time_state.dart';
@@ -99,7 +101,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   }) async {
     final result = await LocationService.requestAndGetLocation(
       forceRequest: isManual,
-      useLastKnownIfAvailable: !isManual, // Use last known if it's auto-load
+      useLastKnownIfAvailable: !isManual,
     );
 
     final prefs = await SharedPreferences.getInstance();
@@ -108,6 +110,9 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     await prefs.setString('location_city', result.cityName);
     await prefs.setString('location_country', result.countryName);
     await prefs.setBool('is_manual_location', false);
+
+    // Re-schedule adhan notifications for new location
+    await AdhanSchedulerService.instance.scheduleAdhanNotifications();
 
     await _emitFromCoordinates(
       latitude: result.latitude,
@@ -133,6 +138,9 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       await prefs.setString('location_country', countryName);
       await prefs.setBool('is_manual_location', true);
 
+      // Re-schedule adhan notifications for new location
+      await AdhanSchedulerService.instance.scheduleAdhanNotifications();
+
       await _emitFromCoordinates(
         latitude: latitude,
         longitude: longitude,
@@ -152,12 +160,11 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     required String countryName,
     required Stopwatch stopwatch,
   }) async {
-    // Reverting compute for now as per ChatGPT feedback (to prove if it's needed)
-    final result = _calculatePrayerTimes({
-      'lat': latitude,
-      'lon': longitude,
-      'now': DateTime.now(),
-    });
+    final result = PrayerTimeCalculator.calculateWithNextPrayer(
+      lat: latitude,
+      lon: longitude,
+      now: DateTime.now(),
+    );
 
     emit(
       PrayerTimeLoaded(
@@ -172,48 +179,5 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       'Performance: Prayer times loaded in ${stopwatch.elapsedMilliseconds}ms',
       tag: 'PrayerTimeCubit',
     );
-  }
-
-  static Map<String, dynamic> _calculatePrayerTimes(Map<String, dynamic> data) {
-    final lat = data['lat'] as double;
-    final lon = data['lon'] as double;
-    final now = data['now'] as DateTime;
-
-    final coordinates = Coordinates(lat, lon);
-    CalculationParameters params;
-    if (lat >= 10 && lat <= 45 && lon >= 25 && lon <= 65) {
-      params = CalculationMethod.muslim_world_league.getParameters();
-    } else if (lat >= 22 && lat <= 32 && lon >= 25 && lon <= 37) {
-      params = CalculationMethod.egyptian.getParameters();
-    } else if (lon <= -60) {
-      params = CalculationMethod.north_america.getParameters();
-    } else {
-      params = CalculationMethod.muslim_world_league.getParameters();
-    }
-
-    final date = DateComponents.from(now);
-    final prayerTimes = PrayerTimes(coordinates, date, params);
-
-    Prayer nextPrayer = prayerTimes.nextPrayer();
-    DateTime? nextPrayerTime;
-
-    if (nextPrayer != Prayer.none) {
-      nextPrayerTime = prayerTimes.timeForPrayer(nextPrayer);
-    } else {
-      final tomorrow = now.add(const Duration(days: 1));
-      final tomorrowPrayers = PrayerTimes(
-        coordinates,
-        DateComponents.from(tomorrow),
-        params,
-      );
-      nextPrayer = Prayer.fajr;
-      nextPrayerTime = tomorrowPrayers.fajr;
-    }
-
-    return {
-      'prayerTimes': prayerTimes,
-      'nextPrayer': nextPrayer,
-      'nextPrayerTime': nextPrayerTime,
-    };
   }
 }
