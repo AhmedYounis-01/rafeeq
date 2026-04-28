@@ -56,17 +56,15 @@ class _AsmaAllahScreenState extends State<AsmaAllahScreen> {
                   backgroundColor: context.colorScheme.surface,
                   elevation: 0,
                   scrolledUnderElevation: 0,
-                  leading: const SizedBox.shrink(),
-                  actions: [
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 20.sp,
-                        color: context.colorScheme.onSurface,
-                      ),
+                  leading: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 20.sp,
+                      color: context.colorScheme.onSurface,
                     ),
-                  ],
+                  ),
+
                   title: Text(
                     'quick_parts_screens.dua_title'.tr(),
                     style: TextStyle(
@@ -87,7 +85,7 @@ class _AsmaAllahScreenState extends State<AsmaAllahScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'quick_parts_screens.dua.verse'.tr(),
+                          'quick_parts_screens.dua_header'.tr(),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.amiri(
                             fontSize: 19.sp,
@@ -113,7 +111,12 @@ class _AsmaAllahScreenState extends State<AsmaAllahScreen> {
                       mainAxisSpacing: 12.h,
                     ),
                     delegate: SliverChildBuilderDelegate((context, index) {
-                      return _AsmaCard(item: items[index], primary: primary);
+                      return _AsmaCard(
+                        item: items[index],
+                        primary: primary,
+                        items: items,
+                        index: index,
+                      );
                     }, childCount: items.length),
                   ),
                 ),
@@ -129,8 +132,15 @@ class _AsmaAllahScreenState extends State<AsmaAllahScreen> {
 class _AsmaCard extends StatelessWidget {
   final AsmaAllahItem item;
   final Color primary;
+  final List<AsmaAllahItem> items;
+  final int index;
 
-  const _AsmaCard({required this.item, required this.primary});
+  const _AsmaCard({
+    required this.item,
+    required this.primary,
+    required this.items,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -180,18 +190,34 @@ class _AsmaCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
       ),
-      builder: (context) => _AsmaDetailsSheet(item: item),
+      builder: (context) =>
+          _AsmaDetailsSheet(items: items, initialIndex: index),
     );
   }
 }
 
-class _AsmaDetailsSheet extends StatelessWidget {
-  final AsmaAllahItem item;
+class _AsmaDetailsSheet extends StatefulWidget {
+  final List<AsmaAllahItem> items;
+  final int initialIndex;
 
-  const _AsmaDetailsSheet({required this.item});
+  const _AsmaDetailsSheet({required this.items, required this.initialIndex});
+
+  @override
+  State<_AsmaDetailsSheet> createState() => _AsmaDetailsSheetState();
+}
+
+class _AsmaDetailsSheetState extends State<_AsmaDetailsSheet> {
+  late int currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final item = widget.items[currentIndex];
     final isArabic = context.locale.languageCode == 'ar';
 
     return Padding(
@@ -211,46 +237,54 @@ class _AsmaDetailsSheet extends StatelessWidget {
           SizedBox(height: 40.h),
 
           // Name Display Card
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 25.h),
-            decoration: BoxDecoration(
-              color: context.colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  isArabic ? item.ar : item.en,
-                  style: GoogleFonts.amiri(
-                    fontSize: isArabic ? 48.sp : 36.sp,
-                    fontWeight: FontWeight.bold,
-                    color: context.colorScheme.onSurface,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Container(
+              key: ValueKey(currentIndex),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 25.h),
+              decoration: BoxDecoration(
+                color: context.colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    isArabic ? item.ar : item.en,
+                    style: GoogleFonts.amiri(
+                      fontSize: isArabic ? 48.sp : 36.sp,
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface,
+                    ),
                   ),
-                ),
-                Text(
-                  isArabic ? item.en : item.ar,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: context.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
+                  Text(
+                    isArabic ? item.en : item.ar,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
           SizedBox(height: 35.h),
 
           // Description Text
-          Text(
-            isArabic ? item.descriptionAr : item.descriptionEn,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 17.sp,
-              height: 1.6,
-              fontWeight: FontWeight.bold,
-              color: context.colorScheme.onSurface.withAlpha(200),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              isArabic ? item.descriptionAr : item.descriptionEn,
+              key: ValueKey('desc_$currentIndex'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 17.sp,
+                height: 1.6,
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.onSurface.withAlpha(200),
+              ),
             ),
           ),
 
@@ -258,7 +292,11 @@ class _AsmaDetailsSheet extends StatelessWidget {
 
           // Action Button
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              setState(() {
+                currentIndex = (currentIndex + 1) % widget.items.length;
+              });
+            },
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
@@ -275,10 +313,14 @@ class _AsmaDetailsSheet extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.arrow_back, color: Colors.white, size: 20.sp),
+                  Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.white,
+                    size: 16.sp,
+                  ),
                   const Spacer(),
                   Text(
-                    isArabic ? "إغلاق" : "Close",
+                    isArabic ? "التالي" : "Next",
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
