@@ -9,6 +9,7 @@ import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_state.dart';
 import 'package:rafeeq/core/widgets/shared_navigation.dart';
 import 'package:rafeeq/core/helpers/location_helper.dart';
+import 'package:rafeeq/core/services/adhan_scheduler_service.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -55,7 +56,13 @@ class CustomDrawer extends StatelessWidget {
                     child: _buildThemeToggle(context),
                   ),
                   SizedBox(height: 32.h),
-
+                  _buildSection(
+                    context,
+                    title: "drawer.adhan_sound".tr(),
+                    icon: Icons.volume_up_rounded,
+                    child: _buildAdhanToggle(context),
+                  ),
+                  SizedBox(height: 32.h),
                   _buildSection(
                     context,
                     title: "home.select_location".tr(),
@@ -306,6 +313,60 @@ class CustomDrawer extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // ====================== Adhan Toggle ======================
+  Widget _buildAdhanToggle(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return FutureBuilder<bool>(
+      future: AdhanSchedulerService.instance.isAdhanSoundEnabled(),
+      builder: (context, futureSnapshot) {
+        return StreamBuilder<bool>(
+          stream: AdhanSchedulerService.instance.soundEnabledStream,
+          initialData: futureSnapshot.data ?? true,
+          builder: (context, snapshot) {
+            final isEnabled = snapshot.data ?? true;
+
+            return Container(
+              height: 64.h,
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.55,
+                ),
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildToggleOption(
+                      context,
+                      "drawer.adhan_sound_enabled".tr(),
+                      isEnabled,
+                      () => AdhanSchedulerService.instance.setAdhanSoundEnabled(
+                        true,
+                      ),
+                      Icons.volume_up_rounded,
+                    ),
+                  ),
+                  Expanded(
+                    child: _buildToggleOption(
+                      context,
+                      "drawer.adhan_sound_disabled".tr(),
+                      !isEnabled,
+                      () => AdhanSchedulerService.instance.setAdhanSoundEnabled(
+                        false,
+                      ),
+                      Icons.volume_off_rounded,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

@@ -79,14 +79,17 @@
   },
   "drawer": {
     "title": "Rafeeq",
-    "about": "Your spiritual companion throughout the day. It provides you with accurate prayer times, the Holy Quran, Qibla direction, and many other features.",
+    "about": "Your all-in-one spiritual companion. Get accurate prayer times with Azan notifications, listen to the Holy Quran, find the Qibla direction, and stay connected with daily supplications and digital Tasbeeh",
     "language": "Language",
     "theme": "Theme",
     "light": "Light",
     "dark": "Dark",
     "location": "Update Location",
     "english": "English",
-    "arabic": "العربية"
+    "arabic": "العربية",
+    "adhan_sound": "Azan Sound",
+    "adhan_sound_enabled": "Enabled",
+    "adhan_sound_disabled": "Disabled"
   },
   "qibla": {
     "title": "Prayer Qiblah",

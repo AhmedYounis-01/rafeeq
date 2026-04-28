@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adhan/adhan.dart';
@@ -20,6 +21,12 @@ class AdhanSchedulerService {
 
   /// Audio player for full adhan on notification tap (iOS mainly)
   AudioPlayer? _audioPlayer;
+
+  /// Adhan sound toggle (for scheduled notifications)
+  static const String _soundEnabledKey = 'adhan_sound_enabled';
+  final StreamController<bool> _soundEnabledController =
+      StreamController<bool>.broadcast();
+  Stream<bool> get soundEnabledStream => _soundEnabledController.stream;
 
   /// Schedule 7 days × 5 prayers = 35 notifications (IDs 200–234)
   /// iOS allows max 64 pending notifications, so 35 adhan + 3 daily = 38 ✅
@@ -45,6 +52,29 @@ class AdhanSchedulerService {
     Prayer.maghrib: 'المغرب',
     Prayer.isha: 'العشاء',
   };
+
+  // ═══════════════════════ Setting Global Status ═══════════════════════
+
+  /// Is Adhan sound enabled for scheduled notifications? (default: true)
+  Future<bool> isAdhanSoundEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_soundEnabledKey) ?? true;
+  }
+
+  /// Toggle Adhan sound and re-schedule notifications to apply the change
+  Future<void> setAdhanSoundEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_soundEnabledKey, enabled);
+    _soundEnabledController.add(enabled);
+
+    AppLogger.log(
+      'Adhan sound toggled: $enabled — Re-scheduling...',
+      tag: 'ADHAN',
+    );
+
+    // Apply the change immediately by re-scheduling
+    await scheduleAdhanNotifications();
+  }
 
   // ═══════════════════════ الجدولة ═══════════════════════
 
@@ -135,29 +165,32 @@ class AdhanSchedulerService {
     required DateTime scheduledTime,
   }) async {
     final tzTime = tz_lib.TZDateTime.from(scheduledTime, tz_lib.local);
+    final soundEnabled = await isAdhanSoundEnabled();
 
     // Android: full adhan from raw resource
-    const androidDetails = AndroidNotificationDetails(
+    final androidDetails = AndroidNotificationDetails(
       'adhan_channel',
       'إشعارات الأذان',
       channelDescription: 'تشغيل الأذان عند دخول وقت الصلاة',
       importance: Importance.max,
       priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound('adhan'),
-      playSound: true,
+      sound: soundEnabled
+          ? const RawResourceAndroidNotificationSound('adhan')
+          : null,
+      playSound: soundEnabled,
       enableVibration: true,
       category: AndroidNotificationCategory.alarm,
     );
 
     // iOS: short adhan clip (must be ≤30s .aiff/.caf/.wav)
-    const iosDetails = DarwinNotificationDetails(
-      sound: 'adhan.aiff',
+    final iosDetails = DarwinNotificationDetails(
+      sound: soundEnabled ? 'adhan.aiff' : null,
       presentAlert: true,
       presentBadge: true,
-      presentSound: true,
+      presentSound: soundEnabled,
     );
 
-    const details = NotificationDetails(
+    final details = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
