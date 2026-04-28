@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:adhan/adhan.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,14 @@ import 'prayer_time_state.dart';
 
 class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   PrayerTimeCubit() : super(PrayerTimeInitial());
+
+  Timer? _adhanTimer;
+
+  @override
+  Future<void> close() {
+    _adhanTimer?.cancel();
+    return super.close();
+  }
 
   Future<void> loadPrayerTimes({bool isManual = false}) async {
     if (state is PrayerTimeLoading && !isManual) return;
@@ -164,11 +173,14 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     required String countryName,
     required Stopwatch stopwatch,
   }) async {
+    final now = tz.TZDateTime.now(tz.local);
     final result = PrayerTimeCalculator.calculateWithNextPrayer(
       lat: latitude,
       lon: longitude,
-      now: tz.TZDateTime.now(tz.local),
+      now: now,
     );
+
+    final nextPrayerTime = result['nextPrayerTime'] as DateTime;
 
     emit(
       PrayerTimeLoaded(
@@ -176,12 +188,42 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
         cityName: cityName,
         countryName: countryName,
         nextPrayer: result['nextPrayer'] as Prayer,
-        nextPrayerTime: result['nextPrayerTime'] as DateTime,
+        nextPrayerTime: nextPrayerTime,
       ),
     );
+
+    // Schedule foreground adhan trigger
+    _scheduleForegroundAdhan(nextPrayerTime);
+
     AppLogger.log(
       'Performance: Prayer times loaded in ${stopwatch.elapsedMilliseconds}ms',
       tag: 'PrayerTimeCubit',
     );
+  }
+
+  /// Schedules a timer to play adhan automatically if the app is open
+  void _scheduleForegroundAdhan(DateTime time) {
+    _adhanTimer?.cancel();
+
+    final now = tz.TZDateTime.now(tz.local);
+    final duration = time.difference(now);
+
+    if (duration.isNegative) return;
+
+    AppLogger.log(
+      'Scheduling foreground adhan in ${duration.inMinutes}m ${duration.inSeconds % 60}s',
+      tag: 'PrayerTimeCubit',
+    );
+
+    _adhanTimer = Timer(duration, () async {
+      final soundEnabled = await AdhanSchedulerService.instance
+          .isAdhanSoundEnabled();
+      if (soundEnabled) {
+        AppLogger.log('Foreground Adhan triggered!', tag: 'PrayerTimeCubit');
+        await AdhanSchedulerService.instance.playFullAdhan();
+      }
+      // Reload UI and schedule next timer
+      loadPrayerTimes();
+    });
   }
 }

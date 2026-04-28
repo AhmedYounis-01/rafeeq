@@ -101,26 +101,34 @@ class AdhanSchedulerService {
       await _plugin.cancel(id: id);
     }
 
-    final now = DateTime.now();
+    final now = tz_lib.TZDateTime.now(tz_lib.local);
     int notificationId = _baseId;
     int scheduledCount = 0;
 
     // Schedule for 7 days (today + 6 more days)
     for (int day = 0; day < _scheduleDays; day++) {
-      final date = now.add(Duration(days: day));
+      // Calculate times using a plain DateTime for the adhan pkg,
+      // but compare using TZDateTime.
+      final checkDate = now.add(Duration(days: day));
       final prayerTimes = PrayerTimeCalculator.calculateForDate(
         lat: lat,
         lon: lon,
-        date: date,
+        date: checkDate,
       );
 
       for (int i = 0; i < _adhanPrayers.length; i++) {
         final prayer = _adhanPrayers[i];
         final time = prayerTimes.timeForPrayer(prayer);
-        if (time == null) continue;
+        if (time == null) {
+          notificationId++;
+          continue;
+        }
 
-        // Skip times that already passed
-        if (time.isBefore(now)) {
+        // Convert the adhan result to a TZDateTime for comparison
+        final tzPrayerTime = PrayerTimeCalculator.toTZ(time);
+
+        // Skip times that already passed (with 1-min grace)
+        if (tzPrayerTime.isBefore(now.subtract(const Duration(minutes: 1)))) {
           notificationId++;
           continue;
         }
@@ -129,7 +137,7 @@ class AdhanSchedulerService {
         await _scheduleAdhanNotification(
           id: notificationId,
           prayerName: prayerName,
-          scheduledTime: time,
+          scheduledTime: tzPrayerTime,
         );
         scheduledCount++;
         notificationId++;
@@ -137,8 +145,7 @@ class AdhanSchedulerService {
     }
 
     AppLogger.log(
-      'Adhan: $scheduledCount notifications scheduled for $_scheduleDays days '
-      '(lat=$lat, lon=$lon)',
+      'Adhan: $scheduledCount notifications scheduled for $_scheduleDays days',
       tag: 'ADHAN',
     );
   }
@@ -164,7 +171,12 @@ class AdhanSchedulerService {
     required String prayerName,
     required DateTime scheduledTime,
   }) async {
-    final tzTime = tz_lib.TZDateTime.from(scheduledTime, tz_lib.local);
+    // Use TZDateTime.from to ensure the moment is correctly Translated
+    // from the system-local (Standard) to the app-local (DST).
+    final tz_lib.TZDateTime tzTime = scheduledTime is tz_lib.TZDateTime
+        ? scheduledTime
+        : tz_lib.TZDateTime.from(scheduledTime, tz_lib.local);
+
     final soundEnabled = await isAdhanSoundEnabled();
 
     // Android: full adhan from raw resource
@@ -173,13 +185,14 @@ class AdhanSchedulerService {
       'إشعارات الأذان',
       channelDescription: 'تشغيل الأذان عند دخول وقت الصلاة',
       importance: Importance.max,
-      priority: Priority.high,
+      priority: Priority.max,
       sound: soundEnabled
           ? const RawResourceAndroidNotificationSound('adhan')
           : null,
       playSound: soundEnabled,
       enableVibration: true,
       category: AndroidNotificationCategory.alarm,
+      fullScreenIntent: true,
     );
 
     // iOS: short adhan clip (must be ≤30s .aiff/.caf/.wav)

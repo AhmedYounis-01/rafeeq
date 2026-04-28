@@ -497,8 +497,8 @@ class _BottomNavItem extends StatelessWidget {
                     height: cfg.iconSize,
                     colorFilter: ColorFilter.mode(
                       isSelected
-                          ? context.colorScheme.primary
-                          : AppColors.navUnselected.withValues(alpha: 0.9),
+                          ? context.theme.colorScheme.primary
+                          : context.theme.colorScheme.onSurface,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -510,8 +510,8 @@ class _BottomNavItem extends StatelessWidget {
                     fontSize: cfg.labelFont - 1,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     color: isSelected
-                        ? context.colorScheme.primary
-                        : AppColors.navUnselected,
+                        ? context.theme.colorScheme.primary
+                        : context.theme.colorScheme.onSurface,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
