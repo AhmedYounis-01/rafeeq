@@ -82,7 +82,7 @@ class AdhanSchedulerService {
   /// Also refreshes timezone to handle DST changes.
   Future<void> scheduleAdhanNotifications() async {
     // Refresh timezone on every schedule call (handles DST changes)
-    await _refreshTimezone();
+    await refreshTimezone();
 
     final prefs = await SharedPreferences.getInstance();
     final lat = prefs.getDouble('location_lat');
@@ -144,7 +144,7 @@ class AdhanSchedulerService {
   }
 
   /// Refresh timezone to pick up DST changes
-  Future<void> _refreshTimezone() async {
+  Future<void> refreshTimezone() async {
     try {
       tz.initializeTimeZones();
       final String timeZoneName = await FlutterTimezone.getLocalTimezone();

@@ -6,6 +6,7 @@ import 'package:rafeeq/core/services/location_service.dart';
 import 'package:rafeeq/core/utils/prayer_time_calculator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'prayer_time_state.dart';
 
 class PrayerTimeCubit extends Cubit<PrayerTimeState> {
@@ -17,6 +18,9 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     final watch = Stopwatch()..start();
     emit(PrayerTimeLoading());
     try {
+      // Refresh timezone to pick up DST changes (Egypt etc.)
+      await AdhanSchedulerService.instance.refreshTimezone();
+
       final prefs = await SharedPreferences.getInstance();
       final hasAskedBefore = prefs.getBool('has_asked_location') ?? false;
 
@@ -163,7 +167,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     final result = PrayerTimeCalculator.calculateWithNextPrayer(
       lat: latitude,
       lon: longitude,
-      now: DateTime.now(),
+      now: tz.TZDateTime.now(tz.local),
     );
 
     emit(

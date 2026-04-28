@@ -14,6 +14,7 @@ import 'package:rafeeq/features/home/ui/widgets/prayer_time_item.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:rafeeq/core/utils/prayer_time_calculator.dart';
 
 class PrayerTime extends StatelessWidget {
   const PrayerTime({super.key});
@@ -70,6 +71,9 @@ class PrayerTime extends StatelessWidget {
               SizedBox(width: isTablet ? screenW * 0.018 : 12.w),
           itemBuilder: (context, i) {
             final p = prayers[i];
+            // Ensure time is DST-aware for display
+            final displayTime = PrayerTimeCalculator.toTZ(p.time);
+
             return SizedBox(
               width: itemW,
               child: PrayerTimesItem(
@@ -77,7 +81,7 @@ class PrayerTime extends StatelessWidget {
                 title: p.name,
                 time: intl.DateFormat.jm(
                   context.locale.languageCode,
-                ).format(p.time),
+                ).format(displayTime),
                 isNext: state.nextPrayer == p.prayer,
               ),
             );

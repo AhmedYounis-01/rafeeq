@@ -1,4 +1,5 @@
 import 'package:adhan/adhan.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 /// Shared utility for calculating prayer times — used by both
 /// [PrayerTimeCubit] and [AdhanSchedulerService] to avoid duplication.
@@ -32,8 +33,13 @@ class PrayerTimeCalculator {
     return PrayerTimes(coordinates, DateComponents.from(date), params);
   }
 
+  /// Converts a [DateTime] (usually UTC from adhan pkg) to [tz.TZDateTime] using [tz.local].
+  static tz.TZDateTime toTZ(DateTime dateTime) {
+    return tz.TZDateTime.from(dateTime, tz.local);
+  }
+
   /// Calculate prayer times and determine the next prayer.
-  /// Returns a map with `prayerTimes`, `nextPrayer`, and `nextPrayerTime`.
+  /// Returns a map with `prayerTimes`, `nextPrayer`, and `nextPrayerTime` (as [tz.TZDateTime]).
   static Map<String, dynamic> calculateWithNextPrayer({
     required double lat,
     required double lon,
@@ -61,7 +67,7 @@ class PrayerTimeCalculator {
     return {
       'prayerTimes': prayerTimes,
       'nextPrayer': nextPrayer,
-      'nextPrayerTime': nextPrayerTime,
+      'nextPrayerTime': nextPrayerTime != null ? toTZ(nextPrayerTime) : null,
     };
   }
 }
