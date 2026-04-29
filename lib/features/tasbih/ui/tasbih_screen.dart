@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:rafeeq/features/tasbih/data/model/tasbih_model.dart';
-import 'package:rafeeq/features/tasbih/data/repository/tasbih_repository.dart';
+import 'package:rafeeq/features/tasbih/logic/tasbih_cubit.dart';
+import 'package:rafeeq/features/tasbih/logic/tasbih_state.dart';
 
 // ════════════════════════════════════════════════════════════════════════════
 // CACHED TEXT STYLES
@@ -43,36 +44,6 @@ abstract final class _TS {
     color: color,
     height: height,
   );
-
-  static String normalizeArabic(String text) {
-    if (text.isEmpty) return '';
-    var s = text;
-    // 1. Normalize complex letters
-    s = s.replaceAll(RegExp(r'[أإآٱ]'), 'ا'); // Alef
-    s = s.replaceAll(RegExp(r'[ئى]'), 'ي'); // Ya / Alef Maksura
-    s = s.replaceAll('ؤ', 'و'); // Waw Hamza
-    s = s.replaceAll('ة', 'ه'); // Ta Marbuta
-    // 2. Remove Tatweel
-    s = s.replaceAll('ـ', '');
-    // 3. Remove all non-letter characters (keep spaces)
-    s = s.replaceAll(RegExp(r'[^\u0621-\u064A\s]'), '');
-    // 4. Normalize whitespace
-    return s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-  }
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// SESSION + CFG
-// ════════════════════════════════════════════════════════════════════════════
-class _Session {
-  final String dhikrText;
-  final int count;
-  final DateTime time;
-  const _Session({
-    required this.dhikrText,
-    required this.count,
-    required this.time,
-  });
 }
 
 class _Cfg {
@@ -91,205 +62,115 @@ class _Cfg {
 // ════════════════════════════════════════════════════════════════════════════
 // MAIN SCREEN
 // ════════════════════════════════════════════════════════════════════════════
-class TasbihScreen extends StatefulWidget {
+class TasbihScreen extends StatelessWidget {
   const TasbihScreen({super.key});
+
   @override
-  State<TasbihScreen> createState() => _TasbihScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => TasbihCubit(),
+      child: const _TasbihConsumer(),
+    );
+  }
 }
 
-class _TasbihScreenState extends State<TasbihScreen> {
-  List<TasbihModel> _adhkar = [];
-  bool _loading = true;
-  String? _loadedLang; // track which language is currently loaded
-
-  int? _selectedIdx;
-  int _count = 0;
-  bool _completed = false;
-  bool _silent = false;
-  final List<_Session> _sessions = [];
-  int _todayTotal = 0;
-
-  String get _langCode => context.locale.languageCode;
-
-  TasbihModel get _dhikr => _adhkar[_selectedIdx ?? 0];
-  int get _target => _dhikr.count;
+class _TasbihConsumer extends StatefulWidget {
+  const _TasbihConsumer();
 
   @override
-  void initState() {
-    super.initState();
-    // Data is loaded in didChangeDependencies so locale is available
-  }
+  State<_TasbihConsumer> createState() => _TasbihConsumerState();
+}
 
+class _TasbihConsumerState extends State<_TasbihConsumer> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final currentLang = context.locale.languageCode;
-    // Reload when language changes
-    if (_loadedLang != currentLang) {
-      _loadData(currentLang);
-    }
-  }
-
-  Future<void> _loadData(String langCode) async {
-    if (mounted) setState(() => _loading = true);
-    final data = await TasbihRepository.loadAll(langCode);
-    if (mounted) {
-      setState(() {
-        _adhkar = data;
-        _loading = false;
-        _loadedLang = langCode;
-        // Reset selection when language changes so index stays valid
-        _selectedIdx = null;
-        _count = 0;
-        _completed = false;
-      });
-    }
-  }
-
-  // ── actions ────────────────────────────────────────────────────────────────
-  void _haptic(HapticFeedbackType t) {
-    if (_silent) return;
-    switch (t) {
-      case HapticFeedbackType.light:
-        HapticFeedback.lightImpact();
-      case HapticFeedbackType.medium:
-        HapticFeedback.mediumImpact();
-      case HapticFeedbackType.heavy:
-        HapticFeedback.heavyImpact();
-      case HapticFeedbackType.select:
-        HapticFeedback.selectionClick();
-    }
-  }
-
-  void _select(int i) {
-    _haptic(HapticFeedbackType.select);
-    setState(() {
-      _selectedIdx = i;
-      _count = 0;
-      _completed = false;
-    });
-  }
-
-  void _goBack() {
-    _haptic(HapticFeedbackType.select);
-    setState(() {
-      _selectedIdx = null;
-      _count = 0;
-      _completed = false;
-    });
-  }
-
-  void _goNext() {
-    if (_selectedIdx == null || _adhkar.isEmpty) return;
-    _haptic(HapticFeedbackType.select);
-    setState(() {
-      _selectedIdx = (_selectedIdx! + 1) % _adhkar.length;
-      _count = 0;
-      _completed = false;
-    });
-  }
-
-  void _goPrev() {
-    if (_selectedIdx == null || _adhkar.isEmpty) return;
-    _haptic(HapticFeedbackType.select);
-    setState(() {
-      _selectedIdx = (_selectedIdx! - 1 + _adhkar.length) % _adhkar.length;
-      _count = 0;
-      _completed = false;
-    });
-  }
-
-  void _onTap() {
-    if (_completed) {
-      _haptic(HapticFeedbackType.medium);
-      setState(() {
-        _count = 1;
-        _completed = false;
-      });
-      return;
-    }
-    _haptic(HapticFeedbackType.light);
-    setState(() => _count++);
-    if (_count >= _target) {
-      _haptic(HapticFeedbackType.heavy);
-      Future.delayed(
-        const Duration(milliseconds: 180),
-        () => _haptic(HapticFeedbackType.heavy),
-      );
-      _sessions.add(
-        _Session(dhikrText: _dhikr.text, count: _count, time: DateTime.now()),
-      );
-      setState(() {
-        _completed = true;
-        _todayTotal += _count;
-      });
-    }
-  }
-
-  void _reset() {
-    _haptic(HapticFeedbackType.select);
-    setState(() {
-      _count = 0;
-      _completed = false;
-    });
+    final lang = context.locale.languageCode;
+    context.read<TasbihCubit>().loadData(lang);
   }
 
   @override
   Widget build(BuildContext context) {
+    final langCode = context.locale.languageCode;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cfg = _Cfg(context);
     final primary = AppColors.getPrimary(context);
-    final isRtl = _langCode == 'ar';
+    final isRtl = langCode == 'ar';
 
-    if (_loading) {
-      return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        final state = context.read<TasbihCubit>().state;
+        if (state.selectedIdx != null) {
+          context.read<TasbihCubit>().selectDhikr(null);
+        } else {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppColors.background(context),
-        body: Center(child: CircularProgressIndicator(color: primary)),
-      );
-    }
+        body: BlocBuilder<TasbihCubit, TasbihState>(
+          builder: (context, state) {
+            if (state.loading) {
+              return Center(child: CircularProgressIndicator(color: primary));
+            }
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 380),
-      transitionBuilder: (child, anim) => SlideTransition(
-        position: Tween<Offset>(
-          begin: _selectedIdx != null
-              ? const Offset(1, 0)
-              : const Offset(-1, 0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
-        child: FadeTransition(opacity: anim, child: child),
+            final cubit = context.read<TasbihCubit>();
+
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 380),
+              transitionBuilder: (child, anim) => SlideTransition(
+                position:
+                    Tween<Offset>(
+                      begin: state.selectedIdx != null
+                          ? const Offset(1, 0)
+                          : const Offset(-1, 0),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(parent: anim, curve: Curves.easeOutCubic),
+                    ),
+                child: FadeTransition(opacity: anim, child: child),
+              ),
+              child: state.selectedIdx == null
+                  ? _SelectionScreen(
+                      key: const ValueKey('selection'),
+                      isDark: isDark,
+                      isRtl: isRtl,
+                      cfg: cfg,
+                      primary: primary,
+                      adhkar: state.adhkar,
+                      searchQuery: state.searchQuery,
+                      activeCat: state.activeCat,
+                      onSearch: cubit.updateSearch,
+                      onCategorySelect: cubit.updateCategory,
+                      onSelect: cubit.selectDhikr,
+                      sessions: state.sessions,
+                      todayTotal: state.todayTotal,
+                    )
+                  : _CounterScreen(
+                      key: const ValueKey('counter'),
+                      isDark: isDark,
+                      isRtl: isRtl,
+                      cfg: cfg,
+                      primary: primary,
+                      dhikr: state.currentDhikr!,
+                      count: state.count,
+                      completed: state.completed,
+                      silentMode: state.silent,
+                      sessions: state.sessions,
+                      todayTotal: state.todayTotal,
+                      onTap: cubit.incrementCount,
+                      onReset: cubit.resetCount,
+                      onBack: () => cubit.selectDhikr(null),
+                      onNext: cubit.goNext,
+                      onPrev: cubit.goPrev,
+                      onSilentToggle: cubit.toggleSilent,
+                    ),
+            );
+          },
+        ),
       ),
-      child: _selectedIdx == null
-          ? _SelectionScreen(
-              key: ValueKey('sel_$_langCode'),
-              isDark: isDark,
-              cfg: cfg,
-              primary: primary,
-              isRtl: isRtl,
-              adhkar: _adhkar,
-              onSelect: _select,
-              sessions: _sessions,
-              todayTotal: _todayTotal,
-            )
-          : _CounterScreen(
-              key: ValueKey('ctr_${_selectedIdx}_$_langCode'),
-              isDark: isDark,
-              cfg: cfg,
-              primary: primary,
-              isRtl: isRtl,
-              dhikr: _dhikr,
-              count: _count,
-              completed: _completed,
-              silentMode: _silent,
-              sessions: _sessions,
-              todayTotal: _todayTotal,
-              onTap: _onTap,
-              onReset: _reset,
-              onBack: _goBack,
-              onNext: _goNext,
-              onPrev: _goPrev,
-              onSilentToggle: () => setState(() => _silent = !_silent),
-            ),
     );
   }
 }
@@ -303,8 +184,12 @@ class _SelectionScreen extends StatefulWidget {
   final Color primary;
   final List<TasbihModel> adhkar;
   final void Function(int) onSelect;
-  final List<_Session> sessions;
+  final List<TasbihSession> sessions;
   final int todayTotal;
+  final String searchQuery;
+  final String? activeCat;
+  final void Function(String) onSearch;
+  final void Function(String?) onCategorySelect;
 
   const _SelectionScreen({
     super.key,
@@ -316,6 +201,10 @@ class _SelectionScreen extends StatefulWidget {
     required this.onSelect,
     required this.sessions,
     required this.todayTotal,
+    required this.searchQuery,
+    required this.activeCat,
+    required this.onSearch,
+    required this.onCategorySelect,
   });
 
   @override
@@ -326,13 +215,16 @@ class _SelectionScreenState extends State<_SelectionScreen>
     with AutomaticKeepAliveClientMixin {
   final _ctrl = TextEditingController();
   final _scroll = ScrollController();
-  String _filter = '';
-  String _filterNorm = '';
-  String? _activeCat;
   Timer? _debounce;
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl.text = widget.searchQuery;
+  }
 
   late List<String> _cats = _buildCats();
 
@@ -346,24 +238,24 @@ class _SelectionScreenState extends State<_SelectionScreen>
     super.didUpdateWidget(old);
     if (old.adhkar != widget.adhkar) {
       _cats = _buildCats();
-      _activeCat = null; // reset filter when language changes
     }
   }
 
   List<_CatGroup> _buildGroups() {
     final map = <String, List<MapEntry<int, TasbihModel>>>{};
+    final filterNorm = TasbihCubit.normalizeArabic(widget.searchQuery);
 
     for (final e in widget.adhkar.asMap().entries) {
       final d = e.value;
-      if (_filterNorm.isNotEmpty) {
+      if (filterNorm.isNotEmpty) {
         final match =
-            _TS.normalizeArabic(d.text).contains(_filterNorm) ||
-            d.transliteration.toLowerCase().contains(_filterNorm) ||
-            _TS.normalizeArabic(d.cat).contains(_filterNorm) ||
-            _TS.normalizeArabic(d.meaning).contains(_filterNorm);
+            TasbihCubit.normalizeArabic(d.text).contains(filterNorm) ||
+            d.transliteration.toLowerCase().contains(filterNorm) ||
+            TasbihCubit.normalizeArabic(d.cat).contains(filterNorm) ||
+            TasbihCubit.normalizeArabic(d.meaning).contains(filterNorm);
         if (!match) continue;
       }
-      if (_activeCat != null && d.cat != _activeCat) continue;
+      if (widget.activeCat != null && d.cat != widget.activeCat) continue;
       map.putIfAbsent(d.cat, () => []).add(e);
     }
     return map.entries.map((e) => _CatGroup(e.key, e.value)).toList();
@@ -373,10 +265,7 @@ class _SelectionScreenState extends State<_SelectionScreen>
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 150), () {
       if (mounted) {
-        setState(() {
-          _filter = v;
-          _filterNorm = _TS.normalizeArabic(v);
-        });
+        widget.onSearch(v);
       }
     });
   }
@@ -551,11 +440,11 @@ class _SelectionScreenState extends State<_SelectionScreen>
                             color: widget.primary.withValues(alpha: 0.55),
                             size: 20,
                           ),
-                          suffixIcon: _filter.isNotEmpty
+                          suffixIcon: widget.searchQuery.isNotEmpty
                               ? GestureDetector(
                                   onTap: () {
                                     _ctrl.clear();
-                                    setState(() => _filter = '');
+                                    widget.onSearch('');
                                   },
                                   child: Icon(
                                     Icons.clear_rounded,
@@ -584,20 +473,20 @@ class _SelectionScreenState extends State<_SelectionScreen>
                         if (i == 0) {
                           return _CategoryChip(
                             label: 'tasbih.all'.tr(),
-                            isSelected: _activeCat == null,
+                            isSelected: widget.activeCat == null,
                             primary: widget.primary,
                             isDark: widget.isDark,
-                            onTap: () => setState(() => _activeCat = null),
+                            onTap: () => widget.onCategorySelect(null),
                           );
                         }
                         final cat = _cats[i - 1];
                         return _CategoryChip(
                           label: cat,
-                          isSelected: _activeCat == cat,
+                          isSelected: widget.activeCat == cat,
                           primary: widget.primary,
                           isDark: widget.isDark,
-                          onTap: () => setState(
-                            () => _activeCat = _activeCat == cat ? null : cat,
+                          onTap: () => widget.onCategorySelect(
+                            widget.activeCat == cat ? null : cat,
                           ),
                         );
                       },
@@ -915,7 +804,7 @@ class _CounterScreen extends StatelessWidget {
   final Color primary;
   final TasbihModel dhikr;
   final int count, todayTotal;
-  final List<_Session> sessions;
+  final List<TasbihSession> sessions;
   final VoidCallback onTap, onReset, onBack, onNext, onPrev, onSilentToggle;
 
   const _CounterScreen({
@@ -1523,7 +1412,7 @@ class _Handle extends StatelessWidget {
 
 // ─── Session Log Sheet ────────────────────────────────────────────────────────
 class _SessionLogSheet extends StatelessWidget {
-  final List<_Session> sessions;
+  final List<TasbihSession> sessions;
   final bool isDark;
   final _Cfg cfg;
   final Color primary;

@@ -207,7 +207,7 @@ class AdhanSchedulerService {
       priority: Priority.max,
       // ✅ صوت للإشعار (ملف adhan في res/raw)
       sound: soundEnabled
-          ? const RawResourceAndroidNotificationSound('adhan')
+          ? const RawResourceAndroidNotificationSound('adhan_short')
           : null,
       playSound: soundEnabled,
       enableVibration: true,

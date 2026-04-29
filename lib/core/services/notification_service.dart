@@ -119,7 +119,7 @@ class NotificationService {
         importance: Importance.max,
         playSound: true,
         enableVibration: true,
-        sound: RawResourceAndroidNotificationSound('adhan'),
+        sound: RawResourceAndroidNotificationSound('adhan_short'),
       );
       await androidPlugin.createNotificationChannel(adhanChannel);
 
