@@ -66,6 +66,11 @@
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"/>
 
+        <!-- ✅ يستقبل intent من الإشعار ويشغّل الأذان تلقائياً -->
+        <receiver
+            android:name=".AdhanReceiver"
+            android:exported="false"/>
+
         <!-- ✅ مطلوب لعمل الإشعارات المجدولة في أندرويد -->
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"

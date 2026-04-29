@@ -111,15 +111,18 @@ class NotificationService {
       );
       await androidPlugin.createNotificationChannel(remindersChannel);
 
-      // Adhan channel with custom sound
+      // ✅ حذف القناة القديمة المخزنة (Android يحتفظ بالإعدادات القديمة)
+      await androidPlugin.deleteNotificationChannel(channelId: 'adhan_channel');
+
+      // ✅ Adhan channel V2 — بدون صوت إشعار مخصص
+      // الصوت الكامل للأذان يأتي من الـ Foreground Service
       const adhanChannel = AndroidNotificationChannel(
-        'adhan_channel',
+        'adhan_channel_v2',
         'إشعارات الأذان',
         description: 'تشغيل الأذان عند دخول وقت الصلاة',
         importance: Importance.max,
-        playSound: true,
+        playSound: false, // الصوت يأتي من Foreground Service
         enableVibration: true,
-        sound: RawResourceAndroidNotificationSound('adhan_short'),
       );
       await androidPlugin.createNotificationChannel(adhanChannel);
 
