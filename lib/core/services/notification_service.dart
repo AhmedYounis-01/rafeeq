@@ -137,7 +137,7 @@ class NotificationService {
     );
 
     // Route adhan taps to the adhan service
-    if (response.payload == 'adhan_tap') {
+    if (response.payload != null && response.payload!.startsWith('adhan_tap')) {
       AdhanSchedulerService.instance.handleNotificationTap(response.payload);
     }
   }

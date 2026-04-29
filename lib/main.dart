@@ -8,9 +8,30 @@ import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/core/services/adhan_scheduler_service.dart';
 import 'package:rafeeq/core/services/notification_service.dart';
 import 'package:rafeeq/rafeeq.dart';
+import 'package:audio_session/audio_session.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ إعداد الـ audio session للتشغيل في الخلفية
+  final session = await AudioSession.instance;
+  await session.configure(
+    const AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playback,
+      avAudioSessionCategoryOptions:
+          AVAudioSessionCategoryOptions.mixWithOthers,
+      avAudioSessionMode: AVAudioSessionMode.defaultMode,
+      androidAudioAttributes: AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.music,
+        usage:
+            AndroidAudioUsage.alarm, // ✅ alarm يضمن الصوت حتى لو الصامت مفعّل
+      ),
+      androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+    ),
+  );
+
+  // ✅ تهيئة AdhanSchedulerService
+  await AdhanSchedulerService.instance.initialize();
 
   // Initialize EasyLocalization
   await EasyLocalization.ensureInitialized();

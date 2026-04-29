@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:adhan/adhan.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:just_audio/just_audio.dart';
@@ -21,6 +22,12 @@ class AdhanSchedulerService {
 
   /// Audio player for full adhan on notification tap (iOS mainly)
   AudioPlayer? _audioPlayer;
+
+  // ✅ Channel للتواصل مع الـ Android foreground service
+  static const _foregroundChannel = MethodChannel('adhan/foreground_service');
+
+  // ✅ Channel للـ boot receiver
+  static const _bootChannel = MethodChannel('adhan/boot');
 
   /// Adhan sound toggle (for scheduled notifications)
   static const String _soundEnabledKey = 'adhan_sound_enabled';
@@ -52,6 +59,17 @@ class AdhanSchedulerService {
     Prayer.maghrib: 'المغرب',
     Prayer.isha: 'العشاء',
   };
+
+  // ═══════════════════════ Init ═══════════════════════
+
+  Future<void> initialize() async {
+    // ✅ إعداد الـ boot channel handler
+    _bootChannel.setMethodCallHandler((call) async {
+      if (call.method == 'reschedule') {
+        await scheduleAdhanNotifications();
+      }
+    });
+  }
 
   // ═══════════════════════ Setting Global Status ═══════════════════════
 
@@ -179,20 +197,23 @@ class AdhanSchedulerService {
 
     final soundEnabled = await isAdhanSoundEnabled();
 
-    // Android: full adhan from raw resource
+    // Android: الإشعار يطلق الـ foreground service عبر full-screen intent
+    // الصوت القصير للإشعار فقط (أقل من 30 ثانية)
     final androidDetails = AndroidNotificationDetails(
       'adhan_channel',
       'إشعارات الأذان',
       channelDescription: 'تشغيل الأذان عند دخول وقت الصلاة',
       importance: Importance.max,
       priority: Priority.max,
+      // ✅ صوت للإشعار (ملف adhan في res/raw)
       sound: soundEnabled
           ? const RawResourceAndroidNotificationSound('adhan')
           : null,
       playSound: soundEnabled,
       enableVibration: true,
       category: AndroidNotificationCategory.alarm,
-      fullScreenIntent: true,
+      fullScreenIntent: true, // ✅ يشغّل full screen حتى لو الموبيل مقفول
+      ticker: 'حان وقت $prayerName',
     );
 
     // iOS: short adhan clip (must be ≤30s .aiff/.caf/.wav)
@@ -215,7 +236,8 @@ class AdhanSchedulerService {
       scheduledDate: tzTime,
       notificationDetails: details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      payload: 'adhan_tap',
+      // ✅ payload يحمل اسم الصلاة لتشغيل الأذان الكامل
+      payload: 'adhan_tap|$prayerName',
     );
 
     AppLogger.log('Adhan #$id ($prayerName) → $tzTime', tag: 'ADHAN');
@@ -223,33 +245,58 @@ class AdhanSchedulerService {
 
   // ═══════════════════════ تشغيل الأذان الكامل ═══════════════════════
 
-  /// Play full adhan audio (called on notification tap, mainly for iOS)
+  /// ✅ يشغّل الأذان الكامل عبر Foreground Service على Android
+  /// وعبر just_audio على iOS (لأن iOS يسمح بالصوت في الإشعار مباشرة)
   Future<void> playFullAdhan() async {
+    if (Platform.isAndroid) {
+      await _startAndroidForegroundService();
+    } else {
+      await _playIOSAdhan();
+    }
+  }
+
+  Future<void> _startAndroidForegroundService() async {
     try {
-      // Dispose previous player if any
+      await _foregroundChannel.invokeMethod('startAdhan');
+      AppLogger.log(
+        'Android Foreground Service started for adhan',
+        tag: 'ADHAN',
+      );
+    } on PlatformException catch (e) {
+      AppLogger.error(
+        'Failed to start foreground service',
+        error: e,
+        tag: 'ADHAN',
+      );
+      // Fallback: just_audio
+      await _playIOSAdhan();
+    }
+  }
+
+  Future<void> _playIOSAdhan() async {
+    try {
       await _audioPlayer?.dispose();
-
       _audioPlayer = AudioPlayer();
-      await _audioPlayer!.setAsset('assets/azan.mp3');
-      _audioPlayer!.play();
 
-      // Auto-dispose when playback completes
+      // ✅ تفعيل الصوت في الخلفية على iOS
+      await _audioPlayer!.setAudioSource(AudioSource.asset('assets/azan.mp3'));
+      await _audioPlayer!.play();
+
       _audioPlayer!.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
           _audioPlayer?.dispose();
           _audioPlayer = null;
-          AppLogger.log('Full adhan playback completed', tag: 'ADHAN');
         }
       });
-
-      AppLogger.log('Playing full adhan audio', tag: 'ADHAN');
     } catch (e) {
       AppLogger.error('Failed to play adhan', error: e, tag: 'ADHAN');
     }
   }
 
-  /// Stop adhan if playing
   Future<void> stopAdhan() async {
+    if (Platform.isAndroid) {
+      await _foregroundChannel.invokeMethod('stopAdhan');
+    }
     await _audioPlayer?.stop();
     await _audioPlayer?.dispose();
     _audioPlayer = null;
@@ -259,9 +306,9 @@ class AdhanSchedulerService {
 
   /// Handle notification tap — plays full adhan if payload matches
   void handleNotificationTap(String? payload) {
-    if (payload == 'adhan_tap') {
-      // On iOS: play full adhan when user taps notification
-      // On Android: adhan already played via notification sound
+    if (payload != null && payload.startsWith('adhan_tap')) {
+      // على Android: الـ foreground service اشتغل بالفعل من الـ full-screen intent
+      // على iOS: نشغّل الأذان يدوياً
       if (Platform.isIOS) {
         playFullAdhan();
       }

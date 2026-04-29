@@ -64,6 +64,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^33.1.49
   table_calendar: ^3.2.0
   timezone: ^0.11.0
+  audio_session: ^0.1.21
 
 # Dev dependencies
 dev_dependencies:
