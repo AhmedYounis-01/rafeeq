@@ -312,12 +312,8 @@ class _AsmaDetailsSheetState extends State<_AsmaDetailsSheet> {
                 ],
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.arrow_back_ios_new,
-                    color: Colors.white,
-                    size: 16.sp,
-                  ),
                   const Spacer(),
                   Text(
                     isArabic ? "التالي" : "Next",
@@ -328,7 +324,11 @@ class _AsmaDetailsSheetState extends State<_AsmaDetailsSheet> {
                     ),
                   ),
                   const Spacer(),
-                  SizedBox(width: 20.sp),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: 16.sp,
+                  ),
                 ],
               ),
             ),

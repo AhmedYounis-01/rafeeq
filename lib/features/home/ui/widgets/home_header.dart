@@ -45,8 +45,8 @@ class HomePrayerHeader extends StatelessWidget {
             colors: isDark
                 ? [const Color(0xFF061F14), const Color(0xFF0B3D26)]
                 : [
-                    const Color(0xFF026635), // Deep Emerald
-                    const Color(0xFF028544), // Primary Emerald
+                    const Color(0xFF026635).withValues(alpha: 0.90),
+                    const Color(0xFF028544).withValues(alpha: 0.80),
                   ],
           ),
           boxShadow: [
@@ -495,6 +495,7 @@ class _CountdownState extends State<_Countdown> {
               fontWeight: FontWeight.w800,
               fontFamily: 'monospace',
               fontSize: screenW * (widget.isTablet ? 0.03 : 0.035),
+              letterSpacing: 2,
             ),
           ),
         );
