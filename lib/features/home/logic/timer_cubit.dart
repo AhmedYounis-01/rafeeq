@@ -29,17 +29,32 @@ class TimerCubit extends Cubit<TimerState> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final now = DateTime.now();
-      // We emit every second to keep the UI in sync and allow for reactive localization
-      emit(
-        TimerState(
-          currentTime: DateFormat('hh:mm').format(now),
-          amPm: DateFormat('a').format(now),
-          now: now,
-        ),
-      );
+    _timer?.cancel();
+    _emitCurrentTime();
+
+    // Calculate seconds remaining until the next minute starts
+    final now = DateTime.now();
+    final secondsUntilNextMinute = 60 - now.second;
+
+    // Schedule the first update at the start of the next minute
+    _timer = Timer(Duration(seconds: secondsUntilNextMinute), () {
+      _emitCurrentTime();
+      // Then schedule periodic updates every minute
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        _emitCurrentTime();
+      });
     });
+  }
+
+  void _emitCurrentTime() {
+    final now = DateTime.now();
+    emit(
+      TimerState(
+        currentTime: DateFormat('hh:mm').format(now),
+        amPm: DateFormat('a').format(now),
+        now: now,
+      ),
+    );
   }
 
   @override

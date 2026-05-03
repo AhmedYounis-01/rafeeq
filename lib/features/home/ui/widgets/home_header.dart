@@ -341,7 +341,7 @@ class _NextPrayerCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "home.next_prayer".tr(),
+                      "home.next_prayer_after".tr(),
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.75),
                         fontSize: fontSize * 0.8,
@@ -434,8 +434,24 @@ class _CountdownState extends State<_Countdown> {
   void initState() {
     super.initState();
     _timeNotifier = ValueNotifier(DateTime.now());
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timeNotifier.value = DateTime.now();
+
+    final now = DateTime.now();
+    final secondsUntilNextMinute = 60 - now.second;
+
+    _timer = Timer(Duration(seconds: secondsUntilNextMinute), () {
+      if (!mounted) return;
       _timeNotifier.value = DateTime.now();
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        if (!mounted) return;
+        _timeNotifier.value = DateTime.now();
+      });
     });
   }
 
@@ -459,10 +475,9 @@ class _CountdownState extends State<_Countdown> {
       builder: (context, now, _) {
         final diff = widget.nextTime.difference(now);
         final text = diff.isNegative
-            ? "--:--:--"
+            ? "--:--"
             : "${diff.inHours.toString().padLeft(2, '0')}:"
-                  "${(diff.inMinutes % 60).toString().padLeft(2, '0')}:"
-                  "${(diff.inSeconds % 60).toString().padLeft(2, '0')}";
+                  "${(diff.inMinutes % 60).toString().padLeft(2, '0')}";
 
         return Container(
           padding: EdgeInsets.symmetric(
@@ -479,7 +494,7 @@ class _CountdownState extends State<_Countdown> {
               color: AppColors.secondary,
               fontWeight: FontWeight.w800,
               fontFamily: 'monospace',
-              fontSize: screenW * (widget.isTablet ? 0.02 : 0.028),
+              fontSize: screenW * (widget.isTablet ? 0.03 : 0.035),
             ),
           ),
         );
