@@ -16,66 +16,112 @@ class SeerahScreen extends StatefulWidget {
 
 class _SeerahScreenState extends State<SeerahScreen> {
   late final PdfViewerController _pdfController;
+  late final SeerahCubit _cubit;
   final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
+
+  // ✅ Controller هنا عشان يتـdispose صح
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _pdfController = PdfViewerController();
+    _cubit = SeerahCubit();
   }
 
   @override
   void dispose() {
     _pdfController.dispose();
+    _searchController.dispose();
+    _cubit.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => SeerahCubit(),
+    return BlocProvider.value(
+      value: _cubit,
       child: _SeerahView(
         pdfController: _pdfController,
         pdfViewerKey: _pdfViewerKey,
+        searchController: _searchController,
+        cubit: _cubit,
       ),
     );
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────
 class _SeerahView extends StatelessWidget {
   final PdfViewerController pdfController;
   final GlobalKey<SfPdfViewerState> pdfViewerKey;
+  final TextEditingController searchController;
+  final SeerahCubit cubit;
 
-  const _SeerahView({required this.pdfController, required this.pdfViewerKey});
+  const _SeerahView({
+    required this.pdfController,
+    required this.pdfViewerKey,
+    required this.searchController,
+    required this.cubit,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<SeerahCubit>();
     final primary = AppColors.getPrimary(context);
 
-    return BlocBuilder<SeerahCubit, SeerahState>(
-      buildWhen: (prev, curr) => prev.isSearching != curr.isSearching,
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: context.colorScheme.surface,
-          appBar: state.isSearching
-              ? _buildSearchAppBar(context, cubit, primary)
-              : _buildAppBar(context, cubit, primary),
-          body: _SeerahBody(
-            cubit: cubit,
-            pdfController: pdfController,
-            pdfViewerKey: pdfViewerKey,
-          ),
-        );
+    return Scaffold(
+      backgroundColor: context.colorScheme.surface,
+      // ✅ BlocSelector بدل BlocBuilder - بيـrebuild AppBar بس
+      appBar: _SeerahAppBar(
+        pdfController: pdfController,
+        pdfViewerKey: pdfViewerKey,
+        searchController: searchController,
+        cubit: cubit,
+        primary: primary,
+      ),
+      body: _SeerahBody(
+        cubit: cubit,
+        pdfController: pdfController,
+        pdfViewerKey: pdfViewerKey,
+        primary: primary,
+      ),
+    );
+  }
+}
+
+// ─── AppBar كـ PreferredSizeWidget مستقل ─────────────────────────────────
+class _SeerahAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final PdfViewerController pdfController;
+  final GlobalKey<SfPdfViewerState> pdfViewerKey;
+  final TextEditingController searchController;
+  final SeerahCubit cubit;
+  final Color primary;
+
+  const _SeerahAppBar({
+    required this.pdfController,
+    required this.pdfViewerKey,
+    required this.searchController,
+    required this.cubit,
+    required this.primary,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    // ✅ بيبني AppBar بس لما isSearching تتغير
+    return BlocSelector<SeerahCubit, SeerahState, bool>(
+      selector: (state) => state.isSearching,
+      builder: (context, isSearching) {
+        return isSearching
+            ? _buildSearchBar(context)
+            : _buildNormalBar(context);
       },
     );
   }
 
-  PreferredSizeWidget _buildAppBar(
-    BuildContext context,
-    SeerahCubit cubit,
-    Color primary,
-  ) {
+  AppBar _buildNormalBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
       backgroundColor: context.colorScheme.surface,
@@ -121,17 +167,16 @@ class _SeerahView extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildSearchAppBar(
-    BuildContext context,
-    SeerahCubit cubit,
-    Color primary,
-  ) {
+  AppBar _buildSearchBar(BuildContext context) {
     return AppBar(
       backgroundColor: context.colorScheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
       leading: IconButton(
-        onPressed: cubit.toggleSearch,
+        onPressed: () {
+          searchController.clear();
+          cubit.toggleSearch();
+        },
         icon: Icon(
           Icons.close_rounded,
           size: 22.sp,
@@ -142,13 +187,16 @@ class _SeerahView extends StatelessWidget {
         cubit: cubit,
         primary: primary,
         pdfController: pdfController,
+        controller: searchController,
       ),
       actions: [
-        BlocBuilder<SeerahCubit, SeerahState>(
-          buildWhen: (p, c) => p.hasSearchResult != c.hasSearchResult,
-          builder: (context, state) {
-            if (!state.hasSearchResult) return const SizedBox.shrink();
+        // ✅ BlocSelector للأزرار بس - مش بيأثر على AppBar كله
+        BlocSelector<SeerahCubit, SeerahState, bool>(
+          selector: (state) => state.hasSearchResult,
+          builder: (_, hasResult) {
+            if (!hasResult) return const SizedBox.shrink();
             return Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   onPressed: cubit.previousSearchInstance,
@@ -167,15 +215,18 @@ class _SeerahView extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────
 class _SeerahBody extends StatefulWidget {
   final SeerahCubit cubit;
   final PdfViewerController pdfController;
   final GlobalKey<SfPdfViewerState> pdfViewerKey;
+  final Color primary;
 
   const _SeerahBody({
     required this.cubit,
     required this.pdfController,
     required this.pdfViewerKey,
+    required this.primary,
   });
 
   @override
@@ -183,12 +234,6 @@ class _SeerahBody extends StatefulWidget {
 }
 
 class _SeerahBodyState extends State<_SeerahBody> {
-  @override
-  void dispose() {
-    widget.cubit.saveCurrentPage(widget.pdfController.pageNumber);
-    super.dispose();
-  }
-
   void _onDocumentLoaded(PdfDocumentLoadedDetails details) {
     if (!mounted) return;
     final savedPage = widget.cubit.savedPage;
@@ -200,34 +245,29 @@ class _SeerahBodyState extends State<_SeerahBody> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = AppColors.getPrimary(context);
-
     return Stack(
       children: [
-        SfPdfViewer.asset(
-          'assets/pdfs/alrraheqAlmakhtom.pdf',
-          key: widget.pdfViewerKey,
-          controller: widget.pdfController,
-          onDocumentLoaded: _onDocumentLoaded,
-          canShowScrollHead: true,
-          canShowScrollStatus: true,
-          canShowPaginationDialog: true,
-          enableTextSelection: true,
-          enableDocumentLinkAnnotation: true,
-          pageSpacing: 4,
-          maxZoomLevel: 5,
-          onPageChanged: (details) =>
-              widget.cubit.saveCurrentPage(details.newPageNumber),
+        // ✅ RepaintBoundary يمنع الـ PDF من الـ repaint لما الـ loading تختفي
+        RepaintBoundary(
+          child: _PdfBody(
+            pdfViewerKey: widget.pdfViewerKey,
+            pdfController: widget.pdfController,
+            onDocumentLoaded: _onDocumentLoaded,
+            onPageChanged: (details) =>
+                widget.cubit.saveCurrentPage(details.newPageNumber),
+          ),
         ),
-        BlocBuilder<SeerahCubit, SeerahState>(
-          buildWhen: (p, c) => p.isLoaded != c.isLoaded,
-          builder: (context, state) {
-            if (state.isLoaded) return const SizedBox.shrink();
-            return Container(
+
+        // ✅ Loading overlay - بيختفي مرة واحدة بس
+        BlocSelector<SeerahCubit, SeerahState, bool>(
+          selector: (state) => state.isLoaded,
+          builder: (context, isLoaded) {
+            if (isLoaded) return const SizedBox.shrink();
+            return ColoredBox(
               color: context.colorScheme.surface,
               child: Center(
                 child: CircularProgressIndicator(
-                  color: primary,
+                  color: widget.primary,
                   strokeWidth: 3,
                 ),
               ),
@@ -239,22 +279,25 @@ class _SeerahBodyState extends State<_SeerahBody> {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// ✅ StatelessWidget - Controller بييجي من الأب مش بيتعمل جوا
 class _SearchField extends StatelessWidget {
   final SeerahCubit cubit;
   final Color primary;
   final PdfViewerController pdfController;
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController controller;
 
-  _SearchField({
+  const _SearchField({
     required this.cubit,
     required this.primary,
     required this.pdfController,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: _controller,
+      controller: controller,
       autofocus: true,
       textInputAction: TextInputAction.search,
       onSubmitted: (q) => cubit.performSearch(q, pdfController),
@@ -264,10 +307,44 @@ class _SearchField extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 15.sp, color: AppColors.grey),
         border: InputBorder.none,
         suffixIcon: IconButton(
-          onPressed: () => cubit.performSearch(_controller.text, pdfController),
+          onPressed: () => cubit.performSearch(controller.text, pdfController),
           icon: Icon(Icons.search_rounded, size: 22.sp, color: primary),
         ),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// ✅ StatelessWidget منفصل - الـ PDF مش بيتبنى إلا مرة واحدة
+class _PdfBody extends StatelessWidget {
+  final GlobalKey<SfPdfViewerState> pdfViewerKey;
+  final PdfViewerController pdfController;
+  final void Function(PdfDocumentLoadedDetails) onDocumentLoaded;
+  final void Function(PdfPageChangedDetails) onPageChanged;
+
+  const _PdfBody({
+    required this.pdfViewerKey,
+    required this.pdfController,
+    required this.onDocumentLoaded,
+    required this.onPageChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SfPdfViewer.asset(
+      'assets/pdfs/alrraheqAlmakhtom.pdf',
+      key: pdfViewerKey,
+      controller: pdfController,
+      onDocumentLoaded: onDocumentLoaded,
+      canShowScrollHead: true,
+      canShowScrollStatus: true,
+      canShowPaginationDialog: true,
+      enableTextSelection: true,
+      enableDocumentLinkAnnotation: true,
+      pageSpacing: 4,
+      maxZoomLevel: 5,
+      onPageChanged: onPageChanged,
     );
   }
 }

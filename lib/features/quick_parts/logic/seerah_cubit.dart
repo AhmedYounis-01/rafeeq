@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -9,6 +10,7 @@ class SeerahCubit extends Cubit<SeerahState> {
   static const _lastPageKey = 'seerah_last_page';
 
   PdfTextSearchResult? _searchResult;
+  Timer? _pageSaveDebounce;
 
   SeerahCubit() : super(const SeerahState());
 
@@ -19,8 +21,24 @@ class SeerahCubit extends Cubit<SeerahState> {
     emit(state.copyWith(isLoaded: true));
   }
 
+  int _currentPage = 1;
+
   void saveCurrentPage(int pageNumber) {
-    StorageManager.instance.saveData(key: _lastPageKey, value: pageNumber);
+    _currentPage = pageNumber;
+    _pageSaveDebounce?.cancel();
+    _pageSaveDebounce = Timer(const Duration(seconds: 1), () {
+      StorageManager.instance.saveData(key: _lastPageKey, value: pageNumber);
+    });
+  }
+
+  @override
+  Future<void> close() {
+    if (_pageSaveDebounce?.isActive ?? false) {
+      StorageManager.instance.saveData(key: _lastPageKey, value: _currentPage);
+    }
+    _pageSaveDebounce?.cancel();
+    _searchResult?.clear();
+    return super.close();
   }
 
   void toggleSearch() {
@@ -69,11 +87,5 @@ class SeerahCubit extends Cubit<SeerahState> {
 
   void previousSearchInstance() {
     _searchResult?.previousInstance();
-  }
-
-  @override
-  Future<void> close() {
-    _searchResult?.clear();
-    return super.close();
   }
 }

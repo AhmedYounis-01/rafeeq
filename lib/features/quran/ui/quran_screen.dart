@@ -215,13 +215,7 @@ class _QuranScreenState extends State<QuranScreen>
           buildWhen: (prev, curr) {
             if (prev.runtimeType != curr.runtimeType) return true;
             if (curr is QuranFontsLoading) return true;
-            if (curr is QuranReady && prev is QuranReady) {
-              return prev.currentPage != curr.currentPage ||
-                  prev.showOverlay != curr.showOverlay ||
-                  prev.bookmarkPage != curr.bookmarkPage ||
-                  prev.audioStatus != curr.audioStatus;
-            }
-            return true;
+            return false; // ✅ مبقاش يشغل rebuild للـ ready state هنا
           },
           builder: (context, state) {
             if (state is QuranInitial || state is QuranPrefsLoading) {
@@ -246,7 +240,7 @@ class _QuranScreenState extends State<QuranScreen>
                 ),
               );
             }
-            return _buildMainScreen(state as QuranReady, isDark, cfg);
+            return _buildMainScreen(isDark, cfg); // ✅ مبقاش بيبعت state
           },
         ),
       ),
@@ -266,7 +260,7 @@ class _QuranScreenState extends State<QuranScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'بسم الله الرحمن الرحيم',
+              'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
               style: GoogleFonts.amiri(
                 fontSize: cfg.surahNameFontSize,
                 color: _goldColor(isDark),
@@ -303,107 +297,141 @@ class _QuranScreenState extends State<QuranScreen>
   }
 
   // ─── Main Screen ──────────────────────────────────────────────────────
-  Widget _buildMainScreen(QuranReady state, bool isDark, _MushafConfig cfg) {
+  Widget _buildMainScreen(bool isDark, _MushafConfig cfg) {
     return Scaffold(
       backgroundColor: _bgColor(isDark),
       body: Stack(
         children: [
-          GestureDetector(
-            onTap: () {
-              _cubit.toggleOverlay();
-              HapticFeedback.lightImpact();
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 75.h),
-              child: ValueListenableBuilder<List<HighlightVerse>>(
-                valueListenable: _cubit.highlightsNotifier,
-                builder: (_, highlights, _) => QuranPageView(
-                  pageController: _pageController,
-                  isDarkMode: isDark,
-                  isTajweed: false,
-                  highlights: highlights,
-                  onPageChanged: (pageNumber) {
-                    _cubit.onPageChanged(pageNumber);
-                    HapticFeedback.lightImpact();
-                  },
-                  onLongPress: (surah, ayah, details) {
-                    HapticFeedback.mediumImpact();
-                    _cubit.fetchTafsir(surah, ayah);
-                    _showTafsirSheet(isDark, cfg);
-                  },
-                ),
-              ),
+          // ✅ QuranPageView معزول تماماً - مش هيتبنى إلا لو isDark اتغير
+          RepaintBoundary(
+            child: _QuranPageBody(
+              pageController: _pageController,
+              highlightsNotifier: _cubit.highlightsNotifier,
+              isDark: isDark,
+              bottomPadding: 100.h,
+              onTap: () {
+                _cubit.toggleOverlay();
+                HapticFeedback.lightImpact();
+              },
+              onPageChanged: (pageNumber) {
+                _cubit.onPageChanged(pageNumber);
+                HapticFeedback.lightImpact();
+              },
+              onLongPress: (surah, ayah, details) {
+                HapticFeedback.mediumImpact();
+                _cubit.fetchTafsir(surah, ayah);
+                _showTafsirSheet(isDark, cfg);
+              },
             ),
           ),
 
-          // Overlay علوي
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedOpacity(
-              opacity: state.showOverlay ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 220),
-              child: IgnorePointer(
-                ignoring: !state.showOverlay,
-                child: _buildTopOverlay(state, isDark, cfg),
-              ),
-            ),
-          ),
-
-          // Bookmark ribbon
-          if (state.bookmarkPage == state.currentPage)
-            Positioned(
+          // ✅ Overlay بـ BlocSelector - مش بيأثر على PageView
+          BlocSelector<QuranCubit, QuranState, bool>(
+            selector: (s) => s is QuranReady && s.showOverlay,
+            builder: (_, showOverlay) => Positioned(
               top: 0,
-              right: cfg.isTablet ? 28 : 20,
-              child: IgnorePointer(
-                child: _LastReadRibbon(
-                  color: _goldColor(isDark),
-                  width: cfg.isTablet ? 28 : 22,
-                  height: cfg.isTablet ? 74 : 60,
-                ),
-              ),
-            ),
-
-          // Audio player
-          if (state.audioStatus.isActive)
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom + 85.h,
-              left: 14,
-              right: 14,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: cfg.isTablet ? 660 : double.infinity,
+              left: 0,
+              right: 0,
+              child: AnimatedOpacity(
+                opacity: showOverlay ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 220),
+                child: IgnorePointer(
+                  ignoring: !showOverlay,
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: _cubit.currentPageNotifier,
+                    builder: (_, currentPage, _) =>
+                        _buildTopOverlay(currentPage, isDark, cfg),
                   ),
-                  child: _buildAudioPlayer(state, isDark, cfg),
                 ),
               ),
             ),
+          ),
+
+          // ✅ Bookmark ribbon
+          ValueListenableBuilder<int>(
+            valueListenable: _cubit.currentPageNotifier,
+            builder: (_, currentPage, _) {
+              return BlocSelector<QuranCubit, QuranState, int?>(
+                selector: (s) => s is QuranReady ? s.bookmarkPage : null,
+                builder: (_, bookmarkPage) {
+                  if (bookmarkPage != currentPage) {
+                    return const SizedBox.shrink();
+                  }
+                  return Positioned(
+                    top: 0,
+                    right: cfg.isTablet ? 28 : 20,
+                    child: IgnorePointer(
+                      child: _LastReadRibbon(
+                        color: _goldColor(isDark),
+                        width: cfg.isTablet ? 28 : 22,
+                        height: cfg.isTablet ? 74 : 60,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+
+          // ✅ Audio player - BlocSelector للـ audioStatus فقط
+          BlocSelector<QuranCubit, QuranState, AudioStatus>(
+            selector: (s) =>
+                s is QuranReady ? s.audioStatus : const AudioStatus.idle(),
+            builder: (_, audioStatus) {
+              if (!audioStatus.isActive) return const SizedBox.shrink();
+              return Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 85.h,
+                left: 14,
+                right: 14,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: cfg.isTablet ? 660 : double.infinity,
+                    ),
+                    child: BlocSelector<QuranCubit, QuranState, QuranReady?>(
+                      selector: (s) => s is QuranReady ? s : null,
+                      builder: (_, state) {
+                        if (state == null) return const SizedBox.shrink();
+                        return _buildAudioPlayer(state, isDark, cfg);
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
 
-      floatingActionButton: state.showOverlay
-          ? Padding(
-              padding: EdgeInsets.only(bottom: 80.h),
-              child: FloatingActionButton(
-                backgroundColor: _cardColor(isDark),
-                child: Icon(Icons.menu_book_rounded, color: _goldColor(isDark)),
-                onPressed: () {
-                  _cubit.hideOverlay();
-                  _showPageOptions(state, isDark, cfg);
-                },
-              ),
-            )
-          : null,
+      floatingActionButton: BlocSelector<QuranCubit, QuranState, bool>(
+        selector: (s) => s is QuranReady && s.showOverlay,
+        builder: (_, showOverlay) => showOverlay
+            ? Padding(
+                padding: EdgeInsets.only(bottom: 80.h),
+                child: FloatingActionButton(
+                  backgroundColor: _cardColor(isDark),
+                  child: Icon(
+                    Icons.menu_book_rounded,
+                    color: _goldColor(isDark),
+                  ),
+                  onPressed: () {
+                    _cubit.hideOverlay();
+                    final state = _cubit.state;
+                    if (state is QuranReady) {
+                      _showPageOptions(state, isDark, cfg);
+                    }
+                  },
+                ),
+              )
+            : const SizedBox.shrink(),
+      ),
     );
   }
 
   // ─── Top Overlay ──────────────────────────────────────────────────────
-  Widget _buildTopOverlay(QuranReady state, bool isDark, _MushafConfig cfg) {
-    final juz = _cubit.getJuz(state.currentPage);
-    final surahName = _cubit.getSurahDisplayName(state.currentPage);
+  Widget _buildTopOverlay(int currentPage, bool isDark, _MushafConfig cfg) {
+    final juz = _cubit.getJuz(currentPage);
+    final surahName = _cubit.getSurahDisplayName(currentPage);
 
     return Container(
       decoration: BoxDecoration(
@@ -453,7 +481,7 @@ class _QuranScreenState extends State<QuranScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${state.currentPage}',
+                  '$currentPage',
                   style: GoogleFonts.amiri(
                     fontSize: cfg.pageNumFontSize,
                     fontWeight: FontWeight.bold,
@@ -666,7 +694,8 @@ class _QuranScreenState extends State<QuranScreen>
     final colorScheme = theme.colorScheme;
     final gold = _goldColor(isDark);
 
-    final isBookmarked = state.bookmarkPage == state.currentPage;
+    final currentPage = _cubit.currentPageNotifier.value;
+    final isBookmarked = state.bookmarkPage == currentPage;
     final isPlayingPage =
         state.audioStatus.isPlaying &&
         state.audioStatus.mode == AudioPlayMode.page;
@@ -680,8 +709,8 @@ class _QuranScreenState extends State<QuranScreen>
       builder: (ctx) => BlocProvider.value(
         value: _cubit,
         child: _PageOptionsSheet(
-          page: state.currentPage,
-          hizb: _cubit.getHizb(state.currentPage),
+          page: currentPage,
+          hizb: _cubit.getHizb(currentPage),
           isBookmarked: isBookmarked,
           isPlayingPage: isPlayingPage,
           isPlaying: state.audioStatus.isPlaying,
@@ -698,14 +727,14 @@ class _QuranScreenState extends State<QuranScreen>
             if (isPlayingPage && state.audioStatus.isPlaying) {
               _cubit.togglePlayPause();
             } else {
-              _cubit.playPage(state.currentPage);
+              _cubit.playPage(currentPage);
             }
           },
           onBookmark: () {
             Navigator.pop(ctx);
             isBookmarked
                 ? _cubit.clearBookmark()
-                : _cubit.setBookmark(state.currentPage);
+                : _cubit.setBookmark(currentPage);
             HapticFeedback.mediumImpact();
           },
           onSelectReciter: () {
@@ -717,7 +746,10 @@ class _QuranScreenState extends State<QuranScreen>
             _openSurahIndex(state, isDark, cfg);
           },
           onLastRead: () {
-            /* ... نفس الكود السابق */
+            Navigator.pop(ctx);
+            if (state.bookmarkPage != null) {
+              _cubit.jumpToPage(state.bookmarkPage!);
+            }
           },
           onSearch: () {
             Navigator.pop(ctx);
@@ -2612,7 +2644,7 @@ class _TafsirSheet extends StatelessWidget {
   }
 }
 
-// ─── رسالة حالة ──────────────────────────────────────────────────────────
+// ═══ رسالة حالة ──────────────────────────────────────────────────────────
 class _TafsirMessage extends StatelessWidget {
   final IconData icon;
   final String text, sub;
@@ -2654,6 +2686,49 @@ class _TafsirMessage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ✅ StatelessWidget منفصل - مش هيتبنى أبداً من الخارج
+class _QuranPageBody extends StatelessWidget {
+  final PageController pageController;
+  final ValueNotifier<List<HighlightVerse>> highlightsNotifier;
+  final bool isDark;
+  final double bottomPadding;
+  final VoidCallback onTap;
+  final void Function(int) onPageChanged;
+  final void Function(int, int, dynamic) onLongPress;
+
+  const _QuranPageBody({
+    required this.pageController,
+    required this.highlightsNotifier,
+    required this.isDark,
+    required this.bottomPadding,
+    required this.onTap,
+    required this.onPageChanged,
+    required this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomPadding),
+        child: ValueListenableBuilder<List<HighlightVerse>>(
+          valueListenable: highlightsNotifier,
+          builder: (_, highlights, child) => QuranPageView(
+            pageController: pageController,
+            isDarkMode: isDark,
+            isTajweed: false,
+            highlights: highlights,
+            onPageChanged: onPageChanged,
+            onLongPress: onLongPress,
+          ),
+        ),
       ),
     );
   }

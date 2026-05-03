@@ -62,6 +62,11 @@ class QuranCubit extends Cubit<QuranState> {
   );
   final ValueNotifier<bool> isSearchingAyahs = ValueNotifier(false);
   Timer? _searchDebounce;
+
+  // ─── Current Page (lightweight, no rebuild) ──────────────────────────────
+  final ValueNotifier<int> currentPageNotifier = ValueNotifier(1);
+  Timer? _pageSaveDebounce;
+
   // ─── Tafsir ───────────────────────────────────────────────────────────────
   final ValueNotifier<TafsirData?> tafsirNotifier = ValueNotifier(null);
   final Map<String, String> _tafsirCache = {};
@@ -178,6 +183,7 @@ class QuranCubit extends Cubit<QuranState> {
             'Performance: Quran fonts loaded in ${fontWatch.elapsedMilliseconds}ms',
             tag: 'QuranCubit',
           );
+          currentPageNotifier.value = page;
           emit(
             QuranReady(
               currentPage: page,
@@ -226,9 +232,19 @@ class QuranCubit extends Cubit<QuranState> {
   // ═══════════════════════════════════════════════════════════════════════
   void onPageChanged(int page) {
     final r = _ready;
-    if (r == null || r.currentPage == page) return;
-    emit(r.copyWith(currentPage: page));
-    _prefs.setInt('last_page', page);
+    if (r == null) return;
+    if (currentPageNotifier.value == page) return;
+    currentPageNotifier.value = page;
+
+    // Debounce SharedPreferences write — only save after 500ms of inactivity
+    _pageSaveDebounce?.cancel();
+    _pageSaveDebounce = Timer(const Duration(milliseconds: 500), () {
+      _prefs.setInt('last_page', page);
+    });
+  }
+
+  void jumpToPage(int page) {
+    _pageJumpController.add(page - 1);
   }
 
   void toggleOverlay() {
@@ -661,6 +677,12 @@ class QuranCubit extends Cubit<QuranState> {
   @override
   Future<void> close() async {
     _searchDebounce?.cancel();
+    _pageSaveDebounce?.cancel();
+    // Save the last page immediately on close
+    if (state is QuranReady) {
+      _prefs.setInt('last_page', currentPageNotifier.value);
+    }
+    currentPageNotifier.dispose();
     await _playerStateSub?.cancel();
     await _playerIndexSub?.cancel();
     await _player.dispose();
