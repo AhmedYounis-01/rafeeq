@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
@@ -516,7 +515,7 @@ class _CalendarModalState extends State<_CalendarModal> {
                 Text(
                   "home.calendar_title".tr(),
                   style: TextStyle(
-                    color: context.theme.colorScheme.onSurface,
+                    color: const Color(0xffFFFFFF),
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
                   ),
@@ -524,13 +523,13 @@ class _CalendarModalState extends State<_CalendarModal> {
                 Material(
                   color: isDark
                       ? Colors.white10
-                      : Colors.black.withValues(alpha: 0.05),
+                      : Colors.black.withValues(alpha: 0.3),
                   shape: const CircleBorder(),
                   child: IconButton(
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(
                       Icons.close_rounded,
-                      color: context.theme.colorScheme.onSurface,
+                      color: const Color(0xffFFFFFF),
                       size: 22,
                     ),
                   ),

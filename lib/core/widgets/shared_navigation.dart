@@ -482,7 +482,7 @@ class _BottomNavItem extends StatelessWidget {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 22,
+                    horizontal: 20,
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
