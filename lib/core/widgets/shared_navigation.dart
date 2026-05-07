@@ -36,6 +36,43 @@ class AdvancedDrawerControllerProvider extends InheritedWidget {
       drawerController != old.drawerController;
 }
 
+// ─── Bottom Nav Visibility ────────────────────────────────────────────────────
+class BottomNavVisibility extends InheritedWidget {
+  final ValueNotifier<bool> _notifier;
+
+  const BottomNavVisibility({
+    super.key,
+    required ValueNotifier<bool> notifier,
+    required super.child,
+  }) : _notifier = notifier;
+
+  static ValueNotifier<bool>? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<BottomNavVisibility>()
+        ?._notifier;
+  }
+
+  /// Hide the bottom nav bar
+  static void hide(BuildContext context) {
+    of(context)?.value = false;
+  }
+
+  /// Show the bottom nav bar
+  static void show(BuildContext context) {
+    of(context)?.value = true;
+  }
+
+  /// Toggle the bottom nav bar visibility
+  static void toggle(BuildContext context) {
+    final n = of(context);
+    if (n != null) n.value = !n.value;
+  }
+
+  @override
+  bool updateShouldNotify(BottomNavVisibility old) =>
+      _notifier != old._notifier;
+}
+
 // ─── Responsive Config ────────────────────────────────────────────────────────
 class _NavCfg {
   final double side;
@@ -71,10 +108,21 @@ class SharedNavigation extends StatefulWidget {
 
 class _SharedNavigationState extends State<SharedNavigation> {
   final _drawerController = AdvancedDrawerController();
+  final ValueNotifier<bool> _bottomNavVisible = ValueNotifier(true);
+
+  @override
+  void didUpdateWidget(SharedNavigation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // When navigating away from Quran tab, always show nav bar
+    if (widget.currentIndex != 1 && !_bottomNavVisible.value) {
+      _bottomNavVisible.value = true;
+    }
+  }
 
   @override
   void dispose() {
     _drawerController.dispose();
+    _bottomNavVisible.dispose();
     super.dispose();
   }
 
@@ -158,34 +206,58 @@ class _SharedNavigationState extends State<SharedNavigation> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cfg = _NavCfg(context);
 
-    return AdvancedDrawerControllerProvider(
-      drawerController: _drawerController,
-      child: AdvancedDrawer(
-        controller: _drawerController,
-        rtlOpening: isRtl,
-        animationCurve: Curves.easeInOutCubic,
-        animationDuration: const Duration(milliseconds: 340),
-        animateChildDecoration: true,
-        openScale: 0.92,
-        openRatio: 0.72,
-        disabledGestures: false,
-        backdrop: Container(color: Theme.of(context).scaffoldBackgroundColor),
-        childDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
+    return BottomNavVisibility(
+      notifier: _bottomNavVisible,
+      child: AdvancedDrawerControllerProvider(
+        drawerController: _drawerController,
+        child: AdvancedDrawer(
+          controller: _drawerController,
+          rtlOpening: isRtl,
+          animationCurve: Curves.easeInOutCubic,
+          animationDuration: const Duration(milliseconds: 340),
+          animateChildDecoration: true,
+          openScale: 0.92,
+          openRatio: 0.72,
+          disabledGestures: false,
+          backdrop: Container(color: Theme.of(context).scaffoldBackgroundColor),
+          childDecoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          drawer: const CustomDrawer(),
+          child: Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: Stack(
+              children: [
+                widget.child,
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: _bottomNavVisible,
+                    builder: (_, isVisible, child) => AnimatedSlide(
+                      duration: const Duration(milliseconds: 320),
+                      curve: Curves.easeInOutCubic,
+                      offset: isVisible ? Offset.zero : const Offset(0, 1.2),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 280),
+                        opacity: isVisible ? 1.0 : 0.0,
+                        child: child,
+                      ),
+                    ),
+                    child: _buildBottomNavigation(context, cfg),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        drawer: const CustomDrawer(),
-        child: Scaffold(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          body: widget.child,
-          extendBody: true,
-          bottomNavigationBar: _buildBottomNavigation(context, cfg),
+          ),
         ),
       ),
     );
@@ -289,51 +361,54 @@ class _SharedNavigationState extends State<SharedNavigation> {
         ),
 
         // ✅ الـ bottom nav نفسه بدون تغيير
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                height: cfg.bottomNavH + 10,
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.35)
-                      : Colors.white.withValues(alpha: 0.55),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
+        SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  height: cfg.bottomNavH + 10,
+                  decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withValues(alpha: 0.08)
-                        : Colors.white.withValues(alpha: 0.6),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: isDark ? 0.3 : 0.08,
-                      ),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
+                        ? Colors.black.withValues(alpha: 0.35)
+                        : Colors.white.withValues(alpha: 0.55),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.08)
+                          : Colors.white.withValues(alpha: 0.6),
+                      width: 1,
                     ),
-                  ],
-                ),
-                child: SafeArea(
-                  bottom: false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: NavigationItemData.items.asMap().entries.map((
-                      entry,
-                    ) {
-                      final item = entry.value;
-                      final isSelected = entry.key == widget.currentIndex;
-                      return _BottomNavItem(
-                        item: item,
-                        isSelected: isSelected,
-                        cfg: cfg,
-                        onTap: () => _onNavigationTap(context, item.route),
-                      );
-                    }).toList(),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.3 : 0.08,
+                        ),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: SafeArea(
+                    bottom: false,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: NavigationItemData.items.asMap().entries.map((
+                        entry,
+                      ) {
+                        final item = entry.value;
+                        final isSelected = entry.key == widget.currentIndex;
+                        return _BottomNavItem(
+                          item: item,
+                          isSelected: isSelected,
+                          cfg: cfg,
+                          onTap: () => _onNavigationTap(context, item.route),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),

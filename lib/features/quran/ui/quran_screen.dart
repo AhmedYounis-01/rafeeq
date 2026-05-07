@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qcf_quran_plus/qcf_quran_plus.dart'
     hide getPageData, getPageNumber;
 import 'package:quran/quran.dart'
     hide getSurahNameArabic, getJuzNumber, getVerseCount;
 
-import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
+import 'package:rafeeq/core/widgets/shared_navigation.dart';
 import 'package:rafeeq/features/quran/logic/cubit/quran_cubit.dart';
 import 'package:rafeeq/features/quran/data/tafsir_model.dart';
 
@@ -56,6 +55,7 @@ class _QuranScreenState extends State<QuranScreen>
   StreamSubscription<int>? _pageJumpSub;
   StreamSubscription<String>? _errorSub;
   bool _didInitialJump = false;
+  Timer? _autoHideTimer;
 
   @override
   void initState() {
@@ -81,6 +81,11 @@ class _QuranScreenState extends State<QuranScreen>
 
   @override
   void dispose() {
+    _autoHideTimer?.cancel();
+    // Restore nav bar when leaving the screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) BottomNavVisibility.show(context);
+    });
     _pageJumpSub?.cancel();
     _errorSub?.cancel();
     _pageController.dispose();
@@ -91,7 +96,8 @@ class _QuranScreenState extends State<QuranScreen>
   // ─── Colors ──────────────────────────────────────────────────────────────
   Color _goldColor(bool isDark) =>
       isDark ? AppColors.secondaryDark : AppColors.secondary;
-  Color _bgColor(bool isDark) => context.colorScheme.surface;
+  Color _bgColor(bool isDark) =>
+      isDark ? AppColors.backgroundDark : const Color(0xFFF8F6F0);
   Color _textColor(bool isDark) =>
       isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
   Color _cardColor(bool isDark) =>
@@ -208,6 +214,11 @@ class _QuranScreenState extends State<QuranScreen>
                   }
                 });
               }
+              // Auto-hide bottom nav after 1 second for immersive reading
+              _autoHideTimer?.cancel();
+              _autoHideTimer = Timer(const Duration(seconds: 1), () {
+                if (mounted) BottomNavVisibility.hide(context);
+              });
             },
           ),
         ],
@@ -303,26 +314,32 @@ class _QuranScreenState extends State<QuranScreen>
       body: Stack(
         children: [
           // ✅ QuranPageView معزول تماماً - مش هيتبنى إلا لو isDark اتغير
-          RepaintBoundary(
-            child: _QuranPageBody(
-              pageController: _pageController,
-              highlightsNotifier: _cubit.highlightsNotifier,
-              isDark: isDark,
-              bottomPadding: 100.h,
-              onTap: () {
-                _cubit.toggleOverlay();
-                HapticFeedback.lightImpact();
-              },
-              onPageChanged: (pageNumber) {
-                _cubit.onPageChanged(pageNumber);
-                HapticFeedback.lightImpact();
-              },
-              onLongPress: (surah, ayah, details) {
-                HapticFeedback.mediumImpact();
-                _cubit.fetchTafsir(surah, ayah);
-                _showTafsirSheet(isDark, cfg);
-              },
-            ),
+          ValueListenableBuilder<bool>(
+            valueListenable:
+                BottomNavVisibility.of(context) ?? ValueNotifier(true),
+            builder: (context, isNavVisible, _) {
+              return RepaintBoundary(
+                child: _QuranPageBody(
+                  pageController: _pageController,
+                  highlightsNotifier: _cubit.highlightsNotifier,
+                  isDark: isDark,
+                  onTap: () {
+                    _cubit.toggleOverlay();
+                    BottomNavVisibility.toggle(context);
+                    HapticFeedback.lightImpact();
+                  },
+                  onPageChanged: (pageNumber) {
+                    _cubit.onPageChanged(pageNumber);
+                    HapticFeedback.lightImpact();
+                  },
+                  onLongPress: (surah, ayah, details) {
+                    HapticFeedback.mediumImpact();
+                    _cubit.fetchTafsir(surah, ayah);
+                    _showTafsirSheet(isDark, cfg);
+                  },
+                ),
+              );
+            },
           ),
 
           // ✅ Overlay بـ BlocSelector - مش بيأثر على PageView
@@ -379,24 +396,36 @@ class _QuranScreenState extends State<QuranScreen>
                 s is QuranReady ? s.audioStatus : const AudioStatus.idle(),
             builder: (_, audioStatus) {
               if (!audioStatus.isActive) return const SizedBox.shrink();
-              return Positioned(
-                bottom: MediaQuery.of(context).padding.bottom + 85.h,
-                left: 14,
-                right: 14,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: cfg.isTablet ? 660 : double.infinity,
+
+              return ValueListenableBuilder<bool>(
+                valueListenable:
+                    BottomNavVisibility.of(context) ?? ValueNotifier(true),
+                builder: (context, isNavVisible, _) {
+                  final bottomPad = isNavVisible ? 300.0 : 20.0;
+
+                  return Positioned(
+                    bottom: bottomPad,
+                    left: 14,
+                    right: 14,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: cfg.isTablet ? 660 : double.infinity,
+                        ),
+                        child:
+                            BlocSelector<QuranCubit, QuranState, QuranReady?>(
+                              selector: (s) => s is QuranReady ? s : null,
+                              builder: (_, state) {
+                                if (state == null) {
+                                  return const SizedBox.shrink();
+                                }
+                                return _buildAudioPlayer(state, isDark, cfg);
+                              },
+                            ),
+                      ),
                     ),
-                    child: BlocSelector<QuranCubit, QuranState, QuranReady?>(
-                      selector: (s) => s is QuranReady ? s : null,
-                      builder: (_, state) {
-                        if (state == null) return const SizedBox.shrink();
-                        return _buildAudioPlayer(state, isDark, cfg);
-                      },
-                    ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           ),
@@ -406,13 +435,22 @@ class _QuranScreenState extends State<QuranScreen>
       floatingActionButton: BlocSelector<QuranCubit, QuranState, bool>(
         selector: (s) => s is QuranReady && s.showOverlay,
         builder: (_, showOverlay) => showOverlay
-            ? Padding(
-                padding: EdgeInsets.only(bottom: 80.h),
+            ? ValueListenableBuilder<bool>(
+                valueListenable:
+                    BottomNavVisibility.of(context) ?? ValueNotifier(true),
+                builder: (context, isNavVisible, child) {
+                  final bottomPad = MediaQuery.of(context).size.height * 0.10;
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: bottomPad),
+                    child: child,
+                  );
+                },
                 child: FloatingActionButton(
                   backgroundColor: _cardColor(isDark),
                   child: Icon(
                     Icons.menu_book_rounded,
                     color: _goldColor(isDark),
+                    size: MediaQuery.of(context).size.height * 0.035,
                   ),
                   onPressed: () {
                     _cubit.hideOverlay();
@@ -757,7 +795,12 @@ class _QuranScreenState extends State<QuranScreen>
           },
         ),
       ),
-    );
+    ).whenComplete(() {
+      if (mounted) {
+        BottomNavVisibility.hide(context);
+        _cubit.hideOverlay();
+      }
+    });
   }
 
   // ─── Tafsir Sheet ─────────────────────────────────────────────────────
@@ -785,7 +828,13 @@ class _QuranScreenState extends State<QuranScreen>
           _cubit.playAyah(surah, ayah);
         },
       ),
-    ).whenComplete(_cubit.clearTafsir);
+    ).whenComplete(() {
+      _cubit.clearTafsir();
+      if (mounted) {
+        BottomNavVisibility.hide(context);
+        _cubit.hideOverlay();
+      }
+    });
   } // ─── Reciter Selector ────────────────────────────────────────────────
 
   // ─── Reciter Selector ────────────────────────────────────────────────
@@ -892,7 +941,12 @@ class _QuranScreenState extends State<QuranScreen>
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      if (mounted) {
+        BottomNavVisibility.hide(context);
+        _cubit.hideOverlay();
+      }
+    });
   }
 
   // ─── Surah Index — مع بحث داخلي للسور ────────────────────────────────
@@ -933,7 +987,12 @@ class _QuranScreenState extends State<QuranScreen>
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      if (mounted) {
+        BottomNavVisibility.hide(context);
+        _cubit.hideOverlay();
+      }
+    });
   }
 
   // ─── Ayah Search Sheet ────────────────────────────────────────────────
@@ -960,7 +1019,12 @@ class _QuranScreenState extends State<QuranScreen>
           _pageController.jumpToPage(targetPage - 1);
         },
       ),
-    );
+    ).whenComplete(() {
+      if (mounted) {
+        BottomNavVisibility.hide(context);
+        _cubit.hideOverlay();
+      }
+    });
   }
 
   // ─── Sheet Handle ─────────────────────────────────────────────────────
@@ -2696,7 +2760,6 @@ class _QuranPageBody extends StatelessWidget {
   final PageController pageController;
   final ValueNotifier<List<HighlightVerse>> highlightsNotifier;
   final bool isDark;
-  final double bottomPadding;
   final VoidCallback onTap;
   final void Function(int) onPageChanged;
   final void Function(int, int, dynamic) onLongPress;
@@ -2705,7 +2768,6 @@ class _QuranPageBody extends StatelessWidget {
     required this.pageController,
     required this.highlightsNotifier,
     required this.isDark,
-    required this.bottomPadding,
     required this.onTap,
     required this.onPageChanged,
     required this.onLongPress,
@@ -2716,8 +2778,8 @@ class _QuranPageBody extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottomPadding),
+      child: SafeArea(
+        bottom: false,
         child: ValueListenableBuilder<List<HighlightVerse>>(
           valueListenable: highlightsNotifier,
           builder: (_, highlights, child) => QuranPageView(
