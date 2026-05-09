@@ -474,10 +474,17 @@ class _CountdownState extends State<_Countdown> {
       valueListenable: _timeNotifier,
       builder: (context, now, _) {
         final diff = widget.nextTime.difference(now);
+        final hUnit = "home.units.hour".tr();
+        final mUnit = "home.units.minute".tr();
+        final locale = context.locale.languageCode;
+
+        final dummy = DateTime(0, 1, 1, diff.inHours, diff.inMinutes % 60);
+        final localizedHours = intl.DateFormat('HH', locale).format(dummy);
+        final localizedMinutes = intl.DateFormat('mm', locale).format(dummy);
+
         final text = diff.isNegative
-            ? "--:--"
-            : "${diff.inHours.toString().padLeft(2, '0')}:"
-                  "${(diff.inMinutes % 60).toString().padLeft(2, '0')}";
+            ? "-- $hUnit -- $mUnit"
+            : "$localizedHours $hUnit $localizedMinutes $mUnit";
 
         return Container(
           padding: EdgeInsets.symmetric(
@@ -493,9 +500,8 @@ class _CountdownState extends State<_Countdown> {
             style: TextStyle(
               color: AppColors.secondary,
               fontWeight: FontWeight.w800,
-              fontFamily: 'monospace',
-              fontSize: screenW * (widget.isTablet ? 0.03 : 0.035),
-              letterSpacing: 2,
+              fontSize: screenW * (widget.isTablet ? 0.028 : 0.032),
+              letterSpacing: 0.5,
             ),
           ),
         );

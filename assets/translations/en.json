@@ -61,7 +61,11 @@
       "night": "Peaceful Night, Rafeeq"
     },
     "calendar_title": "Calendar",
-    "prayer_schedule_hint": "Prayer times for this day will be available soon..."
+    "prayer_schedule_hint": "Prayer times for this day will be available soon...",
+    "units": {
+      "hour": "H",
+      "minute": "M"
+    }
   },
   "auth": {
     "fieldRequired": "This field is required",

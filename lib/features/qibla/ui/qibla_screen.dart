@@ -173,6 +173,8 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                   ),
                 ),
               ),
+              // Reserve space for floating bottom nav bar (SharedNavigation)
+              SizedBox(height: MediaQuery.of(context).size.height * 0.15),
             ],
           ),
         ),
@@ -867,7 +869,7 @@ class _LocationErrorView extends StatelessWidget {
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              height: cfg.btnHeight + (cfg.isTablet ? 10 : 0),
+              height: cfg.btnHeight + (cfg.isTablet ? 13 : 3),
               child: ElevatedButton(
                 onPressed: onEnable,
                 style: ElevatedButton.styleFrom(

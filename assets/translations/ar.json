@@ -61,7 +61,11 @@
       "night": "ليلة هادئة، يا رفيق"
     },
     "calendar_title": "التقويم",
-    "prayer_schedule_hint": "سيتم عرض مواعيد الصلاة لهذا اليوم قريباً..."
+    "prayer_schedule_hint": "سيتم عرض مواعيد الصلاة لهذا اليوم قريباً...",
+    "units": {
+      "hour": "س",
+      "minute": "د"
+    }
   },
   "auth": {
     "fieldRequired": "الحقل مطلوب",
