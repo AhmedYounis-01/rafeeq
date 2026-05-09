@@ -8,7 +8,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:rafeeq/core/utils/prayer_time_calculator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz_lib;
 
@@ -32,18 +32,16 @@ class AdhanSchedulerService {
   // ✅ Channel لجدولة الأذان عبر AlarmManager (يضمن الصوت في الخلفية)
   static const _alarmChannel = MethodChannel('adhan/alarm');
 
-  /// Adhan sound toggle (for scheduled notifications)
-  static const String _soundEnabledKey = 'adhan_sound_enabled';
+  /// Adhan sound toggle stream (for UI reactivity)
   final StreamController<bool> _soundEnabledController =
       StreamController<bool>.broadcast();
   Stream<bool> get soundEnabledStream => _soundEnabledController.stream;
 
   /// Schedule 7 days × 5 prayers = 35 notifications (IDs 200–234)
-  /// iOS allows max 64 pending notifications, so 35 adhan + 3 daily = 38 ✅
   static const int _scheduleDays = 7;
   static const int _prayersPerDay = 5;
   static const int _baseId = 200;
-  static const int _maxId = _baseId + (_scheduleDays * _prayersPerDay); // 235
+  static const int _maxId = _baseId + (_scheduleDays * _prayersPerDay);
 
   /// The 5 prayers to schedule adhan for (no Sunrise)
   static const List<Prayer> _adhanPrayers = [
@@ -78,14 +76,12 @@ class AdhanSchedulerService {
 
   /// Is Adhan sound enabled for scheduled notifications? (default: true)
   Future<bool> isAdhanSoundEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_soundEnabledKey) ?? true;
+    return StorageManager.instance.isAdhanSoundEnabled();
   }
 
   /// Toggle Adhan sound and re-schedule notifications to apply the change
   Future<void> setAdhanSoundEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_soundEnabledKey, enabled);
+    await StorageManager.instance.setAdhanSoundEnabled(enabled);
     _soundEnabledController.add(enabled);
 
     AppLogger.log(
@@ -100,14 +96,12 @@ class AdhanSchedulerService {
   // ═══════════════════════ الجدولة ═══════════════════════
 
   /// Cancel old adhan notifications and schedule for 7 days ahead.
-  /// Also refreshes timezone to handle DST changes.
   Future<void> scheduleAdhanNotifications() async {
     // Refresh timezone on every schedule call (handles DST changes)
     await refreshTimezone();
 
-    final prefs = await SharedPreferences.getInstance();
-    final lat = prefs.getDouble('location_lat');
-    final lon = prefs.getDouble('location_lon');
+    final lat = StorageManager.instance.getData<double>(key: 'location_lat');
+    final lon = StorageManager.instance.getData<double>(key: 'location_lon');
 
     if (lat == null || lon == null) {
       AppLogger.warning(
@@ -135,10 +129,8 @@ class AdhanSchedulerService {
     int notificationId = _baseId;
     int scheduledCount = 0;
 
-    // Schedule for 7 days (today + 6 more days)
+    // Schedule for 7 days
     for (int day = 0; day < _scheduleDays; day++) {
-      // Calculate times using a plain DateTime for the adhan pkg,
-      // but compare using TZDateTime.
       final checkDate = now.add(Duration(days: day));
       final prayerTimes = PrayerTimeCalculator.calculateForDate(
         lat: lat,
@@ -154,10 +146,8 @@ class AdhanSchedulerService {
           continue;
         }
 
-        // Convert the adhan result to a TZDateTime for comparison
         final tzPrayerTime = PrayerTimeCalculator.toTZ(time);
 
-        // Skip times that already passed (with 1-min grace)
         if (tzPrayerTime.isBefore(now.subtract(const Duration(minutes: 1)))) {
           notificationId++;
           continue;
@@ -201,29 +191,24 @@ class AdhanSchedulerService {
     required String prayerName,
     required DateTime scheduledTime,
   }) async {
-    // Use TZDateTime.from to ensure the moment is correctly Translated
-    // from the system-local (Standard) to the app-local (DST).
     final tz_lib.TZDateTime tzTime = scheduledTime is tz_lib.TZDateTime
         ? scheduledTime
         : tz_lib.TZDateTime.from(scheduledTime, tz_lib.local);
 
-    // ✅ Android: الصوت يأتي من Foreground Service (عبر fullScreenIntent)
-    // الإشعار نفسه بدون صوت مخصص — فقط اهتزاز
     final androidDetails = AndroidNotificationDetails(
       'adhan_channel_v2',
       'إشعارات الأذان',
       channelDescription: 'تشغيل الأذان عند دخول وقت الصلاة',
       importance: Importance.max,
       priority: Priority.max,
-      playSound: false, // ✅ الصوت يأتي من Foreground Service
+      playSound: false,
       enableVibration: true,
       category: AndroidNotificationCategory.alarm,
-      fullScreenIntent: true, // ✅ يشغّل full screen حتى لو الموبيل مقفول
+      fullScreenIntent: true,
       ticker: 'حان وقت $prayerName',
     );
 
-    // iOS: ملف adhan.aiff مدته 25 ثانية (أقل من حد iOS = 30 ثانية) ✅
-    final soundEnabled = await isAdhanSoundEnabled();
+    final soundEnabled = StorageManager.instance.isAdhanSoundEnabled();
     final iosDetails = DarwinNotificationDetails(
       sound: soundEnabled ? 'adhan.aiff' : null,
       presentAlert: true,
@@ -244,28 +229,18 @@ class AdhanSchedulerService {
         scheduledDate: tzTime,
         notificationDetails: details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        // ✅ payload يحمل اسم الصلاة لتشغيل الأذان الكامل
         payload: 'adhan_tap|$prayerName',
       );
 
-      // ✅ جدولة alarm أصلي عبر AlarmManager لتشغيل الصوت في الخلفية
       if (Platform.isAndroid) {
-        final soundEnabled = await isAdhanSoundEnabled();
         if (soundEnabled) {
           try {
             await _alarmChannel.invokeMethod('scheduleAdhanAlarm', {
               'id': id,
               'timeMillis': tzTime.millisecondsSinceEpoch,
             });
-            AppLogger.log(
-              'Native alarm #$id ($prayerName) scheduled at $tzTime',
-              tag: 'ADHAN',
-            );
           } catch (e) {
-            AppLogger.warning(
-              'Failed to schedule native alarm #$id: $e',
-              tag: 'ADHAN',
-            );
+            AppLogger.warning('Failed native alarm #$id: $e', tag: 'ADHAN');
           }
         }
       }
@@ -283,10 +258,6 @@ class AdhanSchedulerService {
     }
   }
 
-  // ═══════════════════════ تشغيل الأذان الكامل ═══════════════════════
-
-  /// ✅ يشغّل الأذان الكامل عبر Foreground Service على Android
-  /// وعبر just_audio على iOS (لأن iOS يسمح بالصوت في الإشعار مباشرة)
   Future<void> playFullAdhan() async {
     if (Platform.isAndroid) {
       await _startAndroidForegroundService();
@@ -298,17 +269,8 @@ class AdhanSchedulerService {
   Future<void> _startAndroidForegroundService() async {
     try {
       await _foregroundChannel.invokeMethod('startAdhan');
-      AppLogger.log(
-        'Android Foreground Service started for adhan',
-        tag: 'ADHAN',
-      );
     } on PlatformException catch (e) {
-      AppLogger.error(
-        'Failed to start foreground service',
-        error: e,
-        tag: 'ADHAN',
-      );
-      // Fallback: just_audio
+      AppLogger.error('Failed foreground service', error: e, tag: 'ADHAN');
       await _playIOSAdhan();
     }
   }
@@ -317,11 +279,8 @@ class AdhanSchedulerService {
     try {
       await _audioPlayer?.dispose();
       _audioPlayer = AudioPlayer();
-
-      // ✅ تفعيل الصوت في الخلفية على iOS
       await _audioPlayer!.setAudioSource(AudioSource.asset('assets/azan.mp3'));
       await _audioPlayer!.play();
-
       _audioPlayer!.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
           _audioPlayer?.dispose();
@@ -342,13 +301,8 @@ class AdhanSchedulerService {
     _audioPlayer = null;
   }
 
-  // ═══════════════════════ Notification Tap Handler ═══════════════════════
-
-  /// Handle notification tap — plays full adhan if payload matches
   void handleNotificationTap(String? payload) {
     if (payload != null && payload.startsWith('adhan_tap')) {
-      // ✅ على المنصتين: تشغيل الأذان الكامل عند الضغط على الإشعار
-      // Android: Foreground Service | iOS: just_audio
       playFullAdhan();
     }
   }

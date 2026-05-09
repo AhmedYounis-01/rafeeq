@@ -215,5 +215,17 @@
     "totalCount": "Total today: {total}",
     "noSessions": "No sessions recorded today",
     "times": "{count} times"
+  },
+  "settings": {
+    "title": "Settings",
+    "location_usage_title": "Why do we use your location?",
+    "location_usage_desc": "We use your location to accurately determine prayer times and Qibla direction.",
+    "location_usage_detailed": "We use your geographical location (latitude and longitude) to provide the following essential services:\n\n1. Determining prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) based on your current coordinates with high precision.\n2. Calculating the correct Qibla direction from your current location towards the Holy Kaaba.\n\nImportant Notice: Rafeeq does not store your location data on any external servers, nor is it shared with any third parties. This data is processed locally on your device only to ensure maximum privacy and security.",
+    "privacy_policy_title": "Privacy Policy",
+    "privacy_policy_desc": "We respect your privacy and do not collect any personal data.",
+    "privacy_policy_detailed": "Your privacy is our top priority at Rafeeq:\n\n- The app does not require any login or collection of personal information such as name or email.\n- Location data is used only for operational purposes (Prayer and Qibla) and is not linked to your identity.\n- The app does not contain any trackers or external analytics for user behavior.\n- All data and content are stored and processed to serve you alone.\n\nRafeeq is designed to be completely safe and reliable.",
+    "version": "Version 1.0.1",
+    "copyright": "Rafeeq © 2026",
+    "close": "Close"
   }
 }

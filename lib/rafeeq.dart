@@ -7,6 +7,7 @@ import 'package:rafeeq/core/themes/app_theme.dart';
 import 'package:rafeeq/core/routing/app_router.dart';
 import 'package:rafeeq/core/themes/logic/theme_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
+import 'package:rafeeq/features/settings/logic/cubit/settings_cubit.dart';
 
 class Rafeeq extends StatelessWidget {
   const Rafeeq({super.key});
@@ -17,6 +18,7 @@ class Rafeeq extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => PrayerTimeCubit()),
+        BlocProvider(create: (_) => SettingsCubit()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(375, 812),

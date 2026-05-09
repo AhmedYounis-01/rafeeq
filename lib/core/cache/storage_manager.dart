@@ -43,6 +43,17 @@ class StorageManager {
     return _sharedPreferences.containsKey(key);
   }
 
+  // ================= Adhan Sound =================
+  static const String adhanSoundKey = 'adhan_sound_enabled';
+
+  bool isAdhanSoundEnabled() {
+    return getData<bool>(key: adhanSoundKey) ?? true;
+  }
+
+  Future<bool> setAdhanSoundEnabled(bool enabled) {
+    return saveData(key: adhanSoundKey, value: enabled);
+  }
+
   // ================= Onboarding =================
 
   bool hasSeenOnboarding() {

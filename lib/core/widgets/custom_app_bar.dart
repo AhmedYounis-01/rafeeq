@@ -3,15 +3,15 @@
 // ═══════════════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rafeeq/core/widgets/shared_navigation.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_state.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:rafeeq/core/helpers/location_helper.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rafeeq/core/routing/app_router.dart';
 
 // ─── Responsive Config ────────────────────────────────────────────────────────
 class _AppBarCfg {
@@ -50,7 +50,7 @@ class CustomAppBar extends StatelessWidget {
   }
 }
 
-// ─── Menu Button ──────────────────────────────────────────────────────────────
+// ─── Menu Button (Now Settings Button) ────────────────────────────────────────
 class _MenuButton extends StatelessWidget {
   final _AppBarCfg cfg;
   final bool isDark;
@@ -58,56 +58,33 @@ class _MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AdvancedDrawerValue>(
-      // ✅ نحصل على الـ controller من الـ InheritedWidget
-      valueListenable:
-          AdvancedDrawerControllerProvider.of(context) ??
-          AdvancedDrawerController(),
-      builder: (context, value, child) {
-        final drawerController = AdvancedDrawerControllerProvider.of(context);
-        final isOpen = value.visible;
-
-        return Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              HapticFeedback.lightImpact();
-              drawerController?.showDrawer();
-            },
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          context.push(AppRouter.settings);
+        },
+        borderRadius: BorderRadius.circular(cfg.radius),
+        child: Container(
+          width: cfg.btnSize,
+          height: cfg.btnSize,
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.35,
+            ),
             borderRadius: BorderRadius.circular(cfg.radius),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              width: cfg.btnSize,
-              height: cfg.btnSize,
-              decoration: BoxDecoration(
-                color: isOpen
-                    ? AppColors.getPrimary(context).withValues(alpha: 0.15)
-                    : context.colorScheme.surfaceContainerHighest.withValues(
-                        alpha: 0.35,
-                      ),
-                borderRadius: BorderRadius.circular(cfg.radius),
-                border: Border.all(
-                  color: isOpen
-                      ? AppColors.getPrimary(context).withValues(alpha: 0.4)
-                      : context.colorScheme.outlineVariant.withValues(
-                          alpha: 0.4,
-                        ),
-                ),
-              ),
-              // ✅ تأثير الأيقونة تتغير لـ X لما الدرور مفتوح
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  isOpen ? Icons.close_rounded : Icons.menu_rounded,
-                  key: ValueKey(isOpen),
-                  color: AppColors.getPrimary(context),
-                  size: cfg.iconSize,
-                ),
-              ),
+            border: Border.all(
+              color: context.colorScheme.outlineVariant.withValues(alpha: 0.4),
             ),
           ),
-        );
-      },
+          child: Icon(
+            Icons.settings_rounded,
+            color: AppColors.getPrimary(context),
+            size: cfg.iconSize,
+          ),
+        ),
+      ),
     );
   }
 }

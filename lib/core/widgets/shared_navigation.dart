@@ -4,7 +4,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rafeeq/core/gen/assets.gen.dart';
@@ -13,28 +12,6 @@ import '../themes/app_colors.dart';
 import '../extensions/theme_extension.dart';
 import '../constants/app_constants.dart';
 import 'responsive_layout.dart';
-import 'custom_drawer.dart';
-
-// ─── Controller Provider ──────────────────────────────────────────────────────
-class AdvancedDrawerControllerProvider extends InheritedWidget {
-  final AdvancedDrawerController drawerController;
-
-  const AdvancedDrawerControllerProvider({
-    super.key,
-    required this.drawerController,
-    required super.child,
-  });
-
-  static AdvancedDrawerController? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<AdvancedDrawerControllerProvider>()
-        ?.drawerController;
-  }
-
-  @override
-  bool updateShouldNotify(AdvancedDrawerControllerProvider old) =>
-      drawerController != old.drawerController;
-}
 
 // ─── Bottom Nav Visibility ────────────────────────────────────────────────────
 class BottomNavVisibility extends InheritedWidget {
@@ -107,7 +84,6 @@ class SharedNavigation extends StatefulWidget {
 }
 
 class _SharedNavigationState extends State<SharedNavigation> {
-  final _drawerController = AdvancedDrawerController();
   final ValueNotifier<bool> _bottomNavVisible = ValueNotifier(true);
 
   @override
@@ -121,16 +97,12 @@ class _SharedNavigationState extends State<SharedNavigation> {
 
   @override
   void dispose() {
-    _drawerController.dispose();
     _bottomNavVisible.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final _ = context.locale;
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
-
     return ResponsiveBuilder(
       builder: (context, deviceType) {
         switch (deviceType) {
@@ -139,7 +111,7 @@ class _SharedNavigationState extends State<SharedNavigation> {
           case AppDeviceType.tablet:
             return _buildTabletLayout(context);
           case AppDeviceType.mobile:
-            return _buildMobileLayout(context, isRtl);
+            return _buildMobileLayout(context);
         }
       },
     );
@@ -148,27 +120,24 @@ class _SharedNavigationState extends State<SharedNavigation> {
   // ─── Desktop ────────────────────────────────────────────────────────────────
   Widget _buildDesktopLayout(BuildContext context) {
     final cfg = _NavCfg(context);
-    return AdvancedDrawerControllerProvider(
-      drawerController: _drawerController,
-      child: Scaffold(
-        body: Row(
-          children: [
-            Container(
-              width: cfg.sidebarW,
-              decoration: BoxDecoration(
-                color: AppColors.navBackground,
-                border: Border(
-                  right: BorderSide(
-                    color: context.colorScheme.outlineVariant,
-                    width: 1,
-                  ),
+    return Scaffold(
+      body: Row(
+        children: [
+          Container(
+            width: cfg.sidebarW,
+            decoration: BoxDecoration(
+              color: AppColors.navBackground,
+              border: Border(
+                right: BorderSide(
+                  color: context.colorScheme.outlineVariant,
+                  width: 1,
                 ),
               ),
-              child: _buildSideNavigation(context, cfg, isExpanded: true),
             ),
-            Expanded(child: widget.child),
-          ],
-        ),
+            child: _buildSideNavigation(context, cfg, isExpanded: true),
+          ),
+          Expanded(child: widget.child),
+        ],
       ),
     );
   }
@@ -176,88 +145,59 @@ class _SharedNavigationState extends State<SharedNavigation> {
   // ─── Tablet ─────────────────────────────────────────────────────────────────
   Widget _buildTabletLayout(BuildContext context) {
     final cfg = _NavCfg(context);
-    return AdvancedDrawerControllerProvider(
-      drawerController: _drawerController,
-      child: Scaffold(
-        body: Row(
-          children: [
-            Container(
-              width: cfg.collapsedW,
-              decoration: BoxDecoration(
-                color: AppColors.navBackground,
-                border: Border(
-                  right: BorderSide(
-                    color: context.colorScheme.outlineVariant,
-                    width: 1,
-                  ),
+    return Scaffold(
+      body: Row(
+        children: [
+          Container(
+            width: cfg.collapsedW,
+            decoration: BoxDecoration(
+              color: AppColors.navBackground,
+              border: Border(
+                right: BorderSide(
+                  color: context.colorScheme.outlineVariant,
+                  width: 1,
                 ),
               ),
-              child: _buildSideNavigation(context, cfg, isExpanded: false),
             ),
-            Expanded(child: widget.child),
-          ],
-        ),
+            child: _buildSideNavigation(context, cfg, isExpanded: false),
+          ),
+          Expanded(child: widget.child),
+        ],
       ),
     );
   }
 
   // ─── Mobile ──────────────────────────────────────────────────────────────────
-  Widget _buildMobileLayout(BuildContext context, bool isRtl) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _buildMobileLayout(BuildContext context) {
     final cfg = _NavCfg(context);
 
     return BottomNavVisibility(
       notifier: _bottomNavVisible,
-      child: AdvancedDrawerControllerProvider(
-        drawerController: _drawerController,
-        child: AdvancedDrawer(
-          controller: _drawerController,
-          rtlOpening: isRtl,
-          animationCurve: Curves.easeInOutCubic,
-          animationDuration: const Duration(milliseconds: 340),
-          animateChildDecoration: true,
-          openScale: 0.92,
-          openRatio: 0.72,
-          disabledGestures: false,
-          backdrop: Container(color: Theme.of(context).scaffoldBackgroundColor),
-          childDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          drawer: const CustomDrawer(),
-          child: Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            body: Stack(
-              children: [
-                widget.child,
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: _bottomNavVisible,
-                    builder: (_, isVisible, child) => AnimatedSlide(
-                      duration: const Duration(milliseconds: 320),
-                      curve: Curves.easeInOutCubic,
-                      offset: isVisible ? Offset.zero : const Offset(0, 1.2),
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 280),
-                        opacity: isVisible ? 1.0 : 0.0,
-                        child: child,
-                      ),
-                    ),
-                    child: _buildBottomNavigation(context, cfg),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Stack(
+          children: [
+            widget.child,
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _bottomNavVisible,
+                builder: (_, isVisible, child) => AnimatedSlide(
+                  duration: const Duration(milliseconds: 320),
+                  curve: Curves.easeInOutCubic,
+                  offset: isVisible ? Offset.zero : const Offset(0, 1.2),
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 280),
+                    opacity: isVisible ? 1.0 : 0.0,
+                    child: child,
                   ),
                 ),
-              ],
+                child: _buildBottomNavigation(context, cfg),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -335,13 +275,11 @@ class _SharedNavigationState extends State<SharedNavigation> {
   // ─── Bottom Navigation ──────────────────────────────────────────────────────
   Widget _buildBottomNavigation(BuildContext context, _NavCfg cfg) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final fadeColor = isDark
-        ? Theme.of(context).scaffoldBackgroundColor
-        : Theme.of(context).scaffoldBackgroundColor;
+    final fadeColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Stack(
       children: [
-        // ✅ الـ gradient الشفاف من الجنبين وتحت
+        // gradient الشفاف
         Positioned.fill(
           child: IgnorePointer(
             child: DecoratedBox(
@@ -360,7 +298,6 @@ class _SharedNavigationState extends State<SharedNavigation> {
           ),
         ),
 
-        // ✅ الـ bottom nav نفسه بدون تغيير
         SafeArea(
           bottom: false,
           child: Padding(

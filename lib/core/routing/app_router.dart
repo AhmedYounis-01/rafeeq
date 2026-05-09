@@ -14,6 +14,7 @@ import 'package:rafeeq/features/quran/ui/quran_screen.dart';
 import 'package:rafeeq/features/tasbih/ui/tasbih_screen.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/features/splash/ui/screens/splash_screen.dart';
+import 'package:rafeeq/features/settings/ui/settings_page.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -26,6 +27,7 @@ class AppRouter {
   static const String qibla = '/qibla';
   static const String quran = '/quran';
   static const String tasbih = '/tasbih';
+  static const String settings = '/settings';
 
   // Quick parts screens
   static const String azkar = '/azkar';
@@ -105,6 +107,11 @@ class AppRouter {
         path: seerah,
         name: 'seerah',
         builder: (context, state) => const SeerahScreen(),
+      ),
+      GoRoute(
+        path: settings,
+        name: 'settings',
+        builder: (context, state) => const SettingsPage(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
