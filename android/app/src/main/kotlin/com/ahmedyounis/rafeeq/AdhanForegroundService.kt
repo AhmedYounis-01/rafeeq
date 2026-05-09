@@ -2,6 +2,8 @@ package com.ahmedyounis.rafeeq
 
 import android.app.*
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
@@ -47,6 +49,17 @@ class AdhanForegroundService : Service() {
             // ملاحظة: المسار الصحيح للملف في flutter_assets
             val afd = assets.openFd("flutter_assets/assets/azan.mp3")
             mediaPlayer = MediaPlayer().apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .build()
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    setAudioStreamType(AudioManager.STREAM_ALARM)
+                }
                 setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                 prepare()
                 start()

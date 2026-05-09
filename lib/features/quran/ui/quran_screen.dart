@@ -2034,60 +2034,72 @@ class _PageOptionsSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _OptionBtn(
-                icon: isPlayingPage && isPlaying
-                    ? Icons.pause_circle_rounded
-                    : Icons.play_circle_rounded,
-                label: isPlayingPage && isPlaying ? 'إيقاف' : 'تشغيل الصفحة',
-                gold: gold,
-                cfg: cfg,
-                onTap: onPlayPage,
+              Expanded(
+                child: _OptionBtn(
+                  icon: isPlayingPage && isPlaying
+                      ? Icons.pause_circle_rounded
+                      : Icons.play_circle_rounded,
+                  label: isPlayingPage && isPlaying ? 'إيقاف' : 'تشغيل الصفحة',
+                  gold: gold,
+                  cfg: cfg,
+                  onTap: onPlayPage,
+                ),
               ),
-              _OptionBtn(
-                icon: isBookmarked
-                    ? Icons.bookmark_rounded
-                    : Icons.bookmark_border_rounded,
-                label: isBookmarked ? 'إزالة الحفظ' : 'علّم الصفحة',
-                gold: isBookmarked ? AppColors.secondary : gold,
-                cfg: cfg,
-                onTap: onBookmark,
+              Expanded(
+                child: _OptionBtn(
+                  icon: isBookmarked
+                      ? Icons.bookmark_rounded
+                      : Icons.bookmark_border_rounded,
+                  label: isBookmarked ? 'إزالة الحفظ' : 'علّم الصفحة',
+                  gold: isBookmarked ? AppColors.secondary : gold,
+                  cfg: cfg,
+                  onTap: onBookmark,
+                ),
               ),
-              _OptionBtn(
-                icon: Icons.mic_rounded,
-                label: 'اختر القارئ',
-                gold: gold,
-                cfg: cfg,
-                onTap: onSelectReciter,
-                subtitle: selectedReciterName,
+              Expanded(
+                child: _OptionBtn(
+                  icon: Icons.mic_rounded,
+                  label: 'اختر القارئ',
+                  gold: gold,
+                  cfg: cfg,
+                  onTap: onSelectReciter,
+                  subtitle: selectedReciterName,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _OptionBtn(
-                icon: Icons.menu_book_rounded,
-                label: 'فهرس السور',
-                gold: gold,
-                cfg: cfg,
-                onTap: onSurahIndex,
+              Expanded(
+                child: _OptionBtn(
+                  icon: Icons.menu_book_rounded,
+                  label: 'فهرس السور',
+                  gold: gold,
+                  cfg: cfg,
+                  onTap: onSurahIndex,
+                ),
               ),
-              _OptionBtn(
-                icon: Icons.bookmark_added_rounded,
-                label: 'آخر حفظ',
-                gold: gold,
-                cfg: cfg,
-                onTap: onLastRead,
+              Expanded(
+                child: _OptionBtn(
+                  icon: Icons.bookmark_added_rounded,
+                  label: 'آخر حفظ',
+                  gold: gold,
+                  cfg: cfg,
+                  onTap: onLastRead,
+                ),
               ),
-              _OptionBtn(
-                icon: Icons.search_rounded,
-                label: 'بحث في الآيات',
-                gold: gold,
-                cfg: cfg,
-                onTap: onSearch,
+              Expanded(
+                child: _OptionBtn(
+                  icon: Icons.search_rounded,
+                  label: 'بحث في الآيات',
+                  gold: gold,
+                  cfg: cfg,
+                  onTap: onSearch,
+                ),
               ),
             ],
           ),

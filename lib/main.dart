@@ -25,8 +25,8 @@ void main() async {
       avAudioSessionMode: AVAudioSessionMode.defaultMode,
       androidAudioAttributes: AndroidAudioAttributes(
         contentType: AndroidAudioContentType.music,
-        usage:
-            AndroidAudioUsage.alarm, // ✅ alarm يضمن الصوت حتى لو الصامت مفعّل
+        usage: AndroidAudioUsage
+            .media, // ✅ media يجعل الصوت يتحكم فيه من زرار الموسيقى وليس المنبه
       ),
       androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
     ),
