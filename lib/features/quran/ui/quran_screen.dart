@@ -1989,7 +1989,12 @@ class _PageOptionsSheet extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        0,
+        24,
+        32 + MediaQuery.of(context).viewPadding.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -2791,7 +2796,6 @@ class _QuranPageBody extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SafeArea(
-        bottom: false,
         child: ValueListenableBuilder<List<HighlightVerse>>(
           valueListenable: highlightsNotifier,
           builder: (_, highlights, child) => QuranPageView(

@@ -184,16 +184,22 @@ class _SharedNavigationState extends State<SharedNavigation> {
               right: 0,
               child: ValueListenableBuilder<bool>(
                 valueListenable: _bottomNavVisible,
-                builder: (_, isVisible, child) => AnimatedSlide(
-                  duration: const Duration(milliseconds: 320),
-                  curve: Curves.easeInOutCubic,
-                  offset: isVisible ? Offset.zero : const Offset(0, 1.2),
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 280),
-                    opacity: isVisible ? 1.0 : 0.0,
-                    child: child,
-                  ),
-                ),
+                builder: (_, isVisible, child) {
+                  return IgnorePointer(
+                    ignoring: !isVisible,
+                    child: AnimatedSlide(
+                      duration: Duration(milliseconds: isVisible ? 220 : 1),
+                      curve: isVisible ? Curves.easeOutCubic : Curves.linear,
+                      offset: isVisible ? Offset.zero : const Offset(0, 0.01),
+                      child: AnimatedOpacity(
+                        duration: Duration(milliseconds: isVisible ? 160 : 1),
+                        curve: Curves.linear,
+                        opacity: isVisible ? 1.0 : 0.0,
+                        child: child,
+                      ),
+                    ),
+                  );
+                },
                 child: _buildBottomNavigation(context, cfg),
               ),
             ),
@@ -299,7 +305,6 @@ class _SharedNavigationState extends State<SharedNavigation> {
         ),
 
         SafeArea(
-          bottom: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: ClipRRect(
@@ -330,7 +335,6 @@ class _SharedNavigationState extends State<SharedNavigation> {
                     ],
                   ),
                   child: SafeArea(
-                    bottom: false,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: NavigationItemData.items.asMap().entries.map((

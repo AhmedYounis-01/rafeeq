@@ -337,6 +337,7 @@ class _SelectionScreenState extends State<_SelectionScreen>
                       child: InkWell(
                         onTap: () => showModalBottomSheet(
                           context: context,
+                          useRootNavigator: true,
                           backgroundColor: Colors.transparent,
                           isScrollControlled: true,
                           builder: (_) => _SessionLogSheet(

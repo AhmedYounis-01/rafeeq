@@ -304,7 +304,7 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16 + MediaQuery.of(ctx).viewPadding.bottom),
           ],
         ),
       ),
@@ -869,7 +869,7 @@ class _LocationErrorView extends StatelessWidget {
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              height: cfg.btnHeight + (cfg.isTablet ? 13 : 3),
+              height: cfg.btnHeight + (cfg.isTablet ? 10 : 0),
               child: ElevatedButton(
                 onPressed: onEnable,
                 style: ElevatedButton.styleFrom(

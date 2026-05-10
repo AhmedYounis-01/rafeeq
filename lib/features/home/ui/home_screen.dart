@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const PrayerTime(),
               SizedBox(height: isTablet ? 20 : 16.h),
               const QuickParts(),
-              SizedBox(height: 130.h),
+              SizedBox(height: isTablet ? 140 : 130.h),
             ],
           ),
         ),

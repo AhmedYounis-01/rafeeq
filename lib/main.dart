@@ -1,5 +1,3 @@
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,25 +78,13 @@ void main() async {
   // Minimal delay to let the engine breathe
   await Future.delayed(const Duration(milliseconds: 500));
 
-  // runApp(
-  //   EasyLocalization(
-  //     supportedLocales: const [Locale('en'), Locale('ar')],
-  //     path: 'assets/translations',
-  //     fallbackLocale: const Locale('en'),
-  //     startLocale: const Locale('ar'),
-  //     child: const Rafeeq(),
-  //   ),
-  // );
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('ar')],
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en'),
-        startLocale: const Locale('ar'),
-        child: const Rafeeq(),
-      ),
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      startLocale: const Locale('ar'),
+      child: const Rafeeq(),
     ),
   );
 }
