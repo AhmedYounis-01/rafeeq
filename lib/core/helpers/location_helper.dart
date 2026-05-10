@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rafeeq/features/home/logic/prayer_time_cubit.dart';
-import 'package:rafeeq/features/home/logic/prayer_time_state.dart';
 import 'package:rafeeq/core/widgets/location_picker_dialog.dart';
 
 class LocationHelper {
@@ -49,15 +49,23 @@ class LocationHelper {
               icon: Icons.share_location_rounded,
               onTap: () async {
                 final cubit = context.read<PrayerTimeCubit>();
-                final isAlreadyLoaded = cubit.state is PrayerTimeLoaded;
+                final prefs = await SharedPreferences.getInstance();
+                final wasManual = prefs.getBool('is_manual_location') ?? false;
 
                 Navigator.pop(context);
                 await cubit.loadPrayerTimes(isManual: true);
 
-                if (isAlreadyLoaded) {
-                  final state = cubit.state;
-                  if (state is PrayerTimeLoaded) {
-                    _showSuccessToast("home.location_already_set".tr());
+                if (context.mounted) {
+                  if (wasManual) {
+                    _showSuccessToast(
+                      context,
+                      "home.location_updated_successfully".tr(),
+                    );
+                  } else {
+                    _showSuccessToast(
+                      context,
+                      "home.current_location_updated".tr(),
+                    );
                   }
                 }
               },
@@ -84,7 +92,12 @@ class LocationHelper {
                     cityName: result['city'] as String,
                     countryName: result['country'] as String,
                   );
-                  _showSuccessToast("home.location_updated_successfully".tr());
+                  if (context.mounted) {
+                    _showSuccessToast(
+                      context,
+                      "home.location_updated_successfully".tr(),
+                    );
+                  }
                 }
               },
             ),
@@ -157,14 +170,15 @@ class LocationHelper {
     );
   }
 
-  static void _showSuccessToast(String message) {
+  static void _showSuccessToast(BuildContext context, String message) {
+    final colorScheme = Theme.of(context).colorScheme;
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black87,
-      textColor: Colors.white,
+      backgroundColor: colorScheme.inverseSurface.withValues(alpha: 0.9),
+      textColor: colorScheme.onInverseSurface,
       fontSize: 14.0,
     );
   }

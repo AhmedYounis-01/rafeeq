@@ -38,6 +38,7 @@
     "chosen_location": "Chosen location",
     "location_already_set": "Location is already set",
     "location_updated_successfully": "Location updated successfully",
+    "current_location_updated": "Current location updated",
     "click_map_hint": "Click on map to pick location",
     "confirm_choice": "Confirm Choice",
     "prayer_names": {

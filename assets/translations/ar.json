@@ -38,6 +38,7 @@
     "chosen_location": "الموقع الذي اخترته",
     "location_already_set": "الموقع محدد بالفعل",
     "location_updated_successfully": "تم تحديث الموقع بنجاح",
+    "current_location_updated": "تم تحديث تحديد مكانك الحالي",
     "click_map_hint": "انقر على الخريطة لتحديد مكانك",
     "confirm_choice": "تأكيد الاختيار",
     "prayer_names": {
