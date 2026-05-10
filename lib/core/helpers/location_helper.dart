@@ -52,7 +52,7 @@ class LocationHelper {
                 final prefs = await SharedPreferences.getInstance();
                 final wasManual = prefs.getBool('is_manual_location') ?? false;
 
-                Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
                 await cubit.loadPrayerTimes(isManual: true);
 
                 if (context.mounted) {
