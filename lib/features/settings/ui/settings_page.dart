@@ -15,6 +15,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final config = _SettingsConfig(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -23,7 +24,7 @@ class SettingsPage extends StatelessWidget {
         slivers: [
           // ==================== Sliver App Bar ====================
           SliverAppBar(
-            expandedHeight: 120.h,
+            expandedHeight: config.appBarHeight,
             floating: false,
             pinned: true,
             elevation: 0,
@@ -31,13 +32,27 @@ class SettingsPage extends StatelessWidget {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: colorScheme.onSurface,
-                size: 20.sp,
+              icon: Container(
+                padding: EdgeInsets.all(6.r),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.6,
+                  ),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: colorScheme.onSurface,
+                  size: 20.sp,
+                ),
               ),
             ),
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsetsDirectional.only(
+                start: 56.w,
+                bottom: 16.h,
+              ),
+              centerTitle: false,
               title: Text(
                 "settings.title".tr(),
                 style: context.textTheme.headlineSmall?.copyWith(
@@ -45,56 +60,67 @@ class SettingsPage extends StatelessWidget {
                   color: colorScheme.onSurface,
                 ),
               ),
-              titlePadding: EdgeInsetsDirectional.only(
-                start: 56.w,
-                bottom: 16.h,
-              ),
-              centerTitle: false,
+              background: _AppBarBackground(),
             ),
           ),
 
           // ==================== Settings Content ====================
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: config.sidePadding,
+              vertical: 8.h,
+            ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _buildSection(
-                  context,
-                  title: "drawer.language".tr(),
-                  icon: Icons.language_rounded,
-                  child: _buildLanguageToggle(context),
+                // ── Appearance Group ──
+                _SectionHeader(title: "drawer.appearance".tr()),
+                SizedBox(height: 10.h),
+                _SettingsCard(
+                  children: [
+                    _SettingsTile(
+                      config: config,
+                      icon: Icons.language_rounded,
+                      iconColor: const Color(0xFF4A90D9),
+                      title: "drawer.language".tr(),
+                      child: _buildLanguageToggle(context, config),
+                    ),
+                    _Divider(config: config),
+                    _SettingsTile(
+                      config: config,
+                      icon: Icons.palette_outlined,
+                      iconColor: const Color(0xFF9B59B6),
+                      title: "drawer.theme".tr(),
+                      child: _buildThemeToggle(context, config),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: config.sectionSpacing),
 
-                _buildSection(
-                  context,
-                  title: "drawer.theme".tr(),
-                  icon: Icons.palette_outlined,
-                  child: _buildThemeToggle(context),
+                // ── Prayer Settings Group ──
+                _SectionHeader(title: "drawer.prayer_settings".tr()),
+                SizedBox(height: 10.h),
+                _SettingsCard(
+                  children: [
+                    _SettingsTile(
+                      config: config,
+                      icon: Icons.volume_up_rounded,
+                      iconColor: const Color(0xFF27AE60),
+                      title: "drawer.adhan_sound".tr(),
+                      child: _buildAdhanToggle(context, config),
+                    ),
+                    _Divider(config: config),
+                    _buildLocationTile(context, config),
+                  ],
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: config.sectionSpacing),
 
-                _buildSection(
-                  context,
-                  title: "drawer.adhan_sound".tr(),
-                  icon: Icons.volume_up_rounded,
-                  child: _buildAdhanToggle(context),
-                ),
-                SizedBox(height: 24.h),
+                // ── Legal & Privacy ──
+                _SectionHeader(title: "drawer.legal_privacy".tr()),
+                SizedBox(height: 10.h),
+                _buildLegalSection(context, config),
+                SizedBox(height: config.sectionSpacing + 8.h),
 
-                _buildSection(
-                  context,
-                  title: "home.select_location".tr(),
-                  icon: Icons.location_on_rounded,
-                  child: _buildLocationButton(context),
-                ),
-                SizedBox(height: 32.h),
-
-                // ==================== Legal & Data Usage Sections ====================
-                _buildLegalSection(context),
-                SizedBox(height: 40.h),
-
-                // ==================== Footer ====================
+                // ── Footer ──
                 _buildFooter(context),
                 SizedBox(height: 32.h),
               ]),
@@ -105,45 +131,12 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  // ====================== Section Title ======================
-  Widget _buildSection(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required Widget child,
-  }) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.only(start: 4.w, bottom: 12.h),
-          child: Row(
-            children: [
-              Icon(icon, size: 20.sp, color: AppColors.getPrimary(context)),
-              SizedBox(width: 10.w),
-              Text(
-                title,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-        ),
-        child,
-      ],
-    );
-  }
-
   // ====================== Language Toggle ======================
-  Widget _buildLanguageToggle(BuildContext context) {
+  Widget _buildLanguageToggle(BuildContext context, _SettingsConfig config) {
     final isArabic = context.locale.languageCode == 'ar';
-
     return _SlidingToggle(
       selectedIndex: isArabic ? 0 : 1,
+      height: config.toggleHeight,
       options: [
         _ToggleOption(label: "drawer.arabic".tr()),
         _ToggleOption(label: "drawer.english".tr()),
@@ -159,16 +152,16 @@ class SettingsPage extends StatelessWidget {
   }
 
   // ====================== Theme Toggle ======================
-  Widget _buildThemeToggle(BuildContext context) {
+  Widget _buildThemeToggle(BuildContext context, _SettingsConfig config) {
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
         bool isDark = themeMode == ThemeMode.dark;
         if (themeMode == ThemeMode.system) {
           isDark = Theme.of(context).brightness == Brightness.dark;
         }
-
         return _SlidingToggle(
           selectedIndex: isDark ? 1 : 0,
+          height: config.toggleHeight,
           options: [
             _ToggleOption(
               label: "drawer.light".tr(),
@@ -190,13 +183,14 @@ class SettingsPage extends StatelessWidget {
   }
 
   // ====================== Adhan Toggle ======================
-  Widget _buildAdhanToggle(BuildContext context) {
+  Widget _buildAdhanToggle(BuildContext context, _SettingsConfig config) {
     return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.isAdhanSoundEnabled != current.isAdhanSoundEnabled,
+      buildWhen: (prev, curr) =>
+          prev.isAdhanSoundEnabled != curr.isAdhanSoundEnabled,
       builder: (context, state) {
         return _SlidingToggle(
           selectedIndex: state.isAdhanSoundEnabled ? 0 : 1,
+          height: config.toggleHeight,
           options: [
             _ToggleOption(
               label: "drawer.adhan_sound_enabled".tr(),
@@ -215,8 +209,8 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  // ====================== Location Button ======================
-  Widget _buildLocationButton(BuildContext context) {
+  // ====================== Location Tile ======================
+  Widget _buildLocationTile(BuildContext context, _SettingsConfig config) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return InkWell(
@@ -225,21 +219,29 @@ class SettingsPage extends StatelessWidget {
         await LocationHelper.showLocationOptions(context);
       },
       borderRadius: BorderRadius.circular(16.r),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground(context),
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-          ),
-        ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         child: Row(
           children: [
+            // Icon Container
+            Container(
+              width: config.iconContainerSize,
+              height: config.iconContainerSize,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE74C3C).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Icon(
+                Icons.location_on_rounded,
+                color: const Color(0xFFE74C3C),
+                size: config.iconSize,
+              ),
+            ),
+            SizedBox(width: 14.w),
             Expanded(
               child: Text(
-                "drawer.location".tr(),
-                style: context.textTheme.titleMedium?.copyWith(
+                "home.select_location".tr(),
+                style: context.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
@@ -247,8 +249,8 @@ class SettingsPage extends StatelessWidget {
             ),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              size: 16.sp,
-              color: colorScheme.onSurfaceVariant,
+              size: 14.sp,
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
             ),
           ],
         ),
@@ -257,171 +259,27 @@ class SettingsPage extends StatelessWidget {
   }
 
   // ====================== Legal Section ======================
-  Widget _buildLegalSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildLegalSection(BuildContext context, _SettingsConfig config) {
+    return _SettingsCard(
       children: [
-        _buildLegalCard(
-          context,
+        _LegalTile(
+          config: config,
+          icon: Icons.info_outline_rounded,
+          iconColor: const Color(0xFF4A90D9),
           title: "settings.location_usage_title".tr(),
           description: "settings.location_usage_desc".tr(),
           detailedDescription: "settings.location_usage_detailed".tr(),
-          icon: Icons.info_outline_rounded,
         ),
-        SizedBox(height: 16.h),
-        _buildLegalCard(
-          context,
+        _Divider(config: config),
+        _LegalTile(
+          config: config,
+          icon: Icons.privacy_tip_outlined,
+          iconColor: const Color(0xFF27AE60),
           title: "settings.privacy_policy_title".tr(),
           description: "settings.privacy_policy_desc".tr(),
           detailedDescription: "settings.privacy_policy_detailed".tr(),
-          icon: Icons.privacy_tip_outlined,
         ),
       ],
-    );
-  }
-
-  Widget _buildLegalCard(
-    BuildContext context, {
-    required String title,
-    required String description,
-    required String detailedDescription,
-    required IconData icon,
-  }) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final primary = AppColors.getPrimary(context);
-
-    return InkWell(
-      onTap: () => _showDetailedLegal(context, title, detailedDescription),
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        padding: EdgeInsets.all(16.r),
-        decoration: BoxDecoration(
-          color: primary.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: primary.withValues(alpha: 0.1)),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: primary, size: 22.sp),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        title,
-                        style: context.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: primary,
-                        ),
-                      ),
-                      Icon(
-                        Icons.open_in_new_rounded,
-                        size: 14.sp,
-                        color: primary.withValues(alpha: 0.5),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    description,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      height: 1.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showDetailedLegal(
-    BuildContext context,
-    String title,
-    String detailedContent,
-  ) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final primary = AppColors.getPrimary(context);
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-            ),
-            SizedBox(height: 24.h),
-            Text(
-              title,
-              style: context.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w900,
-                color: primary,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Text(
-                  detailedContent,
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface,
-                    height: 1.8,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 32.h),
-            SizedBox(
-              width: double.infinity,
-              height: 56.h,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  "settings.close".tr(),
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 12.h),
-          ],
-        ),
-      ),
     );
   }
 
@@ -431,19 +289,18 @@ class SettingsPage extends StatelessWidget {
 
     return Column(
       children: [
-        Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.2)),
-        SizedBox(height: 16.h),
         Text(
           "settings.version".tr(),
-          style: context.textTheme.labelSmall?.copyWith(
+          style: context.textTheme.labelMedium?.copyWith(
             color: colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
           ),
         ),
         SizedBox(height: 4.h),
         Text(
           "settings.copyright".tr(),
           style: context.textTheme.labelSmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
           ),
         ),
       ],
@@ -451,23 +308,371 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-// ====================== Sliding Toggle Components ======================
+// ====================== App Bar Background ======================
+class _AppBarBackground extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final primary = AppColors.getPrimary(context);
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            primary.withValues(alpha: 0.08),
+            Theme.of(context).scaffoldBackgroundColor,
+          ],
+        ),
+      ),
+    );
+  }
+}
 
+// ====================== Section Header ======================
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsetsDirectional.only(start: 4.w),
+      child: Text(
+        title.toUpperCase(),
+        style: context.textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.w800,
+          color: colorScheme.onSurfaceVariant,
+          letterSpacing: 1.1,
+        ),
+      ),
+    );
+  }
+}
+
+// ====================== Settings Card ======================
+class _SettingsCard extends StatelessWidget {
+  final List<Widget> children;
+
+  const _SettingsCard({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground(context),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.r),
+        child: Column(mainAxisSize: MainAxisSize.min, children: children),
+      ),
+    );
+  }
+}
+
+// ====================== Settings Tile ======================
+class _SettingsTile extends StatelessWidget {
+  final _SettingsConfig config;
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final Widget child;
+
+  const _SettingsTile({
+    required this.config,
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: config.tileInsidePadding,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: config.iconContainerSize,
+                height: config.iconContainerSize,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Icon(icon, color: iconColor, size: config.iconSize),
+              ),
+              SizedBox(width: 12.w),
+              Text(
+                title,
+                style: context.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 14.h),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+// ====================== Legal Tile ======================
+class _LegalTile extends StatelessWidget {
+  final _SettingsConfig config;
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String description;
+  final String detailedDescription;
+
+  const _LegalTile({
+    required this.config,
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.description,
+    required this.detailedDescription,
+  });
+
+  void _showDetailedLegal(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final primary = AppColors.getPrimary(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        maxChildSize: 0.92,
+        minChildSize: 0.4,
+        expand: false,
+        builder: (_, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+          ),
+          child: Column(
+            children: [
+              // Handle
+              Padding(
+                padding: EdgeInsets.only(top: 14.h, bottom: 8.h),
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+              ),
+              // Header
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                child: Row(
+                  children: [
+                    Container(
+                      width: config.iconContainerSize * 1.1,
+                      height: config.iconContainerSize * 1.1,
+                      decoration: BoxDecoration(
+                        color: iconColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        icon,
+                        color: iconColor,
+                        size: config.iconSize,
+                      ),
+                    ),
+                    SizedBox(width: 14.w),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: context.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                height: 1,
+              ),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 20.h,
+                  ),
+                  child: Text(
+                    detailedDescription,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: colorScheme.onSurface,
+                      height: 1.9,
+                    ),
+                  ),
+                ),
+              ),
+              // Close Button
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 54.h,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      "settings.close".tr(),
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        _showDetailedLegal(context);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: config.tileInsidePadding,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: config.iconContainerSize,
+              height: config.iconContainerSize,
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Icon(icon, color: iconColor, size: config.iconSize),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: context.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    description,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14.sp,
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ====================== Divider ======================
+class _Divider extends StatelessWidget {
+  final _SettingsConfig config;
+  const _Divider({required this.config});
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      indent: (config.iconContainerSize + 32.w),
+      endIndent: 16.w,
+      color: Theme.of(
+        context,
+      ).colorScheme.outlineVariant.withValues(alpha: 0.2),
+    );
+  }
+}
+
+// ====================== Toggle Option Model ======================
 class _ToggleOption {
   final String label;
   final IconData? icon;
-  _ToggleOption({required this.label, this.icon});
+  const _ToggleOption({required this.label, this.icon});
 }
 
+// ====================== Sliding Toggle ======================
 class _SlidingToggle extends StatelessWidget {
   final int selectedIndex;
   final List<_ToggleOption> options;
   final ValueChanged<int> onChanged;
+  final double height;
 
   const _SlidingToggle({
     required this.selectedIndex,
     required this.options,
     required this.onChanged,
+    required this.height,
   });
 
   @override
@@ -476,13 +681,13 @@ class _SlidingToggle extends StatelessWidget {
     final primary = AppColors.getPrimary(context);
 
     return Container(
-      height: 52.h,
-      padding: EdgeInsets.all(4.r),
+      height: height,
+      padding: EdgeInsets.all(3.r),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground(context),
-        borderRadius: BorderRadius.circular(16.r),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.2),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.15),
         ),
       ),
       child: LayoutBuilder(
@@ -493,8 +698,8 @@ class _SlidingToggle extends StatelessWidget {
             children: [
               // Sliding Pill
               AnimatedAlign(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutBack,
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOutCubic,
                 alignment: AlignmentDirectional(
                   -1 + (selectedIndex * (2 / (options.length - 1))),
                   0,
@@ -504,11 +709,11 @@ class _SlidingToggle extends StatelessWidget {
                   height: double.infinity,
                   decoration: BoxDecoration(
                     color: primary,
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(11.r),
                     boxShadow: [
                       BoxShadow(
-                        color: primary.withValues(alpha: 0.2),
-                        blurRadius: 8,
+                        color: primary.withValues(alpha: 0.25),
+                        blurRadius: 10,
                         offset: const Offset(0, 2),
                       ),
                     ],
@@ -516,7 +721,7 @@ class _SlidingToggle extends StatelessWidget {
                 ),
               ),
 
-              // Options
+              // Options Row
               Row(
                 children: List.generate(options.length, (index) {
                   final isSelected = selectedIndex == index;
@@ -531,32 +736,38 @@ class _SlidingToggle extends StatelessWidget {
                         }
                       },
                       behavior: HitTestBehavior.opaque,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (option.icon != null) ...[
-                              Icon(
-                                option.icon,
-                                size: 16.sp,
-                                color: isSelected
-                                    ? Colors.white
-                                    : colorScheme.onSurfaceVariant,
-                              ),
-                              SizedBox(width: 8.w),
+                      child: AnimatedDefaultTextStyle(
+                        duration: const Duration(milliseconds: 200),
+                        style: context.textTheme.labelMedium!.copyWith(
+                          fontWeight: isSelected
+                              ? FontWeight.w800
+                              : FontWeight.w500,
+                          color: isSelected
+                              ? Colors.white
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (option.icon != null) ...[
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 200),
+                                  child: Icon(
+                                    option.icon,
+                                    key: ValueKey('${option.icon}_$isSelected'),
+                                    size: 15.sp,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                SizedBox(width: 6.w),
+                              ],
+                              Text(option.label),
                             ],
-                            Text(
-                              option.label,
-                              style: context.textTheme.labelMedium!.copyWith(
-                                fontWeight: isSelected
-                                    ? FontWeight.w900
-                                    : FontWeight.w600,
-                                color: isSelected
-                                    ? Colors.white
-                                    : colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -569,4 +780,23 @@ class _SlidingToggle extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─── Responsive Config ────────────────────────────────────────────────────────
+class _SettingsConfig {
+  final BuildContext context;
+  final double shortestSide;
+
+  _SettingsConfig(this.context)
+    : shortestSide = MediaQuery.of(context).size.shortestSide;
+
+  bool get isTablet => shortestSide >= 600;
+
+  double get appBarHeight => isTablet ? 180.h : 140.h;
+  double get sidePadding => isTablet ? 40.w : 20.w;
+  double get sectionSpacing => isTablet ? 40.h : 28.h;
+  double get tileInsidePadding => isTablet ? 20.h : 14.h;
+  double get iconContainerSize => isTablet ? 50.w : 38.w;
+  double get iconSize => isTablet ? 24.sp : 20.sp;
+  double get toggleHeight => isTablet ? 56.h : 46.h;
 }

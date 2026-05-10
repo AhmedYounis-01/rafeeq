@@ -93,7 +93,10 @@
     "arabic": "العربية",
     "adhan_sound": "Azan Sound",
     "adhan_sound_enabled": "Enabled",
-    "adhan_sound_disabled": "Disabled"
+    "adhan_sound_disabled": "Disabled",
+    "appearance": "Appearance",
+    "prayer_settings": "Prayer Settings",
+    "legal_privacy": "Legal & Privacy"
   },
   "qibla": {
     "title": "Prayer Qiblah",
@@ -224,7 +227,7 @@
     "privacy_policy_title": "Privacy Policy",
     "privacy_policy_desc": "We respect your privacy and do not collect any personal data.",
     "privacy_policy_detailed": "Your privacy is our top priority at Rafeeq:\n\n- The app does not require any login or collection of personal information such as name or email.\n- Location data is used only for operational purposes (Prayer and Qibla) and is not linked to your identity.\n- The app does not contain any trackers or external analytics for user behavior.\n- All data and content are stored and processed to serve you alone.\n\nRafeeq is designed to be completely safe and reliable.",
-    "version": "Version 1.0.1",
+    "version": "Version 1.0.0",
     "copyright": "Rafeeq © 2026",
     "close": "Close"
   }
