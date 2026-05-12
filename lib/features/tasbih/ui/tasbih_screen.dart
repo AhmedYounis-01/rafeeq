@@ -97,28 +97,23 @@ class _TasbihConsumerState extends State<_TasbihConsumer> {
     final primary = AppColors.getPrimary(context);
     final isRtl = langCode == 'ar';
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        final state = context.read<TasbihCubit>().state;
-        if (state.selectedIdx != null) {
-          context.read<TasbihCubit>().selectDhikr(null);
-        } else {
-          Navigator.of(context).pop();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background(context),
-        body: BlocBuilder<TasbihCubit, TasbihState>(
-          builder: (context, state) {
-            if (state.loading) {
-              return Center(child: CircularProgressIndicator(color: primary));
-            }
+    return Scaffold(
+      backgroundColor: AppColors.background(context),
+      body: BlocBuilder<TasbihCubit, TasbihState>(
+        builder: (context, state) {
+          if (state.loading) {
+            return Center(child: CircularProgressIndicator(color: primary));
+          }
 
-            final cubit = context.read<TasbihCubit>();
+          final cubit = context.read<TasbihCubit>();
 
-            return AnimatedSwitcher(
+          return PopScope(
+            canPop: state.selectedIdx == null,
+            onPopInvokedWithResult: (didPop, result) {
+              if (didPop) return;
+              cubit.selectDhikr(null);
+            },
+            child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 380),
               transitionBuilder: (child, anim) => SlideTransition(
                 position:
@@ -167,9 +162,9 @@ class _TasbihConsumerState extends State<_TasbihConsumer> {
                       onPrev: cubit.goPrev,
                       onSilentToggle: cubit.toggleSilent,
                     ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

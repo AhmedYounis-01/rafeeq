@@ -52,7 +52,7 @@ class TasbihState extends Equatable {
     bool? completed,
     bool? silent,
     String? searchQuery,
-    String? activeCat,
+    Object? activeCat = _unset,
     List<TasbihSession>? sessions,
     int? todayTotal,
   }) {
@@ -67,7 +67,7 @@ class TasbihState extends Equatable {
       completed: completed ?? this.completed,
       silent: silent ?? this.silent,
       searchQuery: searchQuery ?? this.searchQuery,
-      activeCat: activeCat ?? this.activeCat,
+      activeCat: activeCat == _unset ? this.activeCat : activeCat as String?,
       sessions: sessions ?? this.sessions,
       todayTotal: todayTotal ?? this.todayTotal,
     );
