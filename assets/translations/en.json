@@ -30,7 +30,7 @@
     "select_location": "Select Location",
     "select_auto_gps": "Select Current Location",
     "select_auto_gps_desc": "Location services will be used to determine your current location",
-    "select_from_map": "Select from Map",
+    "select_from_map": "Select Your Location",
     "select_from_map_desc": "You can search for a city or pick a location manually from the map",
     "unknown_location": "Location unknown",
     "saved_location": "Saved location",

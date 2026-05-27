@@ -30,7 +30,7 @@
     "select_location": "تحديد الموقع",
     "select_auto_gps": "تحديد المكان الحالي",
     "select_auto_gps_desc": "سيتم استخدام نظام تحديد المواقع لتحديد موقعك الحالي بدقة",
-    "select_from_map": "تحديد من الخريطة",
+    "select_from_map": "تحديد موقعك",
     "select_from_map_desc": "يمكنك البحث عن مدينة أو اختيار موقع يدوي من الخريطة",
     "unknown_location": "الموقع غير محدد",
     "saved_location": "موقع محفوظ",

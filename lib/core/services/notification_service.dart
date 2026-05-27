@@ -98,7 +98,15 @@ class NotificationService {
           AndroidFlutterLocalNotificationsPlugin
         >();
     if (androidPlugin != null) {
-      await androidPlugin.requestNotificationsPermission();
+      try {
+        await androidPlugin.requestNotificationsPermission();
+      } catch (e) {
+        // Emulator may throw if Activity context isn't ready yet — safe to ignore
+        AppLogger.log(
+          'requestNotificationsPermission failed (likely emulator): $e',
+          tag: 'NOTIFICATION',
+        );
+      }
 
       // Daily reminders channel
       const remindersChannel = AndroidNotificationChannel(

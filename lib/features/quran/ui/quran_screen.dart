@@ -401,7 +401,7 @@ class _QuranScreenState extends State<QuranScreen>
                 valueListenable:
                     BottomNavVisibility.of(context) ?? ValueNotifier(true),
                 builder: (context, isNavVisible, _) {
-                  final bottomPad = isNavVisible ? 300.0 : 20.0;
+                  final bottomPad = isNavVisible ? 220.0 : 40.0;
 
                   return Positioned(
                     bottom: bottomPad,
