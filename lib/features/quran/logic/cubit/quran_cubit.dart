@@ -238,7 +238,7 @@ class QuranCubit extends Cubit<QuranState> {
 
     // Debounce SharedPreferences write — only save after 500ms of inactivity
     _pageSaveDebounce?.cancel();
-    _pageSaveDebounce = Timer(const Duration(milliseconds: 500), () {
+    _pageSaveDebounce = Timer(const Duration(seconds: 10), () {
       _prefs.setInt('last_page', page);
     });
   }

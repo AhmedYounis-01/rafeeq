@@ -26,7 +26,7 @@ class SeerahCubit extends Cubit<SeerahState> {
   void saveCurrentPage(int pageNumber) {
     _currentPage = pageNumber;
     _pageSaveDebounce?.cancel();
-    _pageSaveDebounce = Timer(const Duration(seconds: 1), () {
+    _pageSaveDebounce = Timer(const Duration(seconds: 10), () {
       StorageManager.instance.saveData(key: _lastPageKey, value: pageNumber);
     });
   }
