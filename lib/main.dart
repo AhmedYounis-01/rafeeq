@@ -49,8 +49,8 @@ void main() async {
   // Schedule daily reminders (IDs 100-102 only)
   await NotificationService.instance.scheduleDailyNotifications();
 
-  // تنظيف الكاش والملفات المؤقتة العالقة فور الانتهاء من التهيئة
-  CacheCleaner.clearAppOrphanedFiles();
+  // تنظيف الكاش والملفات المؤقتة فور الانتهاء من التهيئة
+  CacheCleaner.clearTemporaryCache();
 
   Bloc.observer = MyBlocObserver();
 

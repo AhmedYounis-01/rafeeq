@@ -171,7 +171,7 @@ class OnboardingScreenState extends State<OnboardingScreen>
 
   void _submitOnboarding() {
     StorageManager.instance.setHasSeenOnboarding();
-    CacheCleaner.clearAppOrphanedFiles();
+    CacheCleaner.clearTemporaryCache();
     context.go(AppRouter.home);
     Logger().i('Onboarding Done');
   }
