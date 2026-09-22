@@ -7,6 +7,7 @@ import 'package:rafeeq/core/gen/assets.gen.dart';
 import 'package:rafeeq/core/routing/app_router.dart';
 import 'package:rafeeq/core/extensions/theme_extension.dart';
 import 'package:rafeeq/core/themes/app_colors.dart';
+import 'package:rafeeq/core/helpers/cache_cleaner.dart';
 import 'package:rafeeq/features/onboarding/data/models/onboarding_item.dart';
 import 'package:rafeeq/features/onboarding/ui/widgets/onboarding_page_item.dart';
 import 'package:rafeeq/features/onboarding/ui/widgets/onboarding_navigation_buttons.dart';
@@ -170,6 +171,7 @@ class OnboardingScreenState extends State<OnboardingScreen>
 
   void _submitOnboarding() {
     StorageManager.instance.setHasSeenOnboarding();
+    CacheCleaner.clearAppOrphanedFiles();
     context.go(AppRouter.home);
     Logger().i('Onboarding Done');
   }

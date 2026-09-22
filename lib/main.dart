@@ -7,6 +7,7 @@ import 'package:rafeeq/bloc_observer.dart';
 import 'package:rafeeq/core/cache/storage_manager.dart';
 import 'package:rafeeq/core/services/adhan_scheduler_service.dart';
 import 'package:rafeeq/core/services/notification_service.dart';
+import 'package:rafeeq/core/helpers/cache_cleaner.dart';
 import 'package:rafeeq/rafeeq.dart';
 import 'package:audio_session/audio_session.dart';
 
@@ -47,6 +48,9 @@ void main() async {
 
   // Schedule daily reminders (IDs 100-102 only)
   await NotificationService.instance.scheduleDailyNotifications();
+
+  // تنظيف الكاش والملفات المؤقتة العالقة فور الانتهاء من التهيئة
+  CacheCleaner.clearAppOrphanedFiles();
 
   Bloc.observer = MyBlocObserver();
 
