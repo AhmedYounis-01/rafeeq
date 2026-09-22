@@ -7,10 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:qcf_quran_plus/qcf_quran_plus.dart'
-    hide getPageData, getPageNumber;
-import 'package:quran/quran.dart'
-    hide getSurahNameArabic, getJuzNumber, getVerseCount, getVerse;
+import 'package:quran/quran.dart';
 import 'package:rafeeq/core/constants/app_constants.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:rafeeq/features/quran/data/tafsir_model.dart';
@@ -46,13 +43,6 @@ class QuranCubit extends Cubit<QuranState> {
 
   bool _audioBusy = false;
   List<Map<String, int>> _sequenceMap = [];
-
-  Color _highlightColor = const Color(0x66D4A853);
-  void setHighlightColor(Color color) => _highlightColor = color;
-
-  final ValueNotifier<List<HighlightVerse>> highlightsNotifier = ValueNotifier(
-    [],
-  );
 
   // ─── Ayah Search ──────────────────────────────────────────────────────
   final _QuranSearchService _searchService = _QuranSearchService();
@@ -174,24 +164,13 @@ class QuranCubit extends Cubit<QuranState> {
           ? savedReciter
           : kReciters.first['id']!;
 
-      emit(QuranFontsLoading(0.0));
-
-      final fontWatch = Stopwatch()..start();
-      _loadFontsInBackground(
-        onReady: () {
-          AppLogger.log(
-            'Performance: Quran fonts loaded in ${fontWatch.elapsedMilliseconds}ms',
-            tag: 'QuranCubit',
-          );
-          currentPageNotifier.value = page;
-          emit(
-            QuranReady(
-              currentPage: page,
-              bookmarkPage: bookmark,
-              selectedReciterId: reciterId,
-            ),
-          );
-        },
+      currentPageNotifier.value = page;
+      emit(
+        QuranReady(
+          currentPage: page,
+          bookmarkPage: bookmark,
+          selectedReciterId: reciterId,
+        ),
       );
 
       _setupAudioListeners();
@@ -210,40 +189,26 @@ class QuranCubit extends Cubit<QuranState> {
     }
   }
 
-  void _loadFontsInBackground({required VoidCallback onReady}) {
-    QcfFontLoader.setupFontsAtStartup(
-          onProgress: (progress) {
-            if (state is QuranFontsLoading) {
-              emit(QuranFontsLoading(progress));
-            }
-          },
-        )
-        .then((_) {
-          if (!isClosed) onReady();
-        })
-        .catchError((e) {
-          AppLogger.error('Font loading error', error: e, tag: 'QuranCubit');
-          if (!isClosed) onReady();
-        });
-  }
-
   // ═══════════════════════════════════════════════════════════════════════
   // PAGE NAVIGATION
   // ═══════════════════════════════════════════════════════════════════════
   void onPageChanged(int page) {
     final r = _ready;
     if (r == null) return;
-    if (currentPageNotifier.value == page) return;
+    if (currentPageNotifier.value == page && r.currentPage == page) return;
     currentPageNotifier.value = page;
 
-    // Debounce SharedPreferences write — only save after 500ms of inactivity
-    _pageSaveDebounce?.cancel();
-    _pageSaveDebounce = Timer(const Duration(seconds: 10), () {
-      _prefs.setInt('last_page', page);
-    });
+    _prefs.setInt('last_page', page);
+    emit(r.copyWith(currentPage: page));
   }
 
   void jumpToPage(int page) {
+    currentPageNotifier.value = page;
+    _prefs.setInt('last_page', page);
+    final r = _ready;
+    if (r != null) {
+      emit(r.copyWith(currentPage: page));
+    }
     _pageJumpController.add(page - 1);
   }
 
@@ -597,26 +562,16 @@ class QuranCubit extends Cubit<QuranState> {
     if (isClosed) return;
     _audioBusy = false;
     _sequenceMap = [];
-    highlightsNotifier.value = [];
     final r = _ready;
     if (r == null) return;
     emit(r.copyWith(audioStatus: const AudioStatus.idle()));
   }
 
   // ═══════════════════════════════════════════════════════════════════════
-  // HIGHLIGHTS
+  // HIGHLIGHTS & PAGE SYNC
   // ═══════════════════════════════════════════════════════════════════════
   void _updateHighlight(int surah, int ayah, int currentPage) {
     final targetPage = getPageNumber(surah, ayah);
-    highlightsNotifier.value = [
-      HighlightVerse(
-        surah: surah,
-        verseNumber: ayah,
-        page: targetPage,
-        color: _highlightColor,
-      ),
-    ];
-
     if (currentPage != targetPage) {
       _pageJumpController.add(targetPage - 1);
     }
@@ -637,19 +592,22 @@ class QuranCubit extends Cubit<QuranState> {
   // HELPERS
   // ═══════════════════════════════════════════════════════════════════════
   int getJuz(int page) {
-    final data = getPageData(page);
+    final clamped = page.clamp(1, 604);
+    final data = getPageData(clamped);
     return getJuzNumber(data.first['surah'] as int, data.first['start'] as int);
   }
 
   String getHizb(int page) {
-    final hizbNum = ((page - 1) / 10).floor().clamp(0, 59) + 1;
-    final quarter = (((page - 1) % 10) / 2.5).floor().clamp(0, 3);
+    final clamped = page.clamp(1, 604);
+    final hizbNum = ((clamped - 1) / 10).floor().clamp(0, 59) + 1;
+    final quarter = (((clamped - 1) % 10) / 2.5).floor().clamp(0, 3);
     const quarters = ['', ' ½', ' ¾', ''];
     return 'حزب $hizbNum${quarters[quarter]}';
   }
 
   String getSurahDisplayName(int page) {
-    final data = getPageData(page);
+    final clamped = page.clamp(1, 604);
+    final data = getPageData(clamped);
     final first = data.first['surah'] as int;
     final last = data.last['surah'] as int;
     return first == last
@@ -688,7 +646,6 @@ class QuranCubit extends Cubit<QuranState> {
     await _player.dispose();
     await _pageJumpController.close();
     await _errorController.close();
-    highlightsNotifier.dispose();
     ayahSearchResults.dispose();
     isSearchingAyahs.dispose();
     tafsirNotifier.dispose();

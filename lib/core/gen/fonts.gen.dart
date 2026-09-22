@@ -11,9 +11,6 @@
 class FontFamily {
   FontFamily._();
 
-  /// Font family: Pacifico
-  static const String pacifico = 'Pacifico';
-
   /// Font family: Tajawal
   static const String tajawal = 'Tajawal';
 }

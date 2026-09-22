@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:adhan/adhan.dart';
 import 'package:rafeeq/core/helpers/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -218,8 +219,9 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     _adhanTimer = Timer(duration, () async {
       final soundEnabled = await AdhanSchedulerService.instance
           .isAdhanSoundEnabled();
-      if (soundEnabled) {
-        AppLogger.log('Foreground Adhan triggered!', tag: 'PrayerTimeCubit');
+      if (soundEnabled && !Platform.isAndroid) {
+        // On iOS in foreground, play adhan (Android is handled by native AlarmManager)
+        AppLogger.log('Foreground Adhan triggered (iOS)!', tag: 'PrayerTimeCubit');
         await AdhanSchedulerService.instance.playFullAdhan();
       }
       // Reload UI and schedule next timer

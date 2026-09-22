@@ -37,11 +37,11 @@ class AdhanSchedulerService {
       StreamController<bool>.broadcast();
   Stream<bool> get soundEnabledStream => _soundEnabledController.stream;
 
-  /// Schedule 7 days × 5 prayers = 35 notifications (IDs 200–234)
-  static const int _scheduleDays = 7;
-  static const int _prayersPerDay = 5;
+  /// Schedule 2 days × 5 prayers = 10 notifications (IDs 200–209)
+  static const int _scheduleDays = 2;
   static const int _baseId = 200;
-  static const int _maxId = _baseId + (_scheduleDays * _prayersPerDay);
+  /// Clean up range covering prior 7-day schedules (up to ID 250)
+  static const int _maxCleanupId = 250;
 
   /// The 5 prayers to schedule adhan for (no Sunrise)
   static const List<Prayer> _adhanPrayers = [
@@ -111,8 +111,8 @@ class AdhanSchedulerService {
       return;
     }
 
-    // Cancel all adhan notification IDs (200–234)
-    for (int id = _baseId; id < _maxId; id++) {
+    // Cancel all adhan notification IDs (up to _maxCleanupId to ensure prior 7-day schedules are cleaned)
+    for (int id = _baseId; id <= _maxCleanupId; id++) {
       await _plugin.cancel(id: id);
     }
 
@@ -148,7 +148,8 @@ class AdhanSchedulerService {
 
         final tzPrayerTime = PrayerTimeCalculator.toTZ(time);
 
-        if (tzPrayerTime.isBefore(now.subtract(const Duration(minutes: 1)))) {
+        // Never schedule prayers that have already passed (must strictly be in the future)
+        if (!tzPrayerTime.isAfter(now)) {
           notificationId++;
           continue;
         }

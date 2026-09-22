@@ -14,14 +14,11 @@ import 'package:flutter/widgets.dart';
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
-  /// File path: assets/fonts/Pacifico-Regular.ttf
-  String get pacificoRegular => 'assets/fonts/Pacifico-Regular.ttf';
-
   /// File path: assets/fonts/Tajawal-Regular.ttf
   String get tajawalRegular => 'assets/fonts/Tajawal-Regular.ttf';
 
   /// List of all assets
-  List<String> get values => [pacificoRegular, tajawalRegular];
+  List<String> get values => [tajawalRegular];
 }
 
 class $AssetsImagesGen {
@@ -119,7 +116,7 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/onboarding2.png
   AssetGenImage get onboarding2 =>
-      const AssetGenImage('assets/images/san2.jpeg');
+      const AssetGenImage('assets/images/san2.jpg');
 
   /// File path: assets/images/onboarding3.png
   AssetGenImage get onboarding3 =>

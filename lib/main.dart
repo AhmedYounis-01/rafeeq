@@ -75,9 +75,6 @@ void main() async {
   );
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Minimal delay to let the engine breathe
-  await Future.delayed(const Duration(milliseconds: 500));
-
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],

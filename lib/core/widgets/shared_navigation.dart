@@ -84,14 +84,26 @@ class SharedNavigation extends StatefulWidget {
 }
 
 class _SharedNavigationState extends State<SharedNavigation> {
-  final ValueNotifier<bool> _bottomNavVisible = ValueNotifier(true);
+  late final ValueNotifier<bool> _bottomNavVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    // In Quran tab (index 1), bottom nav starts hidden for immersive reading
+    _bottomNavVisible = ValueNotifier(widget.currentIndex != 1);
+  }
 
   @override
   void didUpdateWidget(SharedNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // When navigating away from Quran tab, always show nav bar
-    if (widget.currentIndex != 1 && !_bottomNavVisible.value) {
-      _bottomNavVisible.value = true;
+    if (widget.currentIndex != oldWidget.currentIndex) {
+      if (widget.currentIndex == 1) {
+        // Entering Quran tab -> hide bottom nav bar
+        _bottomNavVisible.value = false;
+      } else {
+        // Leaving Quran tab -> show bottom nav bar
+        _bottomNavVisible.value = true;
+      }
     }
   }
 
@@ -188,12 +200,12 @@ class _SharedNavigationState extends State<SharedNavigation> {
                   return IgnorePointer(
                     ignoring: !isVisible,
                     child: AnimatedSlide(
-                      duration: Duration(milliseconds: isVisible ? 220 : 1),
-                      curve: isVisible ? Curves.easeOutCubic : Curves.linear,
-                      offset: isVisible ? Offset.zero : const Offset(0, 0.01),
+                      duration: const Duration(milliseconds: 280),
+                      curve: Curves.easeInOutCubic,
+                      offset: isVisible ? Offset.zero : const Offset(0, 1.2),
                       child: AnimatedOpacity(
-                        duration: Duration(milliseconds: isVisible ? 160 : 1),
-                        curve: Curves.linear,
+                        duration: const Duration(milliseconds: 240),
+                        curve: Curves.easeInOut,
                         opacity: isVisible ? 1.0 : 0.0,
                         child: child,
                       ),

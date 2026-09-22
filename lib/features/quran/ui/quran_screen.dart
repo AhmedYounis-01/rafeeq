@@ -1,13 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qcf_quran_plus/qcf_quran_plus.dart'
-    hide getPageData, getPageNumber;
-import 'package:quran/quran.dart'
-    hide getSurahNameArabic, getJuzNumber, getVerseCount;
+import 'package:quran/quran.dart';
+import 'package:quran_pages_with_ayah_detector/quran_pages_with_ayah_detector.dart';
 
 import 'package:rafeeq/core/themes/app_colors.dart';
 import 'package:rafeeq/core/widgets/shared_navigation.dart';
@@ -17,10 +16,11 @@ import 'package:rafeeq/features/quran/ui/widgets/ayah_search_sheet.dart';
 import 'package:rafeeq/features/quran/ui/widgets/last_read_ribbon.dart';
 import 'package:rafeeq/features/quran/ui/widgets/mushaf_config.dart';
 import 'package:rafeeq/features/quran/ui/widgets/page_options_sheet.dart';
-import 'package:rafeeq/features/quran/ui/widgets/quran_page_body.dart';
 import 'package:rafeeq/features/quran/ui/widgets/reciter_tile.dart';
 import 'package:rafeeq/features/quran/ui/widgets/surah_index_content.dart';
 import 'package:rafeeq/features/quran/ui/widgets/tafsir_sheet.dart';
+import 'package:rafeeq/features/quran/logic/cubit/download/quran_download_cubit.dart';
+import 'package:rafeeq/features/quran/logic/cubit/download/quran_download_state.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
 class QuranScreen extends StatefulWidget {
@@ -34,46 +34,301 @@ class _QuranScreenState extends State<QuranScreen>
   @override
   bool get wantKeepAlive => true;
 
-  late final PageController _pageController;
-  final QuranCubit _cubit = QuranCubit();
+  // ── Static singleton: created once, survives navigation ──────────────
+  static final QuranCubit _cubit = QuranCubit();
+  late final QuranDownloadCubit _downloadCubit;
+
+  final QuranPageController _quranController = QuranPageController();
+
   StreamSubscription<int>? _pageJumpSub;
   StreamSubscription<String>? _errorSub;
-  bool _didInitialJump = false;
   Timer? _autoHideTimer;
+
+  String _pagesPath = 'assets/pages/';
+
+  bool _isReady = false;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _isReady = false;
+    _downloadCubit = QuranDownloadCubit()..checkAssets();
+  }
 
+  void _initQuranCubit() {
+    _pageJumpSub?.cancel();
+    _errorSub?.cancel();
+
+    // Re-subscribe streams each time this widget mounts (safe, subs are cancelled on dispose)
     _pageJumpSub = _cubit.pageJumpStream.listen((pageIndex) {
-      if (_pageController.hasClients) {
-        _pageController.animateToPage(
-          pageIndex,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
+      _quranController.jumpToPage(pageIndex + 1);
     });
 
     _errorSub = _cubit.errorStream.listen((error) {
       if (error == 'no_internet' && mounted) _showNoInternetSnack();
     });
 
+    // init() is a no-op if state is already QuranReady — safe to call again
     _cubit.init();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _cubit.hideOverlay();
+        BottomNavVisibility.hide(context);
+        final targetPage = _cubit.currentPageNotifier.value;
+        if (targetPage > 0 && _quranController.currentPage != targetPage) {
+          _quranController.jumpToPage(targetPage);
+        }
+        for (int i = -2; i <= 2; i++) {
+          final p = targetPage + i;
+          if (p >= 1 && p <= 604) {
+            final ImageProvider provider = _pagesPath.startsWith('assets/')
+                ? AssetImage('$_pagesPath$p.png')
+                : FileImage(File('$_pagesPath$p.png')) as ImageProvider;
+            precacheImage(provider, context);
+          }
+        }
+        if (!_isReady) {
+          setState(() {
+            _isReady = true;
+          });
+        }
+      }
+    });
+  }
+
+  Widget _buildDownloadPrompt(
+    bool isDark,
+    MushafConfig cfg,
+    QuranDownloadState state,
+  ) {
+    final gold = _goldColor(isDark);
+    final textCol = _textColor(isDark);
+    final cardCol = _cardColor(isDark);
+    final bgCol = _bgColor(isDark);
+
+    final isDownloading = state is QuranDownloading;
+    final isPaused = state is QuranDownloadPaused;
+    final isExtracting = state is QuranDownloading && state.isExtracting;
+    final hasError = state is QuranDownloadError;
+
+    final (double progress, String statusText) = switch (state) {
+      QuranDownloading s => (s.progress, s.statusText),
+      QuranDownloadPaused s => (s.progress, s.statusText),
+      QuranDownloadError s => (0.0, s.errorMessage),
+      _ => (0.0, ''),
+    };
+
+    final bool inProgressOrPaused = isDownloading || isPaused;
+
+    return Scaffold(
+      backgroundColor: bgCol,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: cardCol,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: gold.withValues(alpha: 0.25),
+                  width: 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                    blurRadius: 24,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Animated Icon Header
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: gold.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: gold.withValues(alpha: 0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Icon(Icons.menu_book_rounded, color: gold, size: 56),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'تحميل صفحات المصحف الشريف',
+                    style: GoogleFonts.amiri(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: textCol,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'تنزيل المصحف مرة واحدة يتيح لك القراءة دون الحاجة إلى اتصال بالإنترنت لاحقاً.',
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      color: textCol.withValues(alpha: 0.75),
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+
+                  if (inProgressOrPaused) ...[
+                    // Progress Bar & Status (clean, without byte numbers)
+                    Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: LinearProgressIndicator(
+                            value: progress > 0 ? progress : null,
+                            minHeight: 10,
+                            backgroundColor: gold.withValues(alpha: 0.12),
+                            valueColor: AlwaysStoppedAnimation<Color>(gold),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          statusText.isNotEmpty
+                              ? statusText
+                              : (isDownloading
+                                  ? 'جاري التحميل...'
+                                  : 'متوقف مؤقتاً'),
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            color: textCol.withValues(alpha: 0.85),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 22),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (!isExtracting) ...[
+                          ElevatedButton.icon(
+                            onPressed: isDownloading
+                                ? _downloadCubit.pauseDownload
+                                : _downloadCubit.startOrResumeDownload,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: gold,
+                              foregroundColor: bgCol,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              elevation: 2,
+                            ),
+                            icon: Icon(
+                              isDownloading
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
+                              size: 22,
+                            ),
+                            label: Text(
+                              isDownloading ? 'إيقاف مؤقت' : 'متابعة التحميل',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          if (isPaused) ...[
+                            const SizedBox(width: 12),
+                            IconButton(
+                              onPressed: _downloadCubit.resetDownload,
+                              tooltip: 'إعادة التنزيل من البداية',
+                              style: IconButton.styleFrom(
+                                backgroundColor: AppColors.error.withValues(
+                                  alpha: 0.1,
+                                ),
+                                foregroundColor: AppColors.error,
+                                padding: const EdgeInsets.all(12),
+                              ),
+                              icon: const Icon(Icons.refresh_rounded, size: 20),
+                            ),
+                          ],
+                        ] else ...[
+                          const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ] else ...[
+                    // Not started or Error state
+                    if (hasError) ...[
+                      Text(
+                        statusText,
+                        style: const TextStyle(
+                          color: AppColors.error,
+                          fontSize: 12.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    ElevatedButton.icon(
+                      onPressed: _downloadCubit.startOrResumeDownload,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: gold,
+                        foregroundColor: bgCol,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 3,
+                      ),
+                      icon: Icon(
+                        hasError
+                            ? Icons.refresh_rounded
+                            : Icons.download_rounded,
+                        size: 22,
+                      ),
+                      label: Text(
+                        hasError ? 'إعادة المحاولة' : 'بدء التحميل الآن',
+                        style: const TextStyle(
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   void dispose() {
     _autoHideTimer?.cancel();
-    // Restore nav bar when leaving the screen
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) BottomNavVisibility.show(context);
-    });
+    // Cancel per-widget subscriptions but keep the singleton cubit alive
     _pageJumpSub?.cancel();
     _errorSub?.cancel();
-    _pageController.dispose();
-    _cubit.close();
+    _downloadCubit.close();
     super.dispose();
   }
 
@@ -89,7 +344,7 @@ class _QuranScreenState extends State<QuranScreen>
   Color _playerBgColor(bool isDark) =>
       isDark ? AppColors.backgroundCardDark : AppColors.backgroundLight;
 
-  // ─── No Internet Snackbar ─────────────────────────────────────────────
+  // ─── No Internet Snack ────────────────────────────────────────────────
   void _showNoInternetSnack() {
     if (!mounted) return;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -181,152 +436,211 @@ class _QuranScreenState extends State<QuranScreen>
     final cfg = MushafConfig(context);
 
     return BlocProvider.value(
-      value: _cubit,
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<QuranCubit, QuranState>(
-            listenWhen: (prev, curr) =>
-                prev is! QuranReady && curr is QuranReady,
-            listener: (_, state) {
-              if (_didInitialJump) return;
-              _didInitialJump = true;
-              final page = (state as QuranReady).currentPage;
-              if (page > 1) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (_pageController.hasClients) {
-                    _pageController.jumpToPage(page - 1);
-                  }
-                });
-              }
-              // Auto-hide bottom nav after 1 second for immersive reading
-              _autoHideTimer?.cancel();
-              _autoHideTimer = Timer(const Duration(seconds: 1), () {
-                if (mounted) BottomNavVisibility.hide(context);
-              });
-            },
-          ),
-        ],
-        child: BlocBuilder<QuranCubit, QuranState>(
-          buildWhen: (prev, curr) {
-            if (prev.runtimeType != curr.runtimeType) return true;
-            if (curr is QuranFontsLoading) return true;
-            return false; // ✅ مبقاش يشغل rebuild للـ ready state هنا
-          },
-          builder: (context, state) {
-            if (state is QuranInitial || state is QuranPrefsLoading) {
-              return Scaffold(
-                backgroundColor: _bgColor(isDark),
-                body: Center(
-                  child: CircularProgressIndicator(color: _goldColor(isDark)),
-                ),
-              );
-            }
-            if (state is QuranFontsLoading) {
-              return _buildFontsLoadingScreen(state.progress, isDark, cfg);
-            }
-            if (state is QuranError) {
-              return Scaffold(
-                backgroundColor: _bgColor(isDark),
-                body: Center(
-                  child: Text(
-                    state.message,
-                    style: GoogleFonts.amiri(color: _goldColor(isDark)),
-                  ),
-                ),
-              );
-            }
-            return _buildMainScreen(isDark, cfg); // ✅ مبقاش بيبعت state
-          },
-        ),
-      ),
-    );
-  }
+      value: _downloadCubit,
+      child: BlocConsumer<QuranDownloadCubit, QuranDownloadState>(
+        listener: (context, downloadState) {
+          if (downloadState is QuranDownloadSuccess) {
+            _pagesPath = downloadState.pagesPath;
+            _initQuranCubit();
+          }
+        },
+        builder: (context, downloadState) {
+          if (downloadState is QuranDownloadChecking ||
+              downloadState is QuranDownloadInitial) {
+            return Scaffold(
+              backgroundColor: _bgColor(isDark),
+              body: Center(
+                child: CircularProgressIndicator(color: _goldColor(isDark)),
+              ),
+            );
+          }
 
-  // ─── Fonts Loading ────────────────────────────────────────────────────
-  Widget _buildFontsLoadingScreen(
-    double progress,
-    bool isDark,
-    MushafConfig cfg,
-  ) {
-    return Scaffold(
-      backgroundColor: _bgColor(isDark),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-              style: GoogleFonts.amiri(
-                fontSize: cfg.surahNameFontSize,
-                color: _goldColor(isDark),
-                fontWeight: FontWeight.bold,
+          if (downloadState is! QuranDownloadSuccess) {
+            return _buildDownloadPrompt(isDark, cfg, downloadState);
+          }
+
+          return BlocProvider.value(
+            value: _cubit,
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<QuranCubit, QuranState>(
+                  listenWhen: (prev, curr) =>
+                      prev is! QuranReady && curr is QuranReady,
+                  listener: (_, state) {
+                    // Hide bottom nav immediately when Quran is ready for immersive reading
+                    _autoHideTimer?.cancel();
+                    if (mounted) BottomNavVisibility.hide(context);
+                  },
+                ),
+              ],
+              child: BlocBuilder<QuranCubit, QuranState>(
+                buildWhen: (prev, curr) => prev.runtimeType != curr.runtimeType,
+                builder: (context, state) {
+                  Widget child;
+                  if (!_isReady ||
+                      state is QuranInitial ||
+                      state is QuranPrefsLoading) {
+                    child = Scaffold(
+                      key: const ValueKey('quran_loading'),
+                      backgroundColor: _bgColor(isDark),
+                      body: Center(
+                        child: CircularProgressIndicator(
+                          color: _goldColor(isDark),
+                        ),
+                      ),
+                    );
+                  } else if (state is QuranError) {
+                    child = Scaffold(
+                      key: const ValueKey('quran_error'),
+                      backgroundColor: _bgColor(isDark),
+                      body: Center(
+                        child: Text(
+                          state.message,
+                          style: GoogleFonts.amiri(color: _goldColor(isDark)),
+                        ),
+                      ),
+                    );
+                  } else {
+                    child = _buildMainScreen(isDark, cfg);
+                  }
+
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    switchInCurve: Curves.easeInOut,
+                    switchOutCurve: Curves.easeInOut,
+                    child: child,
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: 240,
-              child: Column(
-                children: [
-                  LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: _goldColor(isDark).withValues(alpha: 0.1),
-                    color: _goldColor(isDark),
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'جاري تحميل بيانات المصحف... ${(progress * 100).toStringAsFixed(0)}%',
-                    style: GoogleFonts.amiri(
-                      fontSize: 16,
-                      color: _textColor(isDark).withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
   // ─── Main Screen ──────────────────────────────────────────────────────
   Widget _buildMainScreen(bool isDark, MushafConfig cfg) {
+    final gold = _goldColor(isDark);
+    final targetPage = _cubit.currentPageNotifier.value > 0
+        ? _cubit.currentPageNotifier.value
+        : ((_cubit.state is QuranReady)
+            ? (_cubit.state as QuranReady).currentPage
+            : 1);
+    final initialPage = (targetPage - 1).clamp(0, 603);
+
     return Scaffold(
+      key: const ValueKey('quran_main_content'),
       backgroundColor: _bgColor(isDark),
       body: Stack(
         children: [
-          // ✅ QuranPageView معزول تماماً - مش هيتبنى إلا لو isDark اتغير
-          ValueListenableBuilder<bool>(
-            valueListenable:
-                BottomNavVisibility.of(context) ?? ValueNotifier(true),
-            builder: (context, isNavVisible, _) {
-              return RepaintBoundary(
-                child: QuranPageBody(
-                  pageController: _pageController,
-                  highlightsNotifier: _cubit.highlightsNotifier,
-                  isDark: isDark,
-                  onTap: () {
-                    _cubit.toggleOverlay();
-                    BottomNavVisibility.toggle(context);
-                    HapticFeedback.lightImpact();
-                  },
-                  onPageChanged: (pageNumber) {
-                    _cubit.onPageChanged(pageNumber);
-                    HapticFeedback.lightImpact();
-                  },
-                  onLongPress: (surah, ayah, details) {
+          // ── Mushaf ornamental frame & background tap ───────────────────
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _cubit.toggleOverlay();
+                final r = _cubit.state;
+                final bool showOverlay = r is QuranReady && r.showOverlay;
+                if (showOverlay) {
+                  BottomNavVisibility.show(context);
+                } else {
+                  BottomNavVisibility.hide(context);
+                }
+                HapticFeedback.lightImpact();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.symmetric(
+                    horizontal: BorderSide(
+                      color: gold.withValues(alpha: 0.18),
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // ── Image-based Quran page view (fast GPU rendering) ──────────
+          RepaintBoundary(
+            child: BlocSelector<QuranCubit, QuranState, AudioStatus>(
+              selector: (s) =>
+                  s is QuranReady ? s.audioStatus : const AudioStatus.idle(),
+              builder: (context, audioStatus) {
+                final String? playingAyahKey =
+                    (audioStatus.isPlaying || audioStatus.isLoading) &&
+                        audioStatus.surah != null &&
+                        audioStatus.ayah != null
+                    ? '${audioStatus.surah}_${audioStatus.ayah}'
+                    : null;
+
+                return QuranPageView(
+                  controller: _quranController,
+                  initialPage: initialPage,
+                  pageImagePath: _pagesPath,
+                  themeModeAdaption: true,
+                  highlightedAyahKey: playingAyahKey,
+                  // Hide the built-in top bar — we draw our own overlay
+                  showPageTopBar: false,
+                  // Hide built-in page number — we show it in our overlay
+                  showPageNumber: false,
+                  // Hide search icon — we use our own search sheet
+                  showSearchIcon: false,
+                  quranTextColor: isDark ? Colors.white : Colors.black,
+                  highlightColor: gold.withValues(alpha: 0.35),
+
+                  // ── Ayah tap → tafsir + audio actions ────────────────────
+                  onAyahTap: (surah, ayah, page) {
                     HapticFeedback.mediumImpact();
                     _cubit.fetchTafsir(surah, ayah);
                     _showTafsirSheet(isDark, cfg);
                   },
-                ),
-              );
-            },
+
+                  // ── Tap anywhere on the page (outside ayahs) to toggle overlay + bottom nav ─
+                  onPageTap: () {
+                    _cubit.toggleOverlay();
+                    final r = _cubit.state;
+                    final bool showOverlay = r is QuranReady && r.showOverlay;
+                    if (showOverlay) {
+                      BottomNavVisibility.show(context);
+                    } else {
+                      BottomNavVisibility.hide(context);
+                    }
+                    HapticFeedback.lightImpact();
+                  },
+
+                  // ── Page change callback ──────────────────────────────────
+                  onPageChanged: (pageNumber) {
+                    _cubit.onPageChanged(pageNumber);
+                    HapticFeedback.lightImpact();
+                  },
+
+                  // ── Ayah long-press menu disabled ─────────────────────────
+                  showAyahMenu: false,
+
+                  // ── Colors for built-in search sheet (not shown but themed) ─
+                  searchSheetBackgroundColor: isDark
+                      ? AppColors.bottomSheetDark
+                      : AppColors.bottomSheetLight,
+                  searchSheetDarkBackgroundColor: AppColors.bottomSheetDark,
+                  searchFieldBackgroundColor: gold.withValues(alpha: 0.08),
+                  searchFieldDarkBackgroundColor: gold.withValues(alpha: 0.12),
+                  searchResultInfoColor: gold,
+                  selectionResultInfoColor: gold,
+                  selectionSheetHighlightColor: gold.withValues(alpha: 0.12),
+                  selectionSheetDarkHighlightColor: gold.withValues(
+                    alpha: 0.25,
+                  ),
+                  pageNumberColor: gold,
+                  pageNumberDesign: PageNumberDesign.outlined,
+                  pageNumberBorderColor: gold.withValues(alpha: 0.4),
+                );
+              },
+            ),
           ),
 
-          // ✅ Overlay بـ BlocSelector - مش بيأثر على PageView
+          // ── Top overlay (page number, surah, juz) ─────────────────────
           BlocSelector<QuranCubit, QuranState, bool>(
             selector: (s) => s is QuranReady && s.showOverlay,
             builder: (_, showOverlay) => Positioned(
@@ -348,7 +662,7 @@ class _QuranScreenState extends State<QuranScreen>
             ),
           ),
 
-          // ✅ Bookmark ribbon
+          // ── Bookmark ribbon ──────────────────────────────────────────
           ValueListenableBuilder<int>(
             valueListenable: _cubit.currentPageNotifier,
             builder: (_, currentPage, _) {
@@ -363,7 +677,7 @@ class _QuranScreenState extends State<QuranScreen>
                     right: cfg.isTablet ? 28 : 20,
                     child: IgnorePointer(
                       child: LastReadRibbon(
-                        color: _goldColor(isDark),
+                        color: gold,
                         width: cfg.isTablet ? 28 : 22,
                         height: cfg.isTablet ? 74 : 60,
                       ),
@@ -374,7 +688,7 @@ class _QuranScreenState extends State<QuranScreen>
             },
           ),
 
-          // ✅ Audio player - BlocSelector للـ audioStatus فقط
+          // ── Audio player ─────────────────────────────────────────────
           BlocSelector<QuranCubit, QuranState, AudioStatus>(
             selector: (s) =>
                 s is QuranReady ? s.audioStatus : const AudioStatus.idle(),
@@ -386,7 +700,6 @@ class _QuranScreenState extends State<QuranScreen>
                     BottomNavVisibility.of(context) ?? ValueNotifier(true),
                 builder: (context, isNavVisible, _) {
                   final bottomPad = isNavVisible ? 220.0 : 40.0;
-
                   return Positioned(
                     bottom: bottomPad,
                     left: 14,
@@ -416,6 +729,7 @@ class _QuranScreenState extends State<QuranScreen>
         ],
       ),
 
+      // ── FAB: page options (opens on overlay) ─────────────────────────
       floatingActionButton: BlocSelector<QuranCubit, QuranState, bool>(
         selector: (s) => s is QuranReady && s.showOverlay,
         builder: (_, showOverlay) => showOverlay
@@ -433,7 +747,7 @@ class _QuranScreenState extends State<QuranScreen>
                   backgroundColor: _cardColor(isDark),
                   child: Icon(
                     Icons.menu_book_rounded,
-                    color: _goldColor(isDark),
+                    color: gold,
                     size: MediaQuery.of(context).size.height * 0.035,
                   ),
                   onPressed: () {
@@ -712,10 +1026,8 @@ class _QuranScreenState extends State<QuranScreen>
 
   // ─── Page Options ──────────────────────────────────────────────────────
   void _showPageOptions(QuranReady state, bool isDark, MushafConfig cfg) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final gold = _goldColor(isDark);
-
     final currentPage = _cubit.currentPageNotifier.value;
     final isBookmarked = state.bookmarkPage == currentPage;
     final isPlayingPage =
@@ -770,7 +1082,37 @@ class _QuranScreenState extends State<QuranScreen>
           onLastRead: () {
             Navigator.pop(ctx);
             if (state.bookmarkPage != null) {
-              _cubit.jumpToPage(state.bookmarkPage!);
+              _quranController.jumpToPage(state.bookmarkPage!);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      Icon(
+                        Icons.bookmark_border,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'لا توجد صفحة محفوظة',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: isDark ? Colors.grey[850] : Colors.grey[100],
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: const EdgeInsets.all(16),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
             }
           },
           onSearch: () {
@@ -819,12 +1161,11 @@ class _QuranScreenState extends State<QuranScreen>
         _cubit.hideOverlay();
       }
     });
-  } // ─── Reciter Selector ────────────────────────────────────────────────
+  }
 
-  // ─── Reciter Selector ────────────────────────────────────────────────
+  // ─── Reciter Selector ─────────────────────────────────────────────────
   void _openReciterSelector(QuranReady state, bool isDark, MushafConfig cfg) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final gold = _goldColor(isDark);
 
     showModalBottomSheet(
@@ -907,8 +1248,7 @@ class _QuranScreenState extends State<QuranScreen>
                             name: r['name']!,
                             isSelected: isSelected,
                             gold: gold,
-                            textColor:
-                                colorScheme.onSurface, // أفضل لون نص حسب الثيم
+                            textColor: colorScheme.onSurface,
                             cfg: cfg,
                             onTap: () {
                               Navigator.pop(ctx);
@@ -933,10 +1273,9 @@ class _QuranScreenState extends State<QuranScreen>
     });
   }
 
-  // ─── Surah Index — مع بحث داخلي للسور ────────────────────────────────
+  // ─── Surah Index ──────────────────────────────────────────────────────
   void _openSurahIndex(QuranReady state, bool isDark, MushafConfig cfg) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final gold = _goldColor(isDark);
 
     showModalBottomSheet(
@@ -961,7 +1300,9 @@ class _QuranScreenState extends State<QuranScreen>
             bgColor: colorScheme.surfaceContainerLow,
             textColor: colorScheme.onSurface,
             onNavigate: (surahNum) {
-              _pageController.jumpToPage(getPageNumber(surahNum, 1) - 1);
+              // getPageNumber returns 1-based
+              final page = getPageNumber(surahNum, 1);
+              _quranController.jumpToPage(page);
               Navigator.pop(ctx);
             },
             onPlay: (surahNum) {
@@ -1000,7 +1341,7 @@ class _QuranScreenState extends State<QuranScreen>
         onNavigate: (surahNum, ayah) {
           Navigator.pop(ctx);
           final targetPage = getPageNumber(surahNum, ayah);
-          _pageController.jumpToPage(targetPage - 1);
+          _quranController.jumpToPage(targetPage);
         },
       ),
     ).whenComplete(() {

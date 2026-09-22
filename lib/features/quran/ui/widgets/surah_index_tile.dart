@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qcf_quran_plus/qcf_quran_plus.dart'
-    hide getPageData, getPageNumber;
+import 'package:quran/quran.dart';
 
 import 'package:rafeeq/features/quran/ui/widgets/mushaf_config.dart';
 

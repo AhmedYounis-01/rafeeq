@@ -64,7 +64,7 @@ class MainActivity : FlutterActivity() {
                     result.success(null)
                 }
                 "cancelAllAdhanAlarms" -> {
-                    for (alarmId in 200..234) {
+                    for (alarmId in 200..250) {
                         cancelAdhanAlarm(alarmId)
                     }
                     result.success(null)
@@ -75,6 +75,10 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun scheduleAdhanAlarm(id: Int, timeMillis: Long) {
+        if (timeMillis <= System.currentTimeMillis()) {
+            // Do not schedule past times — AlarmManager would fire immediately!
+            return
+        }
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AdhanReceiver::class.java).apply {
             action = AdhanReceiver.ACTION_PLAY_ADHAN

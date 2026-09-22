@@ -73,9 +73,8 @@ class PrayerTimeCalculator {
 
     for (final p in orderedPrayers) {
       final time = times[p];
-      // Use a 30-second buffer to handle processing delay and prevent early skipping
-      if (time != null &&
-          time.isAfter(now.subtract(const Duration(seconds: 30)))) {
+      // Next prayer must strictly be in the future
+      if (time != null && time.isAfter(now)) {
         nextPrayer = p;
         nextPrayerTime = time;
         break;
