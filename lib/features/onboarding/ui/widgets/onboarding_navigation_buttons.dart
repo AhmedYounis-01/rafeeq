@@ -126,7 +126,7 @@ class _OnboardingNavigationButtonsState
             child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                // Natural RTL flip: Icon will be on Left in Ar, Right in En
+                textDirection: TextDirection.ltr,
                 children: [
                   Text(
                     "onboarding.lets_start".tr(),
@@ -138,7 +138,6 @@ class _OnboardingNavigationButtonsState
                     ),
                   ),
                   const SizedBox(width: 10),
-                  // Forward arrow pointing right for both languages
                   AnimatedBuilder(
                     animation: _pulseAnimation,
                     builder: (context, child) {
@@ -148,7 +147,7 @@ class _OnboardingNavigationButtonsState
                       );
                     },
                     child: const Icon(
-                      Icons.arrow_forward_rounded,
+                      Icons.arrow_back_rounded,
                       color: Colors.white,
                       size: 24,
                     ),
@@ -168,9 +167,10 @@ class _OnboardingNavigationButtonsState
   Widget _buildNavRow(bool isDark, _Cfg cfg, bool isRtl) {
     return Row(
       key: const ValueKey('nav'),
+      textDirection: TextDirection.ltr,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // ── Skip ──
+        // ── Skip on the Left ──
         TextButton(
           onPressed: widget.onSkip,
           style: TextButton.styleFrom(
@@ -194,7 +194,7 @@ class _OnboardingNavigationButtonsState
           ),
         ),
 
-        // ── Next circle button with forward-pointing arrow ──
+        // ── Next circle button on the Right ──
         Tooltip(
           message: 'onboarding.next'.tr(),
           child: GestureDetector(
@@ -234,7 +234,7 @@ class _OnboardingNavigationButtonsState
                       // Continuous forward pulse toward the right
                       offset: Offset(_pulseAnimation.value, 0),
                       child: const Icon(
-                        Icons.arrow_forward_rounded,
+                        Icons.arrow_back_rounded,
                         color: Colors.white,
                         size: 30,
                       ),

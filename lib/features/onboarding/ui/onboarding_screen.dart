@@ -209,25 +209,32 @@ class OnboardingScreenState extends State<OnboardingScreen>
         child: SafeArea(
           child: Column(
             children: [
-              // ── Page content ──
+              // ── Page content (transitions to the right) ──
               Expanded(
-                child: PageView.builder(
-                  controller: pageController,
-                  itemCount: onboardingItems.length,
-                  onPageChanged: _onPageChanged,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return OnboardingPageItem(
-                      item: onboardingItems[index],
-                      imageScale: _imageScale,
-                      imageFade: _imageFade,
-                      floatAnimation: _floatAnimation,
-                      titleSlide: _titleSlide,
-                      titleFade: _titleFade,
-                      descSlide: _descSlide,
-                      descFade: _descFade,
-                    );
-                  },
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: PageView.builder(
+                    reverse: true,
+                    controller: pageController,
+                    itemCount: onboardingItems.length,
+                    onPageChanged: _onPageChanged,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Directionality(
+                        textDirection: Directionality.of(context),
+                        child: OnboardingPageItem(
+                          item: onboardingItems[index],
+                          imageScale: _imageScale,
+                          imageFade: _imageFade,
+                          floatAnimation: _floatAnimation,
+                          titleSlide: _titleSlide,
+                          titleFade: _titleFade,
+                          descSlide: _descSlide,
+                          descFade: _descFade,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
 
@@ -297,6 +304,7 @@ class _PremiumDotIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textDirection: TextDirection.ltr,
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(itemCount, (i) {
         final isActive = i == currentPage;

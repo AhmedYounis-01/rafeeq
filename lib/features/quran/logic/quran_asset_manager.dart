@@ -75,7 +75,11 @@ class QuranAssetManager {
         } catch (_) {}
       }
     } catch (e) {
-      AppLogger.error('Failed cleanupOrphanedFiles', error: e, tag: 'QuranAssetManager');
+      AppLogger.error(
+        'Failed cleanupOrphanedFiles',
+        error: e,
+        tag: 'QuranAssetManager',
+      );
     }
   }
 
@@ -239,7 +243,7 @@ class QuranAssetManager {
               totalBytes: totalBytes,
               progress: (sum / totalBytes * 0.85).clamp(0.0, 0.85),
               isExtracting: false,
-              statusText: 'جاري تحميل صفحات المصحف بسرعة فائقة...',
+              statusText: 'جاري تحميل صفحات المصحف...',
             );
           }
         }
@@ -451,4 +455,3 @@ void _extractZipWorker((String, String) paths) {
     }
   }
 }
-
