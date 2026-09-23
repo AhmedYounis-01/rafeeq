@@ -13,6 +13,10 @@ void main() {
         'https://github.com/AhmedYounis-01/rafeeq-assets/releases/download/v1.1.0/quran_pages.zip',
       );
     });
+
+    test('isDownloadedSync returns false by default before download', () {
+      expect(QuranAssetManager.isDownloadedSync(), isFalse);
+    });
   });
 
   group('QuranDownloadCubit', () {

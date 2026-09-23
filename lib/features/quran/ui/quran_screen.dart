@@ -442,6 +442,8 @@ class _QuranScreenState extends State<QuranScreen>
           if (downloadState is QuranDownloadSuccess) {
             _pagesPath = downloadState.pagesPath;
             _initQuranCubit();
+          } else {
+            BottomNavVisibility.show(context);
           }
         },
         builder: (context, downloadState) {
@@ -456,6 +458,9 @@ class _QuranScreenState extends State<QuranScreen>
           }
 
           if (downloadState is! QuranDownloadSuccess) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) BottomNavVisibility.show(context);
+            });
             return _buildDownloadPrompt(isDark, cfg, downloadState);
           }
 

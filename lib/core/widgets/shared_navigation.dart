@@ -12,6 +12,7 @@ import '../themes/app_colors.dart';
 import '../extensions/theme_extension.dart';
 import '../constants/app_constants.dart';
 import 'responsive_layout.dart';
+import 'package:rafeeq/features/quran/logic/quran_asset_manager.dart';
 
 // ─── Bottom Nav Visibility ────────────────────────────────────────────────────
 class BottomNavVisibility extends InheritedWidget {
@@ -89,8 +90,10 @@ class _SharedNavigationState extends State<SharedNavigation> {
   @override
   void initState() {
     super.initState();
-    // In Quran tab (index 1), bottom nav starts hidden for immersive reading
-    _bottomNavVisible = ValueNotifier(widget.currentIndex != 1);
+    // In Quran tab (index 1), bottom nav starts hidden for immersive reading only if downloaded
+    final isQuran = widget.currentIndex == 1;
+    final shouldHide = isQuran && QuranAssetManager.isDownloadedSync();
+    _bottomNavVisible = ValueNotifier(!shouldHide);
   }
 
   @override
@@ -98,8 +101,12 @@ class _SharedNavigationState extends State<SharedNavigation> {
     super.didUpdateWidget(oldWidget);
     if (widget.currentIndex != oldWidget.currentIndex) {
       if (widget.currentIndex == 1) {
-        // Entering Quran tab -> hide bottom nav bar
-        _bottomNavVisible.value = false;
+        // Entering Quran tab -> hide bottom nav bar only if Quran is downloaded/ready
+        if (QuranAssetManager.isDownloadedSync()) {
+          _bottomNavVisible.value = false;
+        } else {
+          _bottomNavVisible.value = true;
+        }
       } else {
         // Leaving Quran tab -> show bottom nav bar
         _bottomNavVisible.value = true;

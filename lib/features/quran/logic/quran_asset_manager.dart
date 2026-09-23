@@ -6,6 +6,7 @@ import 'package:archive/archive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as p;
 import 'package:rafeeq/core/helpers/app_logger.dart';
+import 'package:rafeeq/core/cache/storage_manager.dart';
 
 class QuranAssetManager {
   static const String kPrefsKey = 'quran_assets_downloaded';
@@ -37,6 +38,18 @@ class QuranAssetManager {
 
   // Cache result so we only scan files once per session
   static bool? _assetsVerified;
+
+  /// Synchronous check if Quran assets are downloaded.
+  static bool isDownloadedSync() {
+    if (_assetsVerified != null) return _assetsVerified!;
+    try {
+      final downloaded =
+          StorageManager.instance.getData<bool>(key: kPrefsKey) ?? false;
+      return downloaded;
+    } catch (_) {
+      return false;
+    }
+  }
 
   /// Deletes leftover zip files, download parts, and obsolete font folders to free storage.
   static Future<void> cleanupOrphanedFiles() async {
@@ -89,18 +102,23 @@ class QuranAssetManager {
     try {
       final prefs = await SharedPreferences.getInstance();
       final isDownloaded = prefs.getBool(kPrefsKey) ?? false;
-      if (!isDownloaded) return false;
+      if (!isDownloaded) {
+        _assetsVerified = false;
+        return false;
+      }
 
       final pagesPath = await getPagesPath();
       final pagesDir = Directory(pagesPath);
 
       if (!await pagesDir.exists()) {
+        _assetsVerified = false;
         return false;
       }
 
       // Check if all Quran page images exist (604 pages)
       final pagesCount = pagesDir.listSync().whereType<File>().length;
       if (pagesCount < 604) {
+        _assetsVerified = false;
         return false;
       }
 
@@ -109,6 +127,7 @@ class QuranAssetManager {
       cleanupOrphanedFiles();
       return true;
     } catch (e) {
+      _assetsVerified = false;
       AppLogger.error(
         'Failed checking assets existence',
         error: e,
